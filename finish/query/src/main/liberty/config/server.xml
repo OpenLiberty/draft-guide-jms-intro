@@ -9,7 +9,6 @@
         <feature>persistence-3.1</feature>
         <feature>messaging-3.1</feature>
         <feature>messagingClient-3.0</feature>
-        <feature>messagingServer-3.0</feature>
         <feature>enterpriseBeansLite-4.0</feature>
         <feature>mdb-4.0</feature>
     </featureManager>
@@ -35,34 +34,31 @@
                                password="adminpwd"/>
     </dataSource>
 
+    <resourceAdapter id="wmqjmsra" location="https://repo.maven.apache.org/maven2/com/ibm/mq/wmq.jakarta.jmsra/9.3.5.0/wmq.jakarta.jmsra-9.3.5.0.rar" />
+    <authData id="mqauthid" user="admin" password="passw0rd"/>
+
     <!-- Query queue -->
-    <wasJmsEndpoint id="InboundJmsCommsEndpoint"
-                    host="*"
-                    wasJmsPort="7277"
-                    wasJmsSSLPort="9101"/>
-
     <connectionManager id="QueryCM" maxPoolSize="400" minPoolSize="1"/>
-
-    <messagingEngine id="QueryME">
-        <queue id="QueryQueue"
-               forceReliability="ReliablePersistent"
-               maxQueueDepth="5000"/>
-    </messagingEngine>
 
     <jmsQueueConnectionFactory connectionManagerRef="QueryCM"
                                jndiName="QueryQueueConnectionFactory">
-        <properties.wasJms/>
+        <properties.wmqjmsra/>
     </jmsQueueConnectionFactory>
 
     <jmsQueue id="QueryQueue" jndiName="jms/QueryQueue">
-        <properties.wasJms queueName="QueryQueue"/>
+        <properties.wmqjmsra baseQueueName="QueryQueue"/>
     </jmsQueue>
 
-    <jmsActivationSpec id="guide-jms-cqrs-query/QueryListener">
-        <properties.wasJms
+    <jmsActivationSpec id="guide-jms-cqrs-query/QueryListener" authDataRef="mqauthid">
+        <properties.wmqjmsra
+            channel="DEV.APP.SVRCONN"
+            hostName="gkwan-redhat1.fyre.ibm.com" 
+            port="9443"
+            queueManager="QM1"
+            transportType="CLIENT"
             destinationRef="QueryQueue"
             destinationType="jakarta.jms.Queue"
-            maxConcurrency="200"/>
+            />
     </jmsActivationSpec>
 
     <!-- Cache queue -->
@@ -71,12 +67,11 @@
     <jmsQueueConnectionFactory
         connectionManagerRef="CacheCM"
         jndiName="CacheQueueConnectionFactory">
-        <properties.wasJms
-            remoteServerAddress="${cache.jms.address}:BootstrapBasicMessaging"/>
+        <properties.wmqjmsra/>
     </jmsQueueConnectionFactory>
 
     <jmsQueue id="CacheQueue" jndiName="jms/CacheQueue">
-        <properties.wasJms queueName="CacheQueue"/>
+        <properties.wmqjmsra baseQueueName="CacheQueue"/>
     </jmsQueue>
 
     <logging consoleLogLevel="INFO"/>
