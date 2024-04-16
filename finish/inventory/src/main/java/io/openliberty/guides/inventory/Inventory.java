@@ -45,7 +45,7 @@ public class Inventory {
         systems.add(s);
     }
 
-	public void update(SystemData s) throws Exception {
+    public void update(SystemData s) throws Exception {
         for (SystemData system : systems) {
             if (system.getHostname().equalsIgnoreCase(s.getHostname())) {
                 system.setOsName(s.getOsName());
