@@ -19,26 +19,26 @@
         <dependency>
             <groupId>jakarta.platform</groupId>
             <artifactId>jakarta.jakartaee-api</artifactId>
-            <version>9.1.0</version>
+            <version>10.0.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.microprofile</groupId>
             <artifactId>microprofile</artifactId>
-            <version>5.0</version>
+            <version>6.1</version>
             <type>pom</type>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.persistence</groupId>
             <artifactId>eclipselink</artifactId>
-            <version>4.0.1</version>
+            <version>4.0.2</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.3.1</version>
+            <version>42.7.3</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -55,13 +55,13 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-war-plugin</artifactId>
-                    <version>3.3.2</version>
+                    <version>3.4.0</version>
                 </plugin>
                 <!-- tag::libertyMavenPlugin[] -->
                 <plugin>
                     <groupId>io.openliberty.tools</groupId>
                     <artifactId>liberty-maven-plugin</artifactId>
-                    <version>3.7.1</version>
+                    <version>3.10.2</version>
                     <configuration>
                         <copyDependencies>
                             <dependencyGroup>
@@ -69,7 +69,7 @@
                                 <dependency>
                                     <groupId>org.postgresql</groupId>
                                     <artifactId>postgresql</artifactId>
-                                    <version>42.3.1</version>
+                                    <version>42.7.3</version>
                                 </dependency>
                             </dependencyGroup>
                         </copyDependencies>
@@ -86,4 +86,3 @@
         </plugins>
     </build>
 </project>
-
