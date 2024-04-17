@@ -10,6 +10,7 @@
         <feature>messagingClient-3.0</feature>
         <feature>enterpriseBeansLite-4.0</feature>
         <feature>mdb-4.0</feature>
+        <feature>mpOpenAPI-3.1</feature>
     </featureManager>
 
     <variable name="command.jms.address" defaultValue="localhost:7276"/>
@@ -19,19 +20,27 @@
     <webApplication contextRoot="/" location="guide-jms-cqrs-inventory.war"/>
 
     <resourceAdapter id="wmqjmsra" location="https://repo.maven.apache.org/maven2/com/ibm/mq/wmq.jakarta.jmsra/9.3.5.0/wmq.jakarta.jmsra-9.3.5.0.rar" />
-    <authData id="mqauthid" user="mqm" password="passw0rd"/>
+    <authData id="mqauthid" user="app" password="passw0rd"/>
+    <authData id="mqauthid2" user="admin" password="passw0rd"/>
+
  
     <!-- Command queue -->
     <connectionManager id="CommandCM" maxPoolSize="400" minPoolSize="1"/>
 
     <jmsQueueConnectionFactory
         connectionManagerRef="CommandCM"
-        jndiName="CommandQueueConnectionFactory">
-        <properties.wmqjmsra/>
+        jndiName="CommandQueueConnectionFactory"
+        containerAuthDataRef="mqauthid2">
+        <properties.wmqjmsra
+            channel="DEV.APP.SVRCONN"
+            hostName="${ibmmq-hostname}" 
+            port="1414"
+            queueManager="QM1"
+            transportType="CLIENT" />
     </jmsQueueConnectionFactory>
 
     <jmsQueue id="CommandQueue" jndiName="jms/CommandQueue">
-        <properties.wmqjmsra baseQueueName="CommandQueue"/>
+        <properties.wmqjmsra baseQueueName="DEV.QUEUE.1"/>
     </jmsQueue>
     
     <!-- Cache queue -->
@@ -43,13 +52,13 @@
     </jmsQueueConnectionFactory>
 
     <jmsQueue id="CacheQueue" jndiName="jms/CacheQueue">
-        <properties.wmqjmsra baseQueueName="CacheQueue"/>
+        <properties.wmqjmsra baseQueueName="DEV.QUEUE.2"/>
     </jmsQueue>
 
     <jmsActivationSpec id="guide-jms-cqrs-inventory/CacheListener" authDataRef="mqauthid">
         <properties.wmqjmsra
             channel="DEV.APP.SVRCONN"
-            hostName="gkwan-redhat1.fyre.ibm.com" 
+            hostName="${ibmmq-hostname}" 
             port="1414"
             queueManager="QM1"
             transportType="CLIENT"

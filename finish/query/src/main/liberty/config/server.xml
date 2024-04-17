@@ -35,25 +35,33 @@
     </dataSource>
 
     <resourceAdapter id="wmqjmsra" location="https://repo.maven.apache.org/maven2/com/ibm/mq/wmq.jakarta.jmsra/9.3.5.0/wmq.jakarta.jmsra-9.3.5.0.rar" />
-    <authData id="mqauthid" user="admin" password="passw0rd"/>
+    <authData id="mqauthid" user="app" password="passw0rd"/>
+    <authData id="mqauthid2" user="admin" password="passw0rd"/>
 
     <!-- Query queue -->
     <connectionManager id="QueryCM" maxPoolSize="400" minPoolSize="1"/>
 
-    <jmsQueueConnectionFactory connectionManagerRef="QueryCM"
-                               jndiName="QueryQueueConnectionFactory">
-        <properties.wmqjmsra/>
+    <jmsQueueConnectionFactory
+        connectionManagerRef="QueryCM"
+        jndiName="QueryQueueConnectionFactory"
+        containerAuthDataRef="mqauthid2">
+        <properties.wmqjmsra
+            channel="DEV.APP.SVRCONN"
+            hostName="${ibmmq-hostname}" 
+            port="1414"
+            queueManager="QM1"
+            transportType="CLIENT" />
     </jmsQueueConnectionFactory>
 
     <jmsQueue id="QueryQueue" jndiName="jms/QueryQueue">
-        <properties.wmqjmsra baseQueueName="QueryQueue"/>
+        <properties.wmqjmsra baseQueueName="DEV.QUEUE.3"/>
     </jmsQueue>
 
     <jmsActivationSpec id="guide-jms-cqrs-query/QueryListener" authDataRef="mqauthid">
         <properties.wmqjmsra
             channel="DEV.APP.SVRCONN"
-            hostName="gkwan-redhat1.fyre.ibm.com" 
-            port="9443"
+            hostName="${ibmmq-hostname}" 
+            port="1414"
             queueManager="QM1"
             transportType="CLIENT"
             destinationRef="QueryQueue"
@@ -71,7 +79,7 @@
     </jmsQueueConnectionFactory>
 
     <jmsQueue id="CacheQueue" jndiName="jms/CacheQueue">
-        <properties.wmqjmsra baseQueueName="CacheQueue"/>
+        <properties.wmqjmsra baseQueueName="DEV.QUEUE.2"/>
     </jmsQueue>
 
     <logging consoleLogLevel="INFO"/>
