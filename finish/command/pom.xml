@@ -13,7 +13,7 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <liberty.var.ibmmq-username>localhost</liberty.var.ibmmq-username>
+        <liberty.var.ibmmq-hostname>localhost</liberty.var.ibmmq-hostname>
     </properties>
 
     <dependencies>
