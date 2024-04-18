@@ -12,17 +12,10 @@
 package io.openliberty.guides.inventory;
 
 import java.util.List;
-import java.util.logging.Logger;
 
-import io.openliberty.guides.system.model.CQMessage;
 import io.openliberty.guides.system.model.SystemData;
-import jakarta.annotation.Resource;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.jms.JMSConnectionFactory;
-import jakarta.jms.JMSContext;
-import jakarta.jms.JMSProducer;
-import jakarta.jms.Queue;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -39,17 +32,11 @@ import jakarta.ws.rs.core.Response;
 @Path("/systems")
 public class SystemResource {
 
-    private static Logger logger = Logger.getLogger(SystemResource.class.getName());
-
     @Inject
     Inventory inventory;
 
     @Inject
-    @JMSConnectionFactory("CommandQueueConnectionFactory")
-    private JMSContext jmsContext;
-
-    @Resource(lookup = "jms/CommandQueue")
-    private Queue commandQueue;
+    MessageProducer producer;
 
     @GET
     @Path("/")
@@ -79,7 +66,7 @@ public class SystemResource {
             return fail(hostname + " already exists.");
         }
         SystemData s = new SystemData(hostname, osName, javaVersion, heapSize);
-        sendMessageToCommandQueue("add", s);
+        producer.sendMessage("add", s);
         return success("submitted to add " + hostname + ".");
     }
 
@@ -99,7 +86,7 @@ public class SystemResource {
         }
         SystemData s = new SystemData(hostname, osName, javaVersion, heapSize);
         s.setId(system.getId());
-        sendMessageToCommandQueue("update", s);
+        producer.sendMessage("update", s);
         return success("submitted to update " + hostname + ".");
     }
 
@@ -112,7 +99,7 @@ public class SystemResource {
         if (system == null) {
             return fail(hostname + " does not exists.");
         }
-        sendMessageToCommandQueue("remove", system);
+        producer.sendMessage("remove", system);
         return success("submitted to remove " + hostname + ".");
     }
 
@@ -126,14 +113,4 @@ public class SystemResource {
                        .build();
     }
 
-    private void sendMessageToCommandQueue(String action, SystemData system) {
-        JMSProducer producer = jmsContext.createProducer();
-        if (commandQueue == null) {
-            logger.warning("CommandQueue is null.");
-        } else {
-            String message = new CQMessage(action, system).toString();
-            producer.send(commandQueue, message);
-            logger.info("Sent message to CommandQueue: " + message);
-        }
-    }
 }

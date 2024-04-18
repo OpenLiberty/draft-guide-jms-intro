@@ -43,21 +43,6 @@
     </jmsQueue>
     
     <!-- Cache queue -->
-    <connectionManager id="CacheCM" maxPoolSize="400" minPoolSize="1"/>
-
-    <jmsQueueConnectionFactory
-        connectionManagerRef="CacheCM"
-        jndiName="CacheQueueConnectionFactory">
-        <properties.wmqjmsra
-            hostName="${ibmmq-hostname}" 
-            port="${ibmmq-port}"
-            channel="${ibmmq-channel}"
-            queueManager="${ibmmq-queue-manager}"
-            userName="${ibmmq-username}"
-            password="${ibmmq-password}"
-            transportType="CLIENT" />
-    </jmsQueueConnectionFactory>
-
     <jmsQueue id="CacheQueue" jndiName="jms/CacheQueue">
         <properties.wmqjmsra baseQueueName="${ibmmq-cache-queue-name}"/>
     </jmsQueue>

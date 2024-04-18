@@ -14,15 +14,9 @@ package io.openliberty.guides.cqrs.command;
 import java.util.List;
 import java.util.logging.Logger;
 
-import io.openliberty.guides.system.model.CQMessage;
 import io.openliberty.guides.system.model.SystemData;
-import jakarta.annotation.Resource;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.jms.JMSConnectionFactory;
-import jakarta.jms.JMSContext;
-import jakarta.jms.JMSProducer;
-import jakarta.jms.Queue;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
@@ -35,20 +29,18 @@ public class CommandService {
     private EntityManager em;
 
     @Inject
-    @JMSConnectionFactory("QueryQueueConnectionFactory")
-    private JMSContext jmsContext;
-
-    @Resource(lookup = "jms/QueryQueue")
-    private Queue queryQueue;
+    MessageProducer producer;
 
     public void add(SystemData system) {
         em.persist(system);
-        sendMessageToQueryQueue("add", system);
+        producer.sendMessage("add", system);
     }
 
     public void update(SystemData system) {
-        em.merge(system);
-        sendMessageToQueryQueue("update", system);
+        SystemData updated = em.merge(system);
+        producer.sendMessage("update", system);
+        logger.info("Before: " + system.toString());
+        logger.info("updated: " + updated.toString());
     }
 
     public void remove(SystemData system) {
@@ -59,7 +51,7 @@ public class CommandService {
         } else {
             em.remove(s);
         }
-        sendMessageToQueryQueue("remove", system);
+        producer.sendMessage("remove", system);
     }
 
     public SystemData getSystem(String hostname) {
@@ -69,16 +61,4 @@ public class CommandService {
               .getResultList();
         return systems == null || systems.isEmpty() ? null : systems.get(0);
     }
-
-    private void sendMessageToQueryQueue(String action, SystemData system) {
-        JMSProducer producer = jmsContext.createProducer();
-        if (queryQueue == null) {
-            logger.warning("QueryQueue is null.");
-        } else {
-            String message = new CQMessage(action, system).toString();
-            producer.send(queryQueue, message);
-            logger.info("Sent message to QueryQueue: " + message);
-        }
-    }
-
 }

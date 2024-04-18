@@ -38,21 +38,6 @@
     <authData id="mqauthid" user="app" password="passw0rd"/>
 
     <!-- Query queue -->
-    <connectionManager id="QueryCM" maxPoolSize="400" minPoolSize="1"/>
-
-    <jmsQueueConnectionFactory
-        connectionManagerRef="QueryCM"
-        jndiName="QueryQueueConnectionFactory">
-        <properties.wmqjmsra
-            hostName="${ibmmq-hostname}" 
-            port="${ibmmq-port}"
-            channel="${ibmmq-channel}"
-            queueManager="${ibmmq-queue-manager}"
-            userName="${ibmmq-username}"
-            password="${ibmmq-password}"
-            transportType="CLIENT" />
-    </jmsQueueConnectionFactory>
-
     <jmsQueue id="QueryQueue" jndiName="jms/QueryQueue">
         <properties.wmqjmsra baseQueueName="${ibmmq-query-queue-name}"/>
     </jmsQueue>

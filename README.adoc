@@ -58,6 +58,11 @@ Put
 curl -X PUT 'http://localhost:9080/inventory/systems/localhost?heapSize=2000&javaVersion=21&osName=Linux'
 ```
 
+Delete
+```
+curl -X DELETE 'http://localhost:9080/inventory/systems/localhost'
+```
+
 Tear Down
 ```
 docker stop QM1

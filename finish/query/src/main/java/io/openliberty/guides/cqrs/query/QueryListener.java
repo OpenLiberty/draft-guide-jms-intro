@@ -15,15 +15,10 @@ import java.util.logging.Logger;
 
 import io.openliberty.guides.system.model.CQMessage;
 import io.openliberty.guides.system.model.SystemData;
-import jakarta.annotation.Resource;
 import jakarta.ejb.MessageDriven;
 import jakarta.inject.Inject;
-import jakarta.jms.JMSConnectionFactory;
-import jakarta.jms.JMSContext;
-import jakarta.jms.JMSProducer;
 import jakarta.jms.Message;
 import jakarta.jms.MessageListener;
-import jakarta.jms.Queue;
 import jakarta.jms.TextMessage;
 
 @MessageDriven(mappedName="jms/QueryQueue")
@@ -35,11 +30,7 @@ public class QueryListener implements MessageListener {
     QueryService queryService;
 
     @Inject
-    @JMSConnectionFactory("CacheQueueConnectionFactory")
-    private JMSContext jmsContext;
-    
-    @Resource(lookup = "jms/CacheQueue")
-    private Queue cacheQueue;
+    MessageProducer producer;
 
     @Override
     public void onMessage(Message message) {
@@ -51,28 +42,20 @@ public class QueryListener implements MessageListener {
                 SystemData system = writeMessage.getSystemData();
                 String action = writeMessage.getAction();
                 if (action.equalsIgnoreCase("remove")) {
-                    sendMessageToCacheQueue(action, system);
+                	producer.sendMessage(action, system);
                 } else {
                     String hostname = system.getHostname();
                     SystemData s = queryService.getSystem(hostname);
-                    sendMessageToCacheQueue(action, s);
+                    producer.sendMessage(action, s);
+                    logger.info("from message: " + system.toString());
+                    logger.info("new get: " + s.toString());
+
                 }
             } else {
                 logger.warning("QueryQueue received a non-text message: " + message);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-        }
-    }
-
-    private void sendMessageToCacheQueue(String action, SystemData system) {
-        JMSProducer producer = jmsContext.createProducer();
-        if (cacheQueue == null) {
-            logger.warning("CacheQueue is null");
-        } else {
-            String message = new CQMessage(action, system).toString();
-            producer.send(cacheQueue, message);
-            logger.info("Sent message to CacheQueue: " + message);
         }
     }
 }
