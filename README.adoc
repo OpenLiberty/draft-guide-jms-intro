@@ -1,4 +1,4 @@
-# draft-guide-jms-cqrs
+# draft-guide-ibmmq-jms-cqrs
 
 Command query responsibility segregation (CQRS) microservices architectures
 
