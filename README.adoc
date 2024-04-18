@@ -20,6 +20,14 @@ docker run \
 ```
 
 Navigate to the finish directory.
+```
+cd finish
+```
+
+Start the database
+```
+./scripts/startPostgres.sh
+```
 
 Build and install the models
 ```
