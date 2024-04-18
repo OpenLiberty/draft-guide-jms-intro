@@ -76,3 +76,8 @@ Tear Down
 docker stop QM1
 docker volume remove qm1data
 ```
+
+## Issues
+- update not work well. Databse seems not picking up the update
+- load inventory to cache when starting the inventory
+- reduce the cache if possible
