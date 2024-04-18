@@ -13,7 +13,15 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <liberty.var.ibmmq-hostname>localhost</liberty.var.ibmmq-hostname>
+        <liberty.var.ibmmq-hostname>gkwan-redhat1.fyre.ibm.com</liberty.var.ibmmq-hostname>
+        <liberty.var.ibmmq-port>1414</liberty.var.ibmmq-port>
+        <liberty.var.ibmmq-channel>DEV.APP.SVRCONN</liberty.var.ibmmq-channel>
+        <liberty.var.ibmmq-queue-manager>QM1</liberty.var.ibmmq-queue-manager>
+        <liberty.var.ibmmq-username>app</liberty.var.ibmmq-username>
+        <liberty.var.ibmmq-password>passw0rd</liberty.var.ibmmq-password>
+        <liberty.var.ibmmq-command-queue-name>DEV.QUEUE.1</liberty.var.ibmmq-command-queue-name>
+        <liberty.var.ibmmq-cache-queue-name>DEV.QUEUE.2</liberty.var.ibmmq-cache-queue-name>
+        <liberty.var.ibmmq-query-queue-name>DEV.QUEUE.3</liberty.var.ibmmq-query-queue-name>
     </properties>
 
     <dependencies>

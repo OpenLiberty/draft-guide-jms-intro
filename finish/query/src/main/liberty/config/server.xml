@@ -36,33 +36,35 @@
 
     <resourceAdapter id="wmqjmsra" location="https://repo.maven.apache.org/maven2/com/ibm/mq/wmq.jakarta.jmsra/9.3.5.0/wmq.jakarta.jmsra-9.3.5.0.rar" />
     <authData id="mqauthid" user="app" password="passw0rd"/>
-    <authData id="mqauthid2" user="admin" password="passw0rd"/>
 
     <!-- Query queue -->
     <connectionManager id="QueryCM" maxPoolSize="400" minPoolSize="1"/>
 
     <jmsQueueConnectionFactory
         connectionManagerRef="QueryCM"
-        jndiName="QueryQueueConnectionFactory"
-        containerAuthDataRef="mqauthid2">
+        jndiName="QueryQueueConnectionFactory">
         <properties.wmqjmsra
-            channel="DEV.APP.SVRCONN"
             hostName="${ibmmq-hostname}" 
-            port="1414"
-            queueManager="QM1"
+            port="${ibmmq-port}"
+            channel="${ibmmq-channel}"
+            queueManager="${ibmmq-queue-manager}"
+            userName="${ibmmq-username}"
+            password="${ibmmq-password}"
             transportType="CLIENT" />
     </jmsQueueConnectionFactory>
 
     <jmsQueue id="QueryQueue" jndiName="jms/QueryQueue">
-        <properties.wmqjmsra baseQueueName="DEV.QUEUE.3"/>
+        <properties.wmqjmsra baseQueueName="${ibmmq-query-queue-name}"/>
     </jmsQueue>
 
-    <jmsActivationSpec id="guide-jms-cqrs-query/QueryListener" authDataRef="mqauthid">
+    <jmsActivationSpec id="guide-jms-cqrs-query/QueryListener">
         <properties.wmqjmsra
-            channel="DEV.APP.SVRCONN"
             hostName="${ibmmq-hostname}" 
-            port="1414"
-            queueManager="QM1"
+            port="${ibmmq-port}"
+            channel="${ibmmq-channel}"
+            queueManager="${ibmmq-queue-manager}"
+            userName="${ibmmq-username}"
+            password="${ibmmq-password}"
             transportType="CLIENT"
             destinationRef="QueryQueue"
             destinationType="jakarta.jms.Queue"
@@ -75,11 +77,18 @@
     <jmsQueueConnectionFactory
         connectionManagerRef="CacheCM"
         jndiName="CacheQueueConnectionFactory">
-        <properties.wmqjmsra/>
+        <properties.wmqjmsra
+            hostName="${ibmmq-hostname}" 
+            port="${ibmmq-port}"
+            channel="${ibmmq-channel}"
+            queueManager="${ibmmq-queue-manager}"
+            userName="${ibmmq-username}"
+            password="${ibmmq-password}"
+            transportType="CLIENT" />
     </jmsQueueConnectionFactory>
 
     <jmsQueue id="CacheQueue" jndiName="jms/CacheQueue">
-        <properties.wmqjmsra baseQueueName="DEV.QUEUE.2"/>
+        <properties.wmqjmsra baseQueueName="${ibmmq-cache-queue-name}"/>
     </jmsQueue>
 
     <logging consoleLogLevel="INFO"/>

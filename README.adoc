@@ -14,6 +14,7 @@ docker run \
   --publish 1414:1414 --publish 9443:9443 \
   --detach \
   --env MQ_APP_PASSWORD=passw0rd --env MQ_ADMIN_PASSWORD=passw0rd \
+  --rm \
   --name QM1 \
   icr.io/ibm-messaging/mq:latest
 ```
@@ -50,4 +51,15 @@ curl http://localhost:9080/inventory/systems
 Post
 ```
 curl -X POST 'http://localhost:9080/inventory/systems?heapSize=1000&hostname=localhost&javaVersion=17&osName=Linux'
+```
+
+Put
+```
+curl -X PUT 'http://localhost:9080/inventory/systems/localhost?heapSize=2000&javaVersion=21&osName=Linux'
+```
+
+Tear Down
+```
+docker stop QM1
+docker volume remove qm1data
 ```
