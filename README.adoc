@@ -72,6 +72,14 @@ curl -X DELETE 'http://localhost:9080/inventory/systems/localhost'
 ```
 
 Tear Down
+
+- stop all dev mode for the inventory, command, and query services
+- stop database
+```
+cd finish
+./scripts/stopPostgres.sh
+```
+- stop IBM MQ
 ```
 docker stop QM1
 docker volume remove qm1data
