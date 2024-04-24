@@ -49,26 +49,34 @@ Start `command` service in dev mode:
 mvn -pl command liberty:dev
 ```
 
-Visit http://localhost:9080/openapi/ui/ or run following commands
+Visit http://localhost:9080 or try out http://localhost:9080/openapi/ui/ or
 
 Get
 ```
-curl http://localhost:9080/inventory/systems
+curl http://localhost:9082/api/systems
 ```
 
 Post
 ```
-curl -X POST 'http://localhost:9080/inventory/systems?heapSize=1000&hostname=localhost&javaVersion=17&osName=Linux'
+curl -X POST \
+  http://localhost:9080/inventory/systems \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -d '{ "id": 0, "hostname": "host4", "osName": "Mac", "javaVersion": "17", "heapSize": 1200 }'
 ```
 
 Put
 ```
-curl -X PUT 'http://localhost:9080/inventory/systems/localhost?heapSize=2000&javaVersion=21&osName=Linux'
+curl -X PUT \
+  http://localhost:9080/inventory/systems/host4 \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -d '{ "id": 0, "hostname": "host4", "osName": "Mac", "javaVersion": "22", "heapSize": 1110 }'
 ```
 
 Delete
 ```
-curl -X DELETE 'http://localhost:9080/inventory/systems/localhost'
+curl -X DELETE http://localhost:9080/inventory/systems/host4
 ```
 
 Tear Down
