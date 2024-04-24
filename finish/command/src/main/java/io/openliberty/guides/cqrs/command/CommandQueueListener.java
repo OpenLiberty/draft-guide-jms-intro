@@ -9,7 +9,7 @@
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 // end::copyright[]
-package io.openliberty.guides.inventory;
+package io.openliberty.guides.cqrs.command;
 
 import java.util.logging.Logger;
 
@@ -20,13 +20,13 @@ import jakarta.jms.Message;
 import jakarta.jms.MessageListener;
 import jakarta.jms.TextMessage;
 
-@MessageDriven(mappedName="jms/CacheQueue")
-public class CacheListener implements MessageListener {
+@MessageDriven(mappedName="jms/CommandQueue")
+public class CommandQueueListener implements MessageListener {
 
-    private static Logger logger = Logger.getLogger(CacheListener.class.getName());
+    private static Logger logger = Logger.getLogger(CommandQueueListener.class.getName());
 
     @Inject
-    Inventory inventory;
+    CommandService commandService;
 
     @Override
     public void onMessage(Message message) {
@@ -34,20 +34,20 @@ public class CacheListener implements MessageListener {
         try {
             if (message instanceof TextMessage) {
                 TextMessage tm = (TextMessage) message;
-                logger.info("CacheQueue received message: "  + tm.getText());
+                logger.info("CommandQueue received message: " + tm.getText());
                 CQMessage cqMessage = CQMessage.fromJson(tm.getText());
                 String action = cqMessage.getAction();
                 if (action.equalsIgnoreCase("add")) {
-                    inventory.add(cqMessage.getSystemData());
+                    commandService.add(cqMessage.getSystemData());
                 } else if (action.equalsIgnoreCase("update")) {
-                    inventory.update(cqMessage.getSystemData());
+                    commandService.update(cqMessage.getSystemData());
                 } else if (action.equalsIgnoreCase("remove")) {
-                    inventory.remove(cqMessage.getSystemData());
+                    commandService.remove(cqMessage.getSystemData());
                 } else {
-                    logger.warning("Unknown CacheQueue action: " + action);
+                    logger.warning("Unknown CommandQueue action: " + action);
                 }
             } else {
-                logger.warning("CacheQueue received a non-text message: " + message);
+                logger.warning("CommandQueue received a non-text message: " + message);
             }
         } catch (Exception ex) {
             ex.printStackTrace();

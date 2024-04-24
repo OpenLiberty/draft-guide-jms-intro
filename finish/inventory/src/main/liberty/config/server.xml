@@ -11,18 +11,20 @@
         <feature>enterpriseBeansLite-4.0</feature>
         <feature>mdb-4.0</feature>
         <feature>mpOpenAPI-3.1</feature>
+        <feature>mpRestClient-3.0</feature>
+        <feature>websocket-2.1</feature>
     </featureManager>
 
     <variable name="command.jms.address" defaultValue="localhost:7276"/>
 
-    <httpEndpoint id="defaultHttpEndpoint" httpPort="9080" httpsPort="9443"/>
+    <httpEndpoint id="defaultHttpEndpoint" host="*" httpPort="9080" httpsPort="9443"/>
 
     <webApplication contextRoot="/" location="guide-jms-cqrs-inventory.war"/>
 
     <resourceAdapter id="wmqjmsra" location="https://repo.maven.apache.org/maven2/com/ibm/mq/wmq.jakarta.jmsra/9.3.5.0/wmq.jakarta.jmsra-9.3.5.0.rar" />
     <authData id="mqauthid" user="${ibmmq-username}" password="${ibmmq-password}"/>
  
-    <!-- Command queue -->
+    <!-- send message to Command queue -->
     <connectionManager id="CommandCM" maxPoolSize="400" minPoolSize="1"/>
 
     <jmsQueueConnectionFactory
@@ -42,12 +44,12 @@
         <properties.wmqjmsra baseQueueName="${ibmmq-command-queue-name}"/>
     </jmsQueue>
     
-    <!-- Cache queue -->
-    <jmsQueue id="CacheQueue" jndiName="jms/CacheQueue">
-        <properties.wmqjmsra baseQueueName="${ibmmq-cache-queue-name}"/>
+    <!-- listen message from Refresh queue -->
+    <jmsQueue id="RefreshQueue" jndiName="jms/RefreshQueue">
+        <properties.wmqjmsra baseQueueName="${ibmmq-refresh-queue-name}"/>
     </jmsQueue>
 
-    <jmsActivationSpec id="guide-jms-cqrs-inventory/CacheListener">
+    <jmsActivationSpec id="guide-jms-cqrs-inventory/RefreshQueueListener">
         <properties.wmqjmsra
             hostName="${ibmmq-hostname}" 
             port="${ibmmq-port}"
@@ -56,10 +58,10 @@
             userName="${ibmmq-username}"
             password="${ibmmq-password}"
             transportType="CLIENT"
-            destinationRef="CacheQueue"
+            destinationRef="RefreshQueue"
             destinationType="jakarta.jms.Queue" />
     </jmsActivationSpec>
-
+      
     <logging consoleLogLevel="INFO"/>
 
 </server>

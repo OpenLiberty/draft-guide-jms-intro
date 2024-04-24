@@ -11,52 +11,28 @@
 // end::copyright[]
 package io.openliberty.guides.inventory;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
+import org.eclipse.microprofile.rest.client.inject.RestClient;
+
+import io.openliberty.guides.inventory.client.QueryClient;
 import io.openliberty.guides.system.model.SystemData;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 @ApplicationScoped
 public class Inventory {
 
-    private List<SystemData> systems = Collections.synchronizedList(new ArrayList<>());
+    @Inject
+    @RestClient
+    QueryClient queryClient;
 
     public List<SystemData> getSystems() {
-        return systems;
+        return queryClient.getSystems();
     }
 
     public SystemData getSystem(String hostname) {
-        for (SystemData s : systems) {
-            if (s.getHostname().equalsIgnoreCase(hostname)) {
-                return s;
-            }
-        }
-        return null;
+        return queryClient.getSystem(hostname);
     }
-
-    public void add(SystemData s) throws Exception {
-        for (SystemData system : systems) {
-            if (system.getHostname().equalsIgnoreCase(s.getHostname())) {
-                systems.remove(system);
-            }
-        }
-        systems.add(s);
-    }
-
-    public void update(SystemData s) throws Exception {
-        for (SystemData system : systems) {
-            if (system.getHostname().equalsIgnoreCase(s.getHostname())) {
-                system.setOsName(s.getOsName());
-                system.setJavaVersion(s.getJavaVersion());
-                system.setHeapSize(s.getHeapSize());
-            }
-        }
-    }
-
-    public void remove(SystemData s) throws Exception {
-    	systems.remove(s);
-    }
-
+    
 }

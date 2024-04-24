@@ -29,32 +29,41 @@ public class CommandService {
     private EntityManager em;
 
     @Inject
-    MessageProducer producer;
+    RefreshQueueMessageProducer producer;
 
     public void add(SystemData system) {
-        em.persist(system);
-        producer.sendMessage("add", system);
+        String hostname = system.getHostname();
+        if (getSystem(hostname) == null) {
+            em.persist(system);
+            producer.sendMessage("add", system);
+        } else {
+            logger.warning(hostname + " exists." );
+        }
     }
 
     public void update(SystemData system) {
-        SystemData updated = em.merge(system);
-        producer.sendMessage("update", system);
-        logger.info("Before: " + system.toString());
-        logger.info("updated: " + updated.toString());
+        String hostname = system.getHostname();
+        SystemData s = getSystem(hostname);
+        if (s == null) {
+            logger.warning(hostname + " does not exists to update." );
+        } else {
+            SystemData updated = em.merge(system);
+            producer.sendMessage("update", updated);
+        }
     }
 
     public void remove(SystemData system) {
         String hostname = system.getHostname();
         SystemData s = getSystem(hostname);
         if (s == null) {
-            logger.warning(hostname + " does not exists." );
+            logger.warning(hostname + " does not exists to remove." );
         } else {
             em.remove(s);
         }
         producer.sendMessage("remove", system);
     }
 
-    public SystemData getSystem(String hostname) {
+    private SystemData getSystem(String hostname) {
         List<SystemData> systems =
             em.createNamedQuery("SystemData.findSystem", SystemData.class)
               .setParameter("hostname", hostname)

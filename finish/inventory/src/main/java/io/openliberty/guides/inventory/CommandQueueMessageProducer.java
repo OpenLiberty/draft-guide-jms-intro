@@ -23,21 +23,21 @@ import jakarta.jms.JMSContext;
 import jakarta.jms.Queue;
 
 @Stateless
-public class MessageProducer {
+public class CommandQueueMessageProducer {
 
-      private static Logger logger = Logger.getLogger(MessageProducer.class.getName());
+      private static Logger logger = Logger.getLogger(CommandQueueMessageProducer.class.getName());
 
-	  @Inject
-	  @JMSConnectionFactory("CommandQueueConnectionFactory")
-	  JMSContext context;
+      @Inject
+      @JMSConnectionFactory("CommandQueueConnectionFactory")
+      JMSContext context;
 
-	  @Resource(lookup = "jms/CommandQueue")
-	  Queue queue;
+      @Resource(lookup = "jms/CommandQueue")
+      Queue queue;
 
-	  public void sendMessage(String action, SystemData system) {
-		  String message = new CQMessage(action, system).toString();
-	      context.createProducer().send(queue, message);
+      public void sendMessage(String action, SystemData system) {
+          String message = new CQMessage(action, system).toString();
+          context.createProducer().send(queue, message);
           logger.info("Sent message to CommandQueue: " + message);
-	  }
+      }
 
 }

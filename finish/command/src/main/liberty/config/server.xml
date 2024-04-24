@@ -15,7 +15,6 @@
 
     <variable name="postgres.hostname" defaultValue="localhost" />
     <variable name="postgres.portnum"  defaultValue="5432" />
-    <variable name="query.jms.address" defaultValue="localhost:7277"/>
 
     <httpEndpoint id="defaultHttpEndpoint" httpPort="9081" httpsPort="9444"/>
 
@@ -35,14 +34,13 @@
     </dataSource>
 
     <resourceAdapter id="wmqjmsra" location="https://repo.maven.apache.org/maven2/com/ibm/mq/wmq.jakarta.jmsra/9.3.5.0/wmq.jakarta.jmsra-9.3.5.0.rar" />
-    <authData id="mqauthid" user="app" password="passw0rd"/>
     
-    <!-- Command Queue -->
+    <!-- Listen message from Command Queue -->
     <jmsQueue id="CommandQueue" jndiName="jms/CommandQueue">
         <properties.wmqjmsra baseQueueName="${ibmmq-command-queue-name}"/>
     </jmsQueue>
 
-    <jmsActivationSpec id="guide-jms-cqrs-command/CommandListener">
+    <jmsActivationSpec id="guide-jms-cqrs-command/CommandQueueListener">
         <properties.wmqjmsra
             hostName="${ibmmq-hostname}" 
             port="${ibmmq-port}"
@@ -56,12 +54,12 @@
             />
     </jmsActivationSpec>
 
-    <!-- Query Queue -->
-    <connectionManager id="QueryCM" maxPoolSize="400" minPoolSize="1"/>
+    <!-- Send message to Refresh Queue -->
+    <connectionManager id="RefreshCM" maxPoolSize="400" minPoolSize="1"/>
 
     <jmsQueueConnectionFactory 
-        connectionManagerRef="QueryCM"
-        jndiName="QueryQueueConnectionFactory">
+        connectionManagerRef="RefreshCM"
+        jndiName="RefreshQueueConnectionFactory">
         <properties.wmqjmsra
             hostName="${ibmmq-hostname}" 
             port="${ibmmq-port}"
@@ -72,8 +70,8 @@
             transportType="CLIENT" />
     </jmsQueueConnectionFactory>
 
-    <jmsQueue id="QueryQueue" jndiName="jms/QueryQueue">
-        <properties.wmqjmsra baseQueueName="${ibmmq-query-queue-name}"/>
+    <jmsQueue id="RefreshQueue" jndiName="jms/RefreshQueue">
+        <properties.wmqjmsra baseQueueName="${ibmmq-refresh-queue-name}"/>
     </jmsQueue>
 
     <logging consoleLogLevel="INFO"/>

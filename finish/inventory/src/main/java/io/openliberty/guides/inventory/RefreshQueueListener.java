@@ -9,7 +9,7 @@
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 // end::copyright[]
-package io.openliberty.guides.cqrs.command;
+package io.openliberty.guides.inventory;
 
 import java.util.logging.Logger;
 
@@ -20,13 +20,13 @@ import jakarta.jms.Message;
 import jakarta.jms.MessageListener;
 import jakarta.jms.TextMessage;
 
-@MessageDriven(mappedName="jms/CommandQueue")
-public class CommandListener implements MessageListener {
+@MessageDriven(mappedName="jms/RefreshQueue")
+public class RefreshQueueListener implements MessageListener {
 
-    private static Logger logger = Logger.getLogger(CommandListener.class.getName());
+    private static Logger logger = Logger.getLogger(RefreshQueueListener.class.getName());
 
     @Inject
-    CommandService commandService;
+    Inventory inventory;
 
     @Override
     public void onMessage(Message message) {
@@ -34,20 +34,18 @@ public class CommandListener implements MessageListener {
         try {
             if (message instanceof TextMessage) {
                 TextMessage tm = (TextMessage) message;
-                logger.info("CommandQueue received message: " + tm.getText());
+                logger.info("RefreshQueue received message: "  + tm.getText());
                 CQMessage cqMessage = CQMessage.fromJson(tm.getText());
                 String action = cqMessage.getAction();
-                if (action.equalsIgnoreCase("add")) {
-                    commandService.add(cqMessage.getSystemData());
-                } else if (action.equalsIgnoreCase("update")) {
-                    commandService.update(cqMessage.getSystemData());
-                } else if (action.equalsIgnoreCase("remove")) {
-                    commandService.remove(cqMessage.getSystemData());
+                if (action.equalsIgnoreCase("add") ||
+                    action.equalsIgnoreCase("update") ||
+                    action.equalsIgnoreCase("remove")) {
+                    BoardcastService.refreshAllSessions(inventory.getSystems());
                 } else {
-                    logger.warning("Unknown CommandQueue action: " + action);
+                    logger.warning("Unknown RefreshQueue action: " + action);
                 }
             } else {
-                logger.warning("CommandQueue received a non-text message: " + message);
+                logger.warning("RefreshQueue received a non-text message: " + message);
             }
         } catch (Exception ex) {
             ex.printStackTrace();

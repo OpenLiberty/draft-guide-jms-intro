@@ -20,8 +20,7 @@
         <liberty.var.ibmmq-username>app</liberty.var.ibmmq-username>
         <liberty.var.ibmmq-password>passw0rd</liberty.var.ibmmq-password>
         <liberty.var.ibmmq-command-queue-name>DEV.QUEUE.1</liberty.var.ibmmq-command-queue-name>
-        <liberty.var.ibmmq-cache-queue-name>DEV.QUEUE.2</liberty.var.ibmmq-cache-queue-name>
-        <liberty.var.ibmmq-query-queue-name>DEV.QUEUE.3</liberty.var.ibmmq-query-queue-name>
+        <liberty.var.ibmmq-refresh-queue-name>DEV.QUEUE.2</liberty.var.ibmmq-refresh-queue-name>
     </properties>
 
     <dependencies>

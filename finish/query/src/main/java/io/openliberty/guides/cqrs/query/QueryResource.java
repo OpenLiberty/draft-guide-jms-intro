@@ -13,32 +13,35 @@ package io.openliberty.guides.cqrs.query;
 
 import java.util.List;
 
-import org.eclipse.persistence.config.QueryHints;
-
 import io.openliberty.guides.system.model.SystemData;
+
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
 
 @ApplicationScoped
-public class QueryService {
-
-    @PersistenceContext(name = "jpa-unit")
-    private EntityManager em;
-
+@Path("/systems")
+public class QueryResource {
+    
+    @Inject
+    QueryService queryService;
+    
+    @GET
+    @Path("/")
+    @Produces(MediaType.APPLICATION_JSON)
     public List<SystemData> getSystems() {
-        return em.createNamedQuery("SystemData.findAll", SystemData.class)
-                 .setHint(QueryHints.REFRESH, true)
-                 .getResultList();
+        return queryService.getSystems();
     }
 
-    public SystemData getSystem(String hostname) {
-        List<SystemData> systems =
-            em.createNamedQuery("SystemData.findSystem", SystemData.class)
-              .setParameter("hostname", hostname)
-              .setHint(QueryHints.REFRESH, true)
-              .getResultList();
-        return systems == null || systems.isEmpty() ? null : systems.get(0);
+    @GET
+    @Path("/{hostname}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public SystemData getSystem(@PathParam("hostname") String hostname) {
+        return queryService.getSystem(hostname);
     }
 
 }

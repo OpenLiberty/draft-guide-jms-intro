@@ -11,82 +11,58 @@
 // end::copyright[]
 package io.openliberty.guides.inventory;
 
-import java.util.List;
-
 import io.openliberty.guides.system.model.SystemData;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
-import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 @ApplicationScoped
 @Path("/systems")
-public class SystemResource {
+public class SystemsResource {
 
+    @Inject
+    CommandQueueMessageProducer producer;
+    
     @Inject
     Inventory inventory;
 
-    @Inject
-    MessageProducer producer;
-
-    @GET
-    @Path("/")
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<SystemData> listContents() {
-        return inventory.getSystems();
-    }
-
-    @GET
-    @Path("/{hostname}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public SystemData getSystem(@PathParam("hostname") String hostname) {
-        return inventory.getSystem(hostname);
-    }
-
     @POST
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response addSystem(
-        @QueryParam("hostname") String hostname,
-        @QueryParam("osName") String osName,
-        @QueryParam("javaVersion") String javaVersion,
-        @QueryParam("heapSize") Long heapSize) {
-
+    public Response addSystem(SystemData s) {
+        String hostname = s.getHostname();
         SystemData system = inventory.getSystem(hostname);
         if (system != null) {
             return fail(hostname + " already exists.");
         }
-        SystemData s = new SystemData(hostname, osName, javaVersion, heapSize);
         producer.sendMessage("add", s);
-        return success("submitted to add " + hostname + ".");
+        return success("submitted to add " + s.getHostname() + ".");
     }
 
     @PUT
     @Path("/{hostname}")
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateSystem(
         @PathParam("hostname") String hostname,
-        @QueryParam("osName") String osName,
-        @QueryParam("javaVersion") String javaVersion,
-        @QueryParam("heapSize") Long heapSize) {
+        SystemData s) {
 
         SystemData system = inventory.getSystem(hostname);
         if (system == null) {
             return fail(hostname + " does not exists.");
         }
-        SystemData s = new SystemData(hostname, osName, javaVersion, heapSize);
-        s.setId(system.getId());
-        producer.sendMessage("update", s);
+        system.setOsName(s.getOsName());
+        system.setJavaVersion(s.getJavaVersion());
+        system.setHeapSize(s.getHeapSize());
+        producer.sendMessage("update", system);
         return success("submitted to update " + hostname + ".");
     }
 
@@ -94,7 +70,6 @@ public class SystemResource {
     @Path("/{hostname}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response removeSystem(@PathParam("hostname") String hostname) {
-
         SystemData system = inventory.getSystem(hostname);
         if (system == null) {
             return fail(hostname + " does not exists.");

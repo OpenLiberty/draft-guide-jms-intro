@@ -1,0 +1,111 @@
+<!--
+  Copyright (c) 2024 IBM Corp.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<!DOCTYPE html>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<html lang="en">
+ <head>
+  <title>Inventory</title>
+  <script type="text/javascript" src="js/inventory.js"></script>
+  <link href="https://fonts.googleapis.com/css?family=Asap" rel="stylesheet">
+  <link rel="stylesheet" href="css/inventory.css">
+  <link rel="stylesheet" href="css/toast.css">
+ </head>
+ <body>
+  <section id="appIntro" role="main">
+   <div id="titleSection">
+    <h1 id="appTitle">Inventory</h1>
+    <div class="line"></div>
+    <div class="headerImage"></div>
+   </div>
+   <div id="systemsContainer" class="hFlexContainer">
+    <form id="systemCreation" class="vFlexContainer">
+     <h4 id="createSystem" class="flexSelfCenter">Register a system</h4>
+     <div id="hostname" class="vFlexContainer inputLine">
+      <label for="systemHostname">Hostname</label>
+      <input id="systemHostname" class="textBox" type="text">
+     </div>
+     <div id="os" class="vFlexContainer inputLine">
+      <label for="systemOSName">OS</label>
+      <input id="systemOSName" class="textBox" type="text">
+     </div>
+     <div id="javaVersion" class="vFlexContainer inputLine">
+      <label for="systemJavaVersion">Java version</label>
+      <select id="systemJavaVersion">
+       <option>11</option>
+       <option>17</option>
+       <option>21</option>
+       <option>22</option>
+      </select>
+     </div>
+     <div id="heapSize" class="vFlexContainer inputLine">
+      <label for="systemHeapSize">Heap size</label>
+      <input id="systemHeapSize" class="textBox" type="text">
+     </div>
+     <button type="submit" class="button" onclick="addSystem(event)">Add</button>
+    </form>
+    <div id="systemDisplay" class="vFlexContainer">
+     <h4 id="systems" class="flexSelfCenter">Systems</h4>
+     <div id="clickToEdit" class="flexSelfCenter">(click to edit)</div>
+     <div id="systemBoxes" class="flexBox hFlexContainer">
+     </div>
+    </div>
+    <form id="systemUpdate" class="hidden vFlexContainer">
+     <h4 id="updateSystem" class="flexSelfCenter">Update a system</h4>
+     <div id="newHostname" class="vFlexContainer inputLine">
+      <label for="updateSystemHostname">Hostname</label>
+      <input id="updateSystemHostname" class="textBox" type="text" disabled>
+     </div>
+     <div id="newOSName" class="vFlexContainer inputLine">
+      <label for="updateSystemOSName">OS</label>
+      <input id="updateSystemOSName" class="textBox" type="text">
+     </div>
+     <div id="newJavaVersion" class="vFlexContainer inputLine">
+      <label for="updateSystemJavaVersion">Java version</label>
+      <select id="updateSystemJavaVersion">
+       <option>11</option>
+       <option>17</option>
+       <option>21</option>
+       <option>22</option>
+      </select>
+     </div>
+     <div id="newHeapSize" class="vFlexContainer inputLine">
+      <label for="updateSystemHeapSize">Heap size in MB</label>
+      <input id="updateSystemHeapSize" class="textBox" type="text">
+     </div>
+     <button type="submit" class="button" onclick="updateSystem(event)">Update</button>
+    </form>
+   </div>
+   <div>
+   <br/>
+   <label id="status" class="status hidden">&nbsp;.&nbsp;.&nbsp;.&nbsp;</label>
+   <p/>
+   </div>
+  </section>
+  <footer class="bodyFooter">
+   <div class="bodyFooterLink">
+    <a id="licenseLink" href="https://github.com/OpenLiberty/open-liberty/blob/release/LICENSE">License</a>
+    <a href="https://github.com/OpenLiberty">GitHub</a>
+    <a href="https://openliberty.io/">openliberty.io</a>
+   </div>
+   <p id="footerText">an IBM open source project</p>
+   <p id="footerCopyright">&copy;Copyright IBM Corp. 2024</p>
+  </footer>
+  <div id="toast"></div>
+  <script>
+   refreshDisplay();
+  </script>
+ </body>
+</html>

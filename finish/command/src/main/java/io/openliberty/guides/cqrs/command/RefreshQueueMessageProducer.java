@@ -9,7 +9,7 @@
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 // end::copyright[]
-package io.openliberty.guides.cqrs.query;
+package io.openliberty.guides.cqrs.command;
 
 import java.util.logging.Logger;
 
@@ -23,21 +23,21 @@ import jakarta.jms.JMSContext;
 import jakarta.jms.Queue;
 
 @Stateless
-public class MessageProducer {
+public class RefreshQueueMessageProducer {
 
-      private static Logger logger = Logger.getLogger(MessageProducer.class.getName());
+      private static Logger logger = Logger.getLogger(RefreshQueueMessageProducer.class.getName());
 
-	  @Inject
-	  @JMSConnectionFactory("CacheQueueConnectionFactory")
-	  JMSContext context;
+      @Inject
+      @JMSConnectionFactory("RefreshQueueConnectionFactory")
+      JMSContext context;
 
-	  @Resource(lookup = "jms/CacheQueue")
-	  Queue queue;
+      @Resource(lookup = "jms/RefreshQueue")
+      Queue queue;
 
-	  public void sendMessage(String action, SystemData system) {
-		  String message = new CQMessage(action, system).toString();
-	      context.createProducer().send(queue, message);
-          logger.info("Sent message to CacheQueue: " + message);
-	  }
+      public void sendMessage(String action, SystemData system) {
+          String message = new CQMessage(action, system).toString();
+          context.createProducer().send(queue, message);
+          logger.info("Sent message to RefreshQueue: " + message);
+      }
 
 }
