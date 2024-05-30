@@ -22,9 +22,6 @@
 
     <webApplication contextRoot="/" location="guide-jms-cqrs-inventory.war"/>
 
-    <resourceAdapter id="wmqjmsra" location="https://repo.maven.apache.org/maven2/com/ibm/mq/wmq.jakarta.jmsra/9.3.5.0/wmq.jakarta.jmsra-9.3.5.0.rar" />
-    <authData id="mqauthid" user="${ibmmq-username}" password="${ibmmq-password}"/>
- 
     <!-- send message to Command queue -->
     <connectionManager id="CommandCM" maxPoolSize="400" minPoolSize="1"/>
 
