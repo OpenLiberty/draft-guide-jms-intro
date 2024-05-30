@@ -1,6 +1,26 @@
-# draft-guide-jms-cqrs
+// Copyright (c) 2024 IBM Corporation and others.
+// Licensed under Creative Commons Attribution-NoDerivatives
+// 4.0 International (CC BY-ND 4.0)
+//   https://creativecommons.org/licenses/by-nd/4.0/
+//
+// Contributors:
+//   IBM Corporation
+:projectid: jms-cqrs
+:page-layout: guide-multipane
+:page-duration: 30 minutes
+:page-releasedate: 2024-08-29
+:page-description: Learn how to use Jakarta Messaging in CQRS architectural application with Liberty Messaging Server, Liberty Messaging Server Client, and IBM MQ.
+:page-tags: ['microprofile', 'jakartaee']
+:page-permalink: /guides/{projectid}
+:imagesdir: /img/guide/{projectid}
+:page-related-guides: ['jpa-intro', 'jakarta-websocket']
+:common-includes: https://raw.githubusercontent.com/OpenLiberty/guides-common/prod
+:source-highlighter: prettify
+:page-seo-title: Implementing Command and Query Responsibility Segregation CQRS architectural application by using Jakarta Messaging
+:page-seo-description: A getting started tutorial with examples on how to implement an application with Command and Query Responsibility Segregation CQRS architectural pattern by using Jakarta Messaging with Liberty Messaging Server, Liberty Messaging Server Client, and IBM MQ.
+= Communication between services in CQRS architecture using Jakarta Messaging
 
-Command query responsibility segregation (CQRS) microservices architectures
+Learn how to use Jakarta Messaging in CQRS architectural application with Liberty Messaging Server, Liberty Messaging Server Client, and IBM MQ.
 
 Navigate to the finish directory.
 ```
