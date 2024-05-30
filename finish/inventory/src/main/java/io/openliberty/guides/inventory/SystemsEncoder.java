@@ -27,11 +27,11 @@ public class SystemsEncoder implements Encoder.Text<List<SystemData>> {
         for (SystemData s : systems) {
             builder.add(
                 Json.createObjectBuilder()
-                 .add("id", s.getId())
-                   .add("hostname", s.getHostname())
-                   .add("osName", s.getOsName())
-                   .add("javaVersion", s.getJavaVersion())
-                   .add("heapSize", s.getHeapSize())
+                    .add("id", s.getId())
+                    .add("hostname", s.getHostname())
+                    .add("osName", s.getOsName())
+                    .add("javaVersion", s.getJavaVersion())
+                    .add("heapSize", s.getHeapSize())
             );
         }
         return builder.build().toString();
