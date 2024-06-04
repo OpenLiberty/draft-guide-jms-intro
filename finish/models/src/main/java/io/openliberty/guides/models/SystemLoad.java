@@ -51,7 +51,7 @@ public class SystemLoad {
 
     @Override
     public String toString() {
-        return "CpuLoadAverage: " + JSONB.toJson(this);
+        return JSONB.toJson(this);
     }
     
     public static SystemLoad fromJson(String json) {
