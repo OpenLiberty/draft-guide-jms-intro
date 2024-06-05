@@ -18,10 +18,6 @@ import java.util.logging.Logger;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
-import org.apache.kafka.clients.admin.AdminClient;
-import org.apache.kafka.clients.admin.ListTopicsResult;
-import org.apache.kafka.clients.admin.TopicListing;
-import org.apache.kafka.common.KafkaFuture;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.health.HealthCheck;
 import org.eclipse.microprofile.health.HealthCheckResponse;
@@ -46,28 +42,6 @@ public class SystemReadinessCheck implements HealthCheck {
     }
 
     private boolean isReady() {
-        AdminClient adminClient = createAdminClient();
-        return checkIfBarConsumerGroupRegistered(adminClient);
-    }
-
-    private AdminClient createAdminClient() {
-        Properties connectionProperties = new Properties();
-        connectionProperties.put("bootstrap.servers", kafkaServer);
-        AdminClient adminClient = AdminClient.create(connectionProperties);
-        return adminClient;
-    }
-
-    private boolean checkIfBarConsumerGroupRegistered(AdminClient adminClient) {
-        ListTopicsResult topics = adminClient.listTopics();
-        KafkaFuture<Collection<TopicListing>> topicsFuture = topics.listings();
-        try {
-            Collection<TopicListing> topicList = topicsFuture.get();
-            for (TopicListing t : topicList) {
-                logger.info("topic: " + t.name());
-            }
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
+        return true;
     }
 }

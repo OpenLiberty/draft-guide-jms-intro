@@ -8,6 +8,8 @@ bin
 .project
 .classpath
 .factorypath
+.idea
+.iml
 MANIFEST.MF
 
 # MacOS system files
