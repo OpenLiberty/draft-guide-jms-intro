@@ -16,9 +16,9 @@ import java.lang.management.OperatingSystemMXBean;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.logging.Logger;
-import javax.jms.JMSConnectionFactory;
-import javax.jms.JMSContext;
-import javax.jms.Queue;
+import jakarta.jms.JMSConnectionFactory;
+import jakarta.jms.JMSContext;
+import jakarta.jms.Queue;
 
 import jakarta.annotation.Resource;
 import jakarta.ejb.Schedule;

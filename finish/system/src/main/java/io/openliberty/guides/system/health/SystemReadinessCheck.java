@@ -11,8 +11,7 @@
 // end::copyright[]
 package io.openliberty.guides.system.health;
 
-import java.util.Collection;
-import java.util.Properties;
+import java.net.Socket;
 import java.util.logging.Logger;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -31,8 +30,12 @@ public class SystemReadinessCheck implements HealthCheck {
         SystemReadinessCheck.class.getName());
 
     @Inject
-    @ConfigProperty(name = "mp.messaging.connector.liberty-kafka.bootstrap.servers")
-    String kafkaServer;
+    @ConfigProperty(name = "inventory.jms.host", defaultValue = "localhost")
+    String inventoryJmsHost;
+
+    @Inject
+    @ConfigProperty(name = "inventory.jms.port", defaultValue = "7277")
+    Integer inventoryJmsPort;
 
     @Override
     public HealthCheckResponse call() {
@@ -42,6 +45,12 @@ public class SystemReadinessCheck implements HealthCheck {
     }
 
     private boolean isReady() {
-        return true;
+        try {
+            Socket socket = new Socket(inventoryJmsHost, inventoryJmsPort);
+            socket.close();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
