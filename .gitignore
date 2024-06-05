@@ -8,7 +8,7 @@ bin
 .project
 .classpath
 .factorypath
-.idea
+.idea/
 .iml
 MANIFEST.MF
 
