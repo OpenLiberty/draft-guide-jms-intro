@@ -11,6 +11,8 @@ bin
 finish/.idea/
 finish/guide-jms-intro.iml
 finish/models/guide-jms-intro-models.iml
+finish/inventory/guide-jms-intro-inventory.iml
+finish/system/guide-jms-intro-system.iml
 MANIFEST.MF
 
 # MacOS system files
