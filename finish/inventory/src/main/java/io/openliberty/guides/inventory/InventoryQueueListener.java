@@ -13,7 +13,9 @@ import java.util.logging.Logger;
 
 @MessageDriven(mappedName="jms/InventoryQueue")
 public class InventoryQueueListener implements MessageListener {
+
     private static Logger logger = Logger.getLogger(InventoryQueueListener.class.getName());
+
     @Inject
     private InventoryManager manager;
 
@@ -36,7 +38,7 @@ public class InventoryQueueListener implements MessageListener {
                     logger.info("Host " + hostname + " was added: " + loadAverage);
                 }
             } else {
-                logger.warning("Unsupported Message Type" + message.getClass().getName());
+                logger.warning("Unsupported Message Type: " + message.getClass().getName());
             }
         } catch (JMSException e) {
             e.printStackTrace();
