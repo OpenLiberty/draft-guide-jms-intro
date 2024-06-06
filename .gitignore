@@ -8,9 +8,8 @@ bin
 .project
 .classpath
 .factorypath
-finish/.idea/
-finish/guide-jms-intro.iml
-finish/models/guide-jms-intro-models.iml
+.idea/
+*.iml
 MANIFEST.MF
 
 # MacOS system files
