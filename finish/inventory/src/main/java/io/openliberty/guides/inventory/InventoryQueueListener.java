@@ -7,6 +7,7 @@ import jakarta.jms.JMSException;
 import jakarta.jms.Message;
 import jakarta.jms.MessageListener;
 import jakarta.jms.ObjectMessage;
+import jakarta.jms.TextMessage;
 
 import java.util.logging.Logger;
 
@@ -19,9 +20,10 @@ public class InventoryQueueListener implements MessageListener {
     @Override
     public void onMessage(Message message) {
         try {
-            if (message instanceof ObjectMessage) {
-                ObjectMessage objMessage = (ObjectMessage) message;
-                SystemLoad systemLoad = (SystemLoad) objMessage.getObject();
+            if (message instanceof TextMessage) {
+                TextMessage textMessage = (TextMessage) message;
+                String json = textMessage.getText();
+                SystemLoad systemLoad = SystemLoad.fromJson(json);
 
                 String hostname = systemLoad.hostname;
                 Double loadAverage = systemLoad.loadAverage;
@@ -33,9 +35,11 @@ public class InventoryQueueListener implements MessageListener {
                     manager.addSystem(hostname, loadAverage);
                     logger.info("Host " + hostname + " was added: " + loadAverage);
                 }
+            } else {
+                logger.warning("Unsupported Message Type" + message.getClass().getName());
             }
         } catch (JMSException e) {
-            logger.info("JMSError" + e.getMessage());
+            e.printStackTrace();
         }
     }
 }
