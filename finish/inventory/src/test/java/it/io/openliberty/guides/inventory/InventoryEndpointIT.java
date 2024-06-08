@@ -21,16 +21,16 @@ import jakarta.ws.rs.core.Response;
 import org.junit.Test;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.testcontainers.junit.jupiter.Testcontainers;
+import org.junit.jupiter.api.TestMethodOrder;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-
-@Testcontainers
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class InventoryEndpointIT {
 
     private static String port;
@@ -63,12 +63,12 @@ public class InventoryEndpointIT {
     @Test
     @Order(1)
     // tag::testHostRegistration[]
-    public void testHostRegistration() {
+    public void testInventorySystem() {
         Response response = this.getResponse(baseUrl + INVENTORY_SYSTEMS);
         this.assertResponse(baseUrl, response);
+        System.out.println("***: " + response.readEntity(String.class));
 
         JsonObject obj = response.readEntity(JsonObject.class);
-
         JsonArray systems = obj.getJsonArray("systems");
 
         boolean localhostExists = false;
