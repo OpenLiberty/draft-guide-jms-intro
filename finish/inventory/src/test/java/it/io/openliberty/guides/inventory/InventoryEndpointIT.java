@@ -16,9 +16,10 @@ import jakarta.json.JsonArray;
 import jakarta.json.JsonObject;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
@@ -27,14 +28,14 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestMethodOrder;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class InventoryEndpointIT {
 
     private static String port;
     private static String baseUrl;
+    private static String hostname;
 
     private Client client;
 
@@ -62,51 +63,80 @@ public class InventoryEndpointIT {
     // tag::tests[]
     @Test
     @Order(1)
-    // tag::testHostRegistration[]
-    public void testInventorySystem() {
+    // tag::testNonEmpty[]
+    public void testNonEmpty() {
         Response response = this.getResponse(baseUrl + INVENTORY_SYSTEMS);
         this.assertResponse(baseUrl, response);
-        System.out.println("***: " + response.readEntity(String.class));
 
-        JsonObject obj = response.readEntity(JsonObject.class);
-        JsonArray systems = obj.getJsonArray("systems");
+        JsonArray systems = response.readEntity(JsonArray.class);
 
-        boolean localhostExists = false;
+        boolean hostnameExists = false;
+        boolean loadAverageExists = false;
         for (int n = 0; n < systems.size(); n++) {
-            localhostExists = systems.getJsonObject(n).get("hostname").toString()
-                    .contains("localhost");
-            if (localhostExists) {
+            hostnameExists = systems.getJsonObject(n).get("hostname").toString().isEmpty();
+            loadAverageExists = systems.getJsonObject(n).get("systemLoad").toString().isEmpty();
+
+            assertFalse(hostnameExists, "A host was registered, but it was empty");
+            assertFalse(loadAverageExists, "A load average was registered, but it was empty");
+            if (!hostnameExists && !loadAverageExists) {
+                String host = systems.getJsonObject(n).get("hostname").toString();
+                hostname = host.substring(1, host.length() - 1);
                 break;
             }
         }
-        assertTrue(localhostExists, "A host was registered, but it was not localhost");
+        response.close();
+    }
+    // end::testNonEmpty[]
+
+    // tag::testValue[]
+    @Test
+    @Order(2)
+    public void testValue() {
+        assertNotNull(hostname, "Hostname should be set by the first test.");
+
+        Response response = this.getResponse(baseUrl + INVENTORY_SYSTEMS + "/" + hostname);
+        this.assertResponse(baseUrl, response);
+
+        JsonObject system = response.readEntity(JsonObject.class);
+
+        String responseHostname = system.getString("hostname");
+        Boolean loadAverageExists = system.get("systemLoad").toString().isEmpty();
+
+        assertEquals(hostname, responseHostname, "Hostname should match the one from the TestNonEmpty");
+        assertFalse(loadAverageExists, "A Load Average should not be empty");
 
         response.close();
     }
-    // end::testHostRegistration[]
-    /**
-     * <p>
-     * Returns response information from the specified URL.
-     * </p>
-     *
-     * @param url - target URL.
-     * @return Response object with the response from the specified URL.
-     */
-    // end::javadoc[]
+    // end::testValue[]
+
+    @Test
+    @Order(3)
+    // tag::testUnknown[]
+    public void testUnknown() {
+        Response response = this.getResponse(baseUrl + INVENTORY_SYSTEMS);
+        this.assertResponse(baseUrl, response);
+
+        Response badResponse = client
+                .target(baseUrl + INVENTORY_SYSTEMS + "/" + "badhostname")
+                .request(MediaType.APPLICATION_JSON).get();
+
+        assertEquals(404, badResponse.getStatus(),
+                "BadResponse expected status: 404. Response code not as expected.");
+
+        String stringObj = badResponse.readEntity(String.class);
+        assertTrue(stringObj.contains("hostname does not exist."),
+                "badhostname is not a valid host but it didn't raise an error");
+
+        response.close();
+        badResponse.close();
+    }
+    // end::testUnknown[]
+    // end::tests[]
+
     private Response getResponse(String url) {
         return client.target(url).request().get();
     }
 
-    // tag::javadoc[]
-    /**
-     * <p>
-     * Asserts that the given URL has the correct response code of 200.
-     * </p>
-     *
-     * @param url      - target URL.
-     * @param response - response received from the target URL.
-     */
-    // end::javadoc[]
     private void assertResponse(String url, Response response) {
         assertEquals(200, response.getStatus(), "Incorrect response code from " + url);
     }
