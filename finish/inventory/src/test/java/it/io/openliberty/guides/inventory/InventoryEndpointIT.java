@@ -49,9 +49,7 @@ public class InventoryEndpointIT {
 
     @BeforeEach
     public void setup() {
-        System.out.println("client setting up");
         client = ClientBuilder.newClient();
-        System.out.println("Client setup complete: " + (client != null));
     }
 
     @AfterEach
@@ -84,6 +82,7 @@ public class InventoryEndpointIT {
                 break;
             }
         }
+
         response.close();
     }
     // end::testNonEmpty[]
@@ -113,9 +112,6 @@ public class InventoryEndpointIT {
     @Order(3)
     // tag::testUnknown[]
     public void testUnknown() {
-        Response response = this.getResponse(baseUrl + INVENTORY_SYSTEMS);
-        this.assertResponse(baseUrl, response);
-
         Response badResponse = client
                 .target(baseUrl + INVENTORY_SYSTEMS + "/" + "badhostname")
                 .request(MediaType.APPLICATION_JSON).get();
@@ -127,7 +123,6 @@ public class InventoryEndpointIT {
         assertTrue(stringObj.contains("hostname does not exist."),
                 "badhostname is not a valid host but it didn't raise an error");
 
-        response.close();
         badResponse.close();
     }
     // end::testUnknown[]
