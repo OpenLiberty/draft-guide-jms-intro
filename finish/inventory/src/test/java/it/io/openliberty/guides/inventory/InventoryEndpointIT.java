@@ -110,8 +110,8 @@ public class InventoryEndpointIT {
 
     @Test
     @Order(3)
-    // tag::testUnknown[]
-    public void testUnknown() {
+    // tag::testUnknownHost[]
+    public void testUnknownHost() {
         Response badResponse = client
                 .target(baseUrl + INVENTORY_SYSTEMS + "/" + "badhostname")
                 .request(MediaType.APPLICATION_JSON).get();
@@ -125,7 +125,7 @@ public class InventoryEndpointIT {
 
         badResponse.close();
     }
-    // end::testUnknown[]
+    // end::testUnknownHost[]
     // end::tests[]
 
     private Response getResponse(String url) {
