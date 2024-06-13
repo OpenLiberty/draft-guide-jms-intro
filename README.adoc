@@ -18,11 +18,38 @@
 :source-highlighter: prettify
 :page-seo-title: Producing and consuming messages in Java microservices by using Jakarta Messaging
 :page-seo-description: A getting started tutorial with examples on how to produce and consume messages in Java microservices by using Jakarta Messaging with Liberty Messaging Server, Liberty Messaging Server Client, and IBM MQ.
-
 = Producing and consuming messages in Java microservices
+
+
+[.hidden]
+NOTE: This repository contains the guide documentation source. To view the guide in published form, view it on the https://openliberty.io/guides/{projectid}.html[Open Liberty website].
 
 Learn how to produce and consume messages in Java microservices by using Jakarta Messaging with Liberty Messaging Server, Liberty Messaging Server Client, and IBM MQ.
 
+== What you'll learn
+
+Introduction
+
+- explain what is JMS
+- describe the application
+
+
+image::architecture.png[Application architecture where system and inventory services use the Jakarta Messaging to communicate.,align="center"]
+
+
+== Additional prerequisites
+
+Docker - copy from the docker guide
+
+// =================================================================================================
+// Getting started
+// =================================================================================================
+[role='command']
+include::{common-includes}/gitclone.adoc[]
+
+=== Try what you'll build
+
+Polish the following instruction.
 
 Navigate to the finish directory.
 ```
@@ -36,12 +63,12 @@ mvn -pl models clean install
 
 Start `inventory` service in dev mode:
 ```
-mvn -pl inventory liberty:devc
+mvn -pl inventory liberty:run
 ```
 
 Start `system` service in dev mode:
 ```
-mvn -pl system liberty:devc
+mvn -pl system liberty:run
 ```
 
 Visit http://localhost:9085/health or try out http://localhost:9085/inventory/systems
@@ -51,13 +78,37 @@ Get
 curl http://localhost:9085/inventory/systems
 ```
 
-Tear Down
+== Creating the message producer in the system service 
 
-- stop all dev mode for the inventory and systems services
-```
-cd finish
-./scripts/stopContainers.sh
-```
+- start the dev mode
+- create and explain SystemService class
+- replace the server.xml and explain the JMS configration
 
-## Issues
-- ...
+== Creating the consumer in the inventory microservice
+
+- start the dev mode
+- Create and explain InventoryQueueListener class
+- replace the server.xml and explain the JMS configration
+
+== Running the application
+
+- similar to the https://openliberty.io/guides/cdi-intro.html#running-the-application
+
+== Testing the inventory application
+
+- similar to https://openliberty.io/guides/cdi-intro.html#testing-the-inventory-application
+- explain the test
+
+=== Running the tests
+
+- similar to https://openliberty.io/guides/cdi-intro.html#running-the-tests
+- stop the dev mode of the system and inventory services
+
+== Using IBM MQ - Optional
+
+- start IBM MQ on Linux
+- replace the server.xml of the system and inventory services
+- start dev mode for the system and inventory services
+- run the url
+- run test on inventory dev mode
+- tear down to stop IBM MQ and dev mode
