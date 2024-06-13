@@ -100,8 +100,8 @@ public class InventoryEndpointIT {
     public void testValue() {
         assertNotNull(hostname, "Hostname should be set by the first test.");
 
-        Response response = this.getResponse(baseUrl +
-                INVENTORY_SYSTEMS + "/" + hostname);
+        Response response =
+            this.getResponse(baseUrl + INVENTORY_SYSTEMS + "/" + hostname);
         this.assertResponse(baseUrl, response);
 
         JsonObject system = response.readEntity(JsonObject.class);
