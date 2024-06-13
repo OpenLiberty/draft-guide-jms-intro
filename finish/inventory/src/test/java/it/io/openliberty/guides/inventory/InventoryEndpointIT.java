@@ -119,22 +119,22 @@ public class InventoryEndpointIT {
 
     @Test
     @Order(3)
-    // tag::testUnknown[]
-    public void testUnknown() {
+    // tag::testUnknownHost[]
+    public void testUnknownHost() {
         Response badResponse = client
-                .target(baseUrl + INVENTORY_SYSTEMS + "/" + "badhostname")
-                .request(MediaType.APPLICATION_JSON).get();
+            .target(baseUrl + INVENTORY_SYSTEMS + "/" + "badhostname")
+            .request(MediaType.APPLICATION_JSON).get();
 
         assertEquals(404, badResponse.getStatus(),
-                "BadResponse expected status: 404. Response code not as expected.");
+            "BadResponse expected status: 404. Response code not as expected.");
 
         String stringObj = badResponse.readEntity(String.class);
         assertTrue(stringObj.contains("hostname does not exist."),
-                "badhostname is not a valid host but it didn't raise an error");
+            "badhostname is not a valid host but it didn't raise an error");
 
         badResponse.close();
     }
-    // end::testUnknown[]
+    // end::testUnknownHost[]
     // end::tests[]
 
     private Response getResponse(String url) {
