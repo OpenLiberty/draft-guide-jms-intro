@@ -67,7 +67,7 @@ jobs:
         with:
           name: finish-inventory-logs
           path: finish/inventory/target/liberty/wlp/usr/servers/defaultServer/logs/
-       - name: Archive finish system logs if failed
+      - name: Archive finish system logs if failed
         if: failure()
         uses: actions/upload-artifact@v2
         with:
