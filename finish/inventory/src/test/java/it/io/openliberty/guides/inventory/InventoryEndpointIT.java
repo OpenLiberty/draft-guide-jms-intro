@@ -28,7 +28,11 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestMethodOrder;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class InventoryEndpointIT {
@@ -71,11 +75,14 @@ public class InventoryEndpointIT {
         boolean hostnameExists = false;
         boolean loadAverageExists = false;
         for (int n = 0; n < systems.size(); n++) {
-            hostnameExists = systems.getJsonObject(n).get("hostname").toString().isEmpty();
-            loadAverageExists = systems.getJsonObject(n).get("systemLoad").toString().isEmpty();
+            hostnameExists = systems.getJsonObject(n).get("hostname")
+                    .toString().isEmpty();
+            loadAverageExists = systems.getJsonObject(n).get("systemLoad")
+                    .toString().isEmpty();
 
             assertFalse(hostnameExists, "A host was registered, but it was empty");
-            assertFalse(loadAverageExists, "A load average was registered, but it was empty");
+            assertFalse(loadAverageExists,
+                    "A load average was registered, but it was empty");
             if (!hostnameExists && !loadAverageExists) {
                 String host = systems.getJsonObject(n).get("hostname").toString();
                 hostname = host.substring(1, host.length() - 1);
@@ -93,7 +100,8 @@ public class InventoryEndpointIT {
     public void testValue() {
         assertNotNull(hostname, "Hostname should be set by the first test.");
 
-        Response response = this.getResponse(baseUrl + INVENTORY_SYSTEMS + "/" + hostname);
+        Response response = this.getResponse(baseUrl +
+                INVENTORY_SYSTEMS + "/" + hostname);
         this.assertResponse(baseUrl, response);
 
         JsonObject system = response.readEntity(JsonObject.class);
@@ -101,7 +109,8 @@ public class InventoryEndpointIT {
         String responseHostname = system.getString("hostname");
         Boolean loadAverageExists = system.get("systemLoad").toString().isEmpty();
 
-        assertEquals(hostname, responseHostname, "Hostname should match the one from the TestNonEmpty");
+        assertEquals(hostname, responseHostname,
+                "Hostname should match the one from the TestNonEmpty");
         assertFalse(loadAverageExists, "A Load Average should not be empty");
 
         response.close();
