@@ -53,17 +53,22 @@ Make sure to start your Docker daemon before you proceed.
 // =================================================================================================
 [role='command']
 include::{common-includes}/gitclone.adoc[]
+// =================================================================================================
+// Try what you'll build
+// =================================================================================================
 
 === Try what you'll build
 
-Polish the following instruction.
+The `finish` directory in the root of this guide contains the finished application. Give it a try before you proceed.
 
-Navigate to the finish directory.
+To try out the test, first go to the `finish` directory and run the following Maven goal that builds the application, starts the containers, runs the tests, and then stops the containers:
+
+Navigate to the finish directory:
 ```
 cd finish
 ```
 
-Build and install the models
+Build and install the models:
 ```
 mvn -pl models clean install
 ```
