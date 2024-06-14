@@ -27,27 +27,26 @@ NOTE: This repository contains the guide documentation source. To view the guide
 Learn how to produce and consume messages in Java microservices by using Jakarta Messaging with Liberty Messaging Server, Liberty Messaging Server Client, and IBM MQ.
 
 == What you'll learn
-You will learn how to produce and consume messages in Java microservices using Jakarta Messaging.
+You will learn how to communicate Java services by using Jakarta Messaging with Liberty Messaging Server, Liberty Messaging Server Client, and IBM MQ. You will use a Jakarta Messaging system to handle the asynchronous messages that are sent and received between the microservices as streams of events.
 
 You'll also explore the configuration and use of Liberty Messaging Server, along with examples of message production and consumption with Liberty Messaging Server Client. Additionally, you will discover how to integrate Liberty Messaging Server with IBM MQ.
 
-Open Liberty, which supports Jakarta Messaging API, will be used to demonstrate how to build scalable messaging solutions. By the end of this tutorial, you will have implemented real-world messaging solutions to enhance the reliability and responsiveness of your Java microservices.
+In this guide, you will use Jakarta Messaging APIs to build the application and implement a messaging solution that enables communication between different parts of Java microservices. Jakarta Messaging makes it easy to write and configure your application to send, receive, and process the events efficiently.
 
-*What is Java Message Service (JMS) ?*
+*What is Jakarta Messaging ?*
 
-Java Message Service (JMS) is a Java API that enables applications to create, send, receive, and read messages asynchronously. It supports two messaging models: Point-to-Point (Queue), where messages are sent to a specific queue and consumed by a single receiver, and Publish/Subscribe (Topic), where messages are broadcast to a topic and received by multiple subscribers. JMS ensures reliable messaging with mechanisms for acknowledgment and redelivery in case of failures, using providers like IBM MQ.
+Jakarta Messaging provides an easy way to asynchronously send, receive, and process messages that are received as continuous streams of events. By integrating Jakarta Messaging with Open Liberty, you can easily configure and manage message producers and consumers within your Java microservices. You simply use the Jakarta Messaging API to annotate methods in your application beans, and Open Liberty handles the communication infrastructure, ensuring messages are reliably exchanged. This integration allows your services to connect easily with external messaging systems, such as IBM MQ.
 
 The application in this guide consists of two microservices, `system` and `inventory`. Every 15 seconds, the `system` microservice calculates and publishes an event that contains its current average system load. The `inventory` microservice subscribes to that information so that it can keep an updated list of all the systems and their current system loads. The current inventory of systems can be accessed via the `/systems` REST endpoint. You'll create the `system` and `inventory` microservices using Java Message System.
 
 image::architecture.png[Application architecture where system and inventory services use the Jakarta Messaging to communicate.,align="center"]
 
-
+ifdef::docker[]
 == Additional prerequisites
-
 Before you begin, you need to install Docker if it is not already installed. For installation instructions, refer to the https://docs.docker.com/get-docker/[official Docker documentation^]. You will build and run the application in Docker containers.
 
 Make sure to start your Docker daemon before you proceed.
-
+endif::docker[]
 // =================================================================================================
 // Getting started
 // =================================================================================================
@@ -63,36 +62,72 @@ The `finish` directory in the root of this guide contains the finished applicati
 
 To try out the test, first go to the `finish` directory and run the following Maven goal that builds the application, starts the containers, runs the tests, and then stops the containers:
 
-Navigate to the finish directory:
+To try out the application, first go to the `finish` directory and run the following Maven goal to build and install the `models` module.
 ```
 cd finish
-```
-
-Build and install the models:
-```
 mvn -pl models clean install
 ```
 
-Start `inventory` service in dev mode:
+Start the `inventory` service by running the following command:
 ```
 mvn -pl inventory liberty:run
 ```
 
-Start `system` service in dev mode:
+Next, open another command-line session, navigate to the `finish` directory, and start the `system` service by using the following command:
 ```
 mvn -pl system liberty:run
 ```
 
-Visit http://localhost:9085/health or try out http://localhost:9085/inventory/systems
+After you see the following message, your Liberty instance is ready:
+[role="no_copy"]
+----
+The defaultServer server is ready to run a smarter planet.
+----
 
-Get
+Then, visit the http://localhost:9080/health[http://localhost:9080/health^] URL to see the overall health status of the application, as well as the aggregated data of the startup, liveness and readiness checks. Three checks show the state of the `system` service, and the other three checks show the state of the `inventory` service. As you might expect, all services are in the `UP` state, and the overall health status of the application is in the `UP` state.
+
+Also, the `system` and `inventory` services can be found at the following URLs:
+
+* http://localhost:9080/inventory/systems[http://localhost:9080/inventory/systems^]
+
+You can also use `curl` command to retrieve the hostname and systemLoad information from the inventory/systems server endpoint in another command line session:
 ```
 curl http://localhost:9085/inventory/systems
 ```
 
+After you see the following message in the command-line session, both your services can reach the inventory/system server using the curl command.
+
+[role="no_copy"]
+----
+[{"hostname": your hostname,"systemLoad": current systemLoad value}]
+----
+
+After you are finished checking out the application, stop the Liberty instance by pressing `CTRL+C` in each command-line sessions where you ran Liberty. Alternatively, you can run the `liberty:stop` goal from the `finish` directory in another shell session:
+// stopping dev mode
+[role='command']
+----
+mvn -pl inventory liberty:stop
+mvn -pl system liberty:stop
+----
+
 == Creating the message producer in the system service 
 
-* start the dev mode
+Navigate to the `start` directory to begin.
+
+The `system` microservice is the producer of the messages that are published to the Jakarta messaging system as a stream of events. Every 15 seconds, the `system` microservice publishes an event that contains its calculation of the average system load (its CPU usage) for the last minute.
+
+[role="code_command hotspot file=0", subs="quotes"]
+----
+#Create the `SystemService` class.#
+`system/src/main/java/io/openliberty/guides/system/SystemService.java`
+----
+
+SystemService.java
+[source, Java, linenums, role='code_column hide_tags=copyright']
+----
+include::finish/system/src/main/java/io/openliberty/guides/system/SystemService.java[]
+----
+
 * create and explain SystemService class
 * replace the server.xml and explain the JMS configration
 
