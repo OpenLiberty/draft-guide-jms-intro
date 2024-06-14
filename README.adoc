@@ -31,7 +31,7 @@ You will learn how to produce and consume messages in Java microservices using J
 
 You'll also explore the configuration and use of Liberty Messaging Server, along with examples of message production and consumption with Liberty Messaging Server Client. Additionally, you will discover how to integrate Liberty Messaging Server with IBM MQ.
 
-Open Liberty, which is a lightweight open framework supporting Jakarta Messaging API, will be used to demonstrate how to build scalable messaging solutions. By the end of this tutorial, you will have implemented real-world messaging solutions to enhance the reliability and responsiveness of your Java microservices.
+Open Liberty, which supports Jakarta Messaging API, will be used to demonstrate how to build scalable messaging solutions. By the end of this tutorial, you will have implemented real-world messaging solutions to enhance the reliability and responsiveness of your Java microservices.
 
 *What is Java Message Service (JMS) ?*
 
