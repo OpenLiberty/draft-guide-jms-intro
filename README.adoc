@@ -27,19 +27,26 @@ NOTE: This repository contains the guide documentation source. To view the guide
 Learn how to produce and consume messages in Java microservices by using Jakarta Messaging with Liberty Messaging Server, Liberty Messaging Server Client, and IBM MQ.
 
 == What you'll learn
+You will learn how to produce and consume messages in Java microservices using Jakarta Messaging.
 
-Introduction
+You'll also explore the configuration and use of Liberty Messaging Server, along with examples of message production and consumption with Liberty Messaging Server Client. Additionally, you will discover how to integrate Liberty Messaging Server with IBM MQ.
 
-- explain what is JMS
-- describe the application
+Open Liberty, which is a lightweight open framework supporting Jakarta Messaging API, will be used to demonstrate how to build scalable messaging solutions. By the end of this tutorial, you will have implemented real-world messaging solutions to enhance the reliability and responsiveness of your Java microservices.
 
+*What is Java Message Service (JMS) ?*
+
+Java Message Service (JMS) is a Java API that enables applications to create, send, receive, and read messages asynchronously. It supports two messaging models: Point-to-Point (Queue), where messages are sent to a specific queue and consumed by a single receiver, and Publish/Subscribe (Topic), where messages are broadcast to a topic and received by multiple subscribers. JMS ensures reliable messaging with mechanisms for acknowledgment and redelivery in case of failures, using providers like IBM MQ.
+
+The application in this guide consists of two microservices, `system` and `inventory`. Every 15 seconds, the `system` microservice calculates and publishes an event that contains its current average system load. The `inventory` microservice subscribes to that information so that it can keep an updated list of all the systems and their current system loads. The current inventory of systems can be accessed via the `/systems` REST endpoint. You'll create the `system` and `inventory` microservices using Java Message System.
 
 image::architecture.png[Application architecture where system and inventory services use the Jakarta Messaging to communicate.,align="center"]
 
 
 == Additional prerequisites
 
-Docker - copy from the docker guide
+Before you begin, you need to install Docker if it is not already installed. For installation instructions, refer to the https://docs.docker.com/get-docker/[official Docker documentation^]. You will build and run the application in Docker containers.
+
+Make sure to start your Docker daemon before you proceed.
 
 // =================================================================================================
 // Getting started
