@@ -59,7 +59,9 @@ public class SystemService {
     // tag::sendSystemLoad[]
     public void sendSystemLoad() {
       SystemLoad systemLoad = new SystemLoad(getHostname(), Double.valueOf(OS_MEAN.getSystemLoadAverage()));
+      //tag::createProducer[]
       context.createProducer().send(queue, systemLoad.toString());
+      //end::createProducer[]
       logger.info(systemLoad.toString());   
      }
     // end::sendSystemLoad[]

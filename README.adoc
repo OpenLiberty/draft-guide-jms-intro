@@ -138,8 +138,12 @@ SystemService.java
 include::finish/system/src/main/java/io/openliberty/guides/system/SystemService.java[]
 ----
 
-* create and explain SystemService class
-* replace the server.xml and explain the JMS configration
+The `SystemService` class contains a `Publisher` method that is called [hotspot=sendSystemLoad file=0]`sendSystemLoad()`, which calculates and returns the average system load. The [hotspot=createProducer file=0]`context.createProducer().send()` method publishes its calculation as a message on a topic in the Jakarta messaging system. The [hotspot=schedule file=0]`@Schedule` annotation on the [hotspot=sendSystemLoad file=0]`sendSystemLoad()` method is used to set the frequency of how often the system service publishes the calculation to the event stream.
+
+The messages are transported between the service and the messaging system through a queue called `systemLoad`. The [hotspot=schedule file=0]`@Schedule` annotation ensures the [hotspot=sendSystemLoad file=0]`sendSystemLoad()` method runs every 15 seconds.
+This method creates new SystemLoad object with the hostname and system load average, then sends this information to the specified queue using [hotspot=createProducer file=0]`context.createProducer().send()` method.
+
+* replace the server.xml and explain the JMS configuration
 
 == Creating the consumer in the inventory microservice
 

@@ -13,26 +13,8 @@
 
   <variable name="http.port" defaultValue="9083"/>
   <variable name="https.port" defaultValue="9446"/>
-  <variable name="inventory.jms.host" defaultValue="localhost"/>
-  <variable name="inventory.jms.port" defaultValue="7277"/>
-  
+
   <httpEndpoint host="*" httpPort="${http.port}"
-      httpsPort="${https.port}" id="defaultHttpEndpoint"/>
+                httpsPort="${https.port}" id="defaultHttpEndpoint"/>
 
-    <!-- send message to Inventory queue -->
-    <connectionManager id="InventoryCM" maxPoolSize="400" minPoolSize="1"/>
-
-    <jmsQueueConnectionFactory
-        connectionManagerRef="InventoryCM"
-        jndiName="InventoryQueueConnectionFactory">
-        <properties.wasJms
-            remoteServerAddress="${inventory.jms.host}:${inventory.jms.port}:BootstrapBasicMessaging" />
-    </jmsQueueConnectionFactory>
-
-    <jmsQueue id="InventoryQueue" jndiName="jms/InventoryQueue">
-        <properties.wasJms queueName="InventoryQueue"/>
-    </jmsQueue>
-
-  <logging consoleLogLevel="INFO"/>
-  <webApplication location="guide-jms-intro-system.war" contextRoot="/"/>
 </server>
