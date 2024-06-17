@@ -33,7 +33,7 @@ You'll also explore the configuration and use of Liberty Messaging Server, along
 
 In this guide, you will use Jakarta Messaging APIs to build the application and implement a messaging solution that enables communication between different parts of Java microservices. Jakarta Messaging makes it easy to write and configure your application to send, receive, and process the events efficiently.
 
-*What is Jakarta Messaging ?*
+*What is Jakarta Messaging?*
 
 Jakarta Messaging provides an easy way to asynchronously send, receive, and process messages that are received as continuous streams of events. By integrating Jakarta Messaging with Open Liberty, you can easily configure and manage message producers and consumers within your Java microservices. You simply use the Jakarta Messaging API to annotate methods in your application beans, and Open Liberty handles the communication infrastructure, ensuring messages are reliably exchanged. This integration allows your services to connect easily with external messaging systems, such as IBM MQ.
 
@@ -41,12 +41,13 @@ The application in this guide consists of two microservices, `system` and `inven
 
 image::architecture.png[Application architecture where system and inventory services use the Jakarta Messaging to communicate.,align="center"]
 
-ifdef::docker[]
 == Additional prerequisites
+* If you won't be working on the *Using IBM MQ* section, you don’t need to run Docker and you can skip this part.
+* IBM MQ container is required to run if you are using Linux.
+
 Before you begin, you need to install Docker if it is not already installed. For installation instructions, refer to the https://docs.docker.com/get-docker/[official Docker documentation^]. You will build and run the application in Docker containers.
 
 Make sure to start your Docker daemon before you proceed.
-endif::docker[]
 // =================================================================================================
 // Getting started
 // =================================================================================================
@@ -59,8 +60,6 @@ include::{common-includes}/gitclone.adoc[]
 === Try what you'll build
 
 The `finish` directory in the root of this guide contains the finished application. Give it a try before you proceed.
-
-To try out the test, first go to the `finish` directory and run the following Maven goal that builds the application, starts the containers, runs the tests, and then stops the containers:
 
 To try out the application, first go to the `finish` directory and run the following Maven goal to build and install the `models` module.
 ```
@@ -78,28 +77,39 @@ Next, open another command-line session, navigate to the `finish` directory, and
 mvn -pl system liberty:run
 ```
 
-After you see the following message, your Liberty instance is ready:
+After you see the following message, your Liberty instances are ready:
 [role="no_copy"]
 ----
 The defaultServer server is ready to run a smarter planet.
 ----
 
-Then, visit the http://localhost:9080/health[http://localhost:9080/health^] URL to see the overall health status of the application, as well as the aggregated data of the startup, liveness and readiness checks. Three checks show the state of the `system` service, and the other three checks show the state of the `inventory` service. As you might expect, all services are in the `UP` state, and the overall health status of the application is in the `UP` state.
+Visit the http://localhost:9085/health[^] URL to confirm that the `inventory` microservice is up and running.
 
-Also, the `system` and `inventory` services can be found at the following URLs:
+When both the liveness and readiness health checks are up, go to the http://localhost:9085/inventory/systems[^] URL to access the `inventory` microservice. You see the CPU systemLoad property for all the systems:
 
-* http://localhost:9080/inventory/systems[http://localhost:9080/inventory/systems^]
+[source, role='no_copy']
+----
+{
+   "hostname":<your hostname>,
+   "systemLoad":2.25927734375
+}
+----
 
-You can also use `curl` command to retrieve the hostname and systemLoad information from the inventory/systems server endpoint in another command line session:
+You can revisit the http://localhost:9085/inventory/systems[^] URL after a while, and you will notice the CPU `systemLoad` property for the systems changed.
+
+You can also use `curl` command to retrieve the hostname and systemLoad information from the `inventory/systems` server endpoint in another command line session:
 ```
 curl http://localhost:9085/inventory/systems
 ```
 
-After you see the following message in the command-line session, both your services can reach the inventory/system server using the curl command.
+After you see the following message in the command-line session, both your services can reach the `inventory/system` server using the curl command.
 
 [role="no_copy"]
 ----
-[{"hostname": your hostname,"systemLoad": current systemLoad value}]
+{
+   "hostname": <your hostname>,
+   "systemLoad": 2.25927734375
+}
 ----
 
 After you are finished checking out the application, stop the Liberty instance by pressing `CTRL+C` in each command-line sessions where you ran Liberty. Alternatively, you can run the `liberty:stop` goal from the `finish` directory in another shell session:
