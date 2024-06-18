@@ -42,8 +42,9 @@ The application in this guide consists of two microservices, `system` and `inven
 image::architecture.png[Application architecture where system and inventory services use the Jakarta Messaging to communicate.,align="center"]
 
 == Additional prerequisites
-* If you won't be working on the *Using IBM MQ* section, you don’t need to run Docker and you can skip this part.
-* IBM MQ container is required to run if you are using Linux.
+If you’re focusing on sections other than *Using IBM MQ*, you can move forward without running Docker and skip this part.
+
+IBM MQ container is required to run if you are using Linux.
 
 Before you begin, you need to install Docker if it is not already installed. For installation instructions, refer to the https://docs.docker.com/get-docker/[official Docker documentation^]. You will build and run the application in Docker containers.
 
@@ -90,8 +91,8 @@ When both the liveness and readiness health checks are up, go to the http://loca
 [source, role='no_copy']
 ----
 {
-   "hostname":<your hostname>,
-   "systemLoad":2.25927734375
+   "hostname": <your hostname>,
+   "systemLoad": 2.25927734375
 }
 ----
 
@@ -101,16 +102,6 @@ You can also use `curl` command to retrieve the hostname and systemLoad informat
 ```
 curl http://localhost:9085/inventory/systems
 ```
-
-After you see the following message in the command-line session, both your services can reach the `inventory/system` server using the curl command.
-
-[role="no_copy"]
-----
-{
-   "hostname": <your hostname>,
-   "systemLoad": 2.25927734375
-}
-----
 
 After you are finished checking out the application, stop the Liberty instance by pressing `CTRL+C` in each command-line sessions where you ran Liberty. Alternatively, you can run the `liberty:stop` goal from the `finish` directory in another shell session:
 // stopping dev mode
