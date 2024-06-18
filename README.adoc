@@ -134,17 +134,77 @@ The `SystemService` class contains a `Publisher` method that is called [hotspot=
 The messages are transported between the service and the messaging system through a queue called `systemLoad`. The [hotspot=schedule file=0]`@Schedule` annotation ensures the [hotspot=sendSystemLoad file=0]`sendSystemLoad()` method runs every 15 seconds.
 This method creates new SystemLoad object with the hostname and system load average, then sends this information to the specified queue using [hotspot=createProducer file=0]`context.createProducer().send()` method.
 
-* replace the server.xml and explain the JMS configuration
+// update server.xml
+[role='code_command hotspot file=1', subs="quotes"]
+----
+#Replace the system's `server.xml` configuration file.#
+`system/src/main/liberty/config/server.xml`
+----
+
+system/server.xml
+[source, xml, linenums, role='code_column hide_tags=copyright']
+----
+include::finish/system/src/main/liberty/config/server.xml[]
+----
+
+Add the [hotspot=jms file=1]`jms` feature to the Liberty `server.xml` configuration file. This feature enables applications running on Liberty to provide Jakarta Messaging services. Add a [hotspot=connectionManager file=1]`connection manager` to handles connections for the inventory system. Then, configure a [hotspot=jmsQueueConnectionFactory file=1]`JMSQueueConnectionFactory` to use this connection manager and set its properties. Lastly, define a [hotspot=jmsQueue file=1]`JMS Queue` for the inventory system.
+
+If you want to learn more about configuration for the `jmsQueue` element and `jmsQueueConnectionFactory` element, see the https://openliberty.io/docs/latest/reference/config/jmsQueue.html[jmsQueue Server Properties^] and https://openliberty.io/docs/latest/reference/config/jmsQueueConnectionFactory.html[jmsQueueConnectionFactory Server Properties^].
+
 
 == Creating the consumer in the inventory microservice
 
-* start the dev mode
-* Create and explain InventoryQueueListener class
+Navigate to the `start` directory to begin.
+ifdef::cloud-hosted[]
+```bash
+cd /home/project/guide-jms-intro/start
+```
+endif::[]
+
+When you run Open Liberty in https://openliberty.io/docs/latest/development-mode.html[dev mode^], dev mode listens for file changes and automatically recompiles and deploys your updates whenever you save a new change. Run the following goal to start Open Liberty in dev mode:
+
+//start dev mode
+[role='command']
+----
+mvn -pl inventory liberty:dev
+mvn -pl system liberty:dev
+----
+After you see the following message, your Liberty instance is ready in dev mode:
+
+[role="no_copy"]
+----
+**************************************************************
+*    Liberty is running in dev mode.
+----
+
+The `inventory` microservice records in its inventory the average system load information that it received from potentially multiple instances of the `system` service.
+
+// Create and explain InventoryQueueListener class
+[role="code_command hotspot file=0", subs="quotes"]
+----
+#Create the `InventoryQueueListener` class.#
+`inventory/src/main/java/io/openliberty/guides/inventory/InventoryQueueListener.java`
+----
+
+InventoryQueueListener.java
+[source, Java, linenums, role='code_column hide_tags=copyright']
+----
+include::finish/inventory/src/main/java/io/openliberty/guides/inventory/InventoryQueueListener.java[]
+----
+
+
 * replace the server.xml and explain the JMS configration
 
-== Running the application
+// =================================================================================================
+// Running the application
+// =================================================================================================
 
-* similar to the https://openliberty.io/guides/cdi-intro.html#running-the-application
+[role='command']
+include::{common-includes}/devmode-build.adoc[]
+
+You can find the `inventory` and `system` services at the following URLs:
+
+* http://localhost:9080/inventory/systems[http://localhost:9080/inventory/systems^]
 
 == Testing the inventory application
 
