@@ -147,7 +147,7 @@ system/server.xml
 include::finish/system/src/main/liberty/config/server.xml[]
 ----
 
-Add the [hotspot=jms file=1]`jms` feature to the Liberty `server.xml` configuration file. This feature enables applications running on Liberty to provide Jakarta Messaging services. Add a [hotspot=connectionManager file=1]`connection manager` to handles connections for the inventory system. Then, configure a [hotspot=jmsQueueConnectionFactory file=1]`JMSQueueConnectionFactory` to use this connection manager and set its properties. Lastly, define a [hotspot=jmsQueue file=1]`JMS Queue` for the inventory system.
+Add the [hotspot=jms file=1]`jms` feature to the Liberty `server.xml` configuration file. This feature enables applications running on Liberty to provide Jakarta Messaging services. Add a [hotspot=connectionManager file=1]`connection manager` to handle connections for the inventory system. Then, configure a [hotspot=jmsQueueConnectionFactory file=1]`JMSQueueConnectionFactory` to use this connection manager and set its properties. Lastly, define a [hotspot=jmsQueue file=1]`JMS Queue` for the inventory system.
 
 If you want to learn more about configuration for the `jmsQueue` element and `jmsQueueConnectionFactory` element, see the https://openliberty.io/docs/latest/reference/config/jmsQueue.html[jmsQueue Server Properties^] and https://openliberty.io/docs/latest/reference/config/jmsQueueConnectionFactory.html[jmsQueueConnectionFactory Server Properties^].
 
@@ -191,9 +191,23 @@ InventoryQueueListener.java
 ----
 include::finish/inventory/src/main/java/io/openliberty/guides/inventory/InventoryQueueListener.java[]
 ----
+The `inventory` microservice receives the message from the `system` microservice over the [hotspot=messageDriven file=0]`@MessageDriven` annotation. The InventoryQueueListener class contains a method called [hotspot=onMessage file=0]`onMessage()`, which processes the incoming messages, updates the data and logs the action. The [hotspot=systemLoad file=0]`systemLoad.fromjson()` method converts the hostname and the average system load information from JSON into strings so that this data can be logged.
 
+// replace the server.xml and explain the JMS configration
+[role='code_command hotspot file=1', subs="quotes"]
+----
+#Replace the inventory's `server.xml` configuration file.#
+`inventory/src/main/liberty/config/server.xml`
+----
 
-* replace the server.xml and explain the JMS configration
+inventory/server.xml
+[source, xml, linenums, role='code_column hide_tags=copyright']
+----
+include::finish/inventory/src/main/liberty/config/server.xml[]
+----
+
+Add the [hotspot=wasJmsEndpoint file=1]`wasJmsEndpoint` to listen for message from the `InventoryQueue`. Then, configure a [hotspot=jmsQueueConnectionFactory file=1]`JMSQueueConnectionFactory` to use this connection manager and set properties for the JMS implementation. Lastly, define a [hotspot=jmsQueue file=1]`JMSQueue` for the inventory system and a [hotspot=jmsActivationSpec file=1]`JMSActivationSpec` to configures properties including the destination queue reference, destination type, and maximum concurrency.
+
 
 // =================================================================================================
 // Running the application
@@ -208,15 +222,72 @@ You can find the `inventory` and `system` services at the following URLs:
 
 == Testing the inventory application
 
-* similar to https://openliberty.io/guides/cdi-intro.html#testing-the-inventory-application
-* explain the test
+//similar to https://openliberty.io/guides/cdi-intro.html#testing-the-inventory-application
+//explain the test
+While you can test your application manually, you should rely on automated tests because they trigger a failure whenever a code change introduces a defect. Because the application is a RESTful web service application, you can use JUnit and the RESTful web service Client API to write tests. In testing the functionality of the application, the scopes and dependencies are being tested.
 
-=== Running the tests
+[role='code_command hotspot file=0', subs='quotes']
+----
+#Create the `InventoryEndpointIT` class.#
+`src/test/java/it/io/openliberty/guides/inventory/InventoryEndpointIT.java`
+----
 
-* similar to https://openliberty.io/guides/cdi-intro.html#running-the-tests
-* stop the dev mode of the system and inventory services
+InventoryEndpointIT.java
+[source, Java, linenums, role='code_column hide_tags=copyright']
+----
+include::finish/inventory/src/test/java/it/io/openliberty/guides/inventory/InventoryEndpointIT.java[]
+----
+
+The [hotspot=BeforeAll file=0]`@BeforeAll` annotation is placed on a method that runs before any of the test cases. In this case, the [hotspot=oneTimeSetup file=0]`oneTimeSetup()` method retrieves the port number for the Open Liberty and builds a base URL string that is used throughout the tests.
+
+The [hotspot=BeforeEach file=0]`@BeforeEach` and [hotspot=AfterEach file=0]`@AfterEach` annotations are placed on methods that run before and after every test case. These methods are generally used to perform any setup and teardown tasks. In this case, the [hotspot=setup file=0]`setup()` method creates a JAX-RS client, which makes HTTP requests to the `inventory` service. The [hotspot=teardown file=0]`teardown()` method simply destroys this client instance.
+
+See the following descriptions of the test cases:
+
+* [hotspot=testNonEmpty file=0]`testNonEmpty()` verifies that the host name and the load average for each system in the inventory are not empty.
+
+* [hotspot=testValue file=0]`testValue()` verifies that the hostname and system load average returned by the system service match the ones stored in the inventory service and ensures they are not empty.
+
+* [hotspot=testUnknownHost file=0]`testUnknownHost()` verifies that an unknown host or a host that does not expose their JVM system properties is correctly handled as an error.
+
+To force these test cases to run in a particular order, annotate your [hotspot file=0]`InventoryEndpointIT` test class with the [hotspot=TestMethodOrder file=0]`@TestMethodOrder(MethodOrderer.OrderAnnotation.class)` annotation. [hotspot=TestMethodOrder file=0]`MethodOrderer.OrderAnnotation.class` runs test methods in numerical order, according to the values specified in the [hotspot=Order1 hotspot=Order2 hotspot=Order3 file=0]`@Order` annotation. Label your test cases with the [hotspot=Test1 hotspot=Test2 hotspot=Test3 file=0]`@Test` annotation so that they automatically run when your test class runs.
+
+// =================================================================================================
+// Running the tests
+// =================================================================================================
+
+[role='command']
+include::{common-includes}/devmode-test.adoc[]
+
+If the tests pass, you see a similar output to the following example:
+
+[source, role='no_copy']
+----
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running it.io.openliberty.guides.inventory.InventoryEndpointIT
+[err] Runtime exception: RESTEASY004655: Unable to invoke request: java.net.UnknownHostException: badhostname: nodename nor servname provided, or not known
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.325 sec - in it.io.openliberty.guides.inventory.InventoryEndpointIT
+
+Results :
+
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0
+----
+
+The error messages are expected and result from a request to a bad or an unknown hostname. This request is made in the `testUnknownHost()` test from the `InventoryEndpointIT` integration test.
+
+When you are done checking out the service, stop the Liberty instance by pressing `CTRL+C` in each command-line sessions where you ran Liberty. Alternatively, you can run the `liberty:stop` goal from the `finish` directory in another shell session:
+// stopping dev mode
+[role='command']
+----
+mvn -pl inventory liberty:stop
+mvn -pl system liberty:stop
+----
 
 == Using IBM MQ - Optional
+
+If you are using Linux, you can continue this section.
 
 * start IBM MQ on Linux
 * replace the server.xml of the system and inventory services
@@ -224,3 +295,9 @@ You can find the `inventory` and `system` services at the following URLs:
 * run the url
 * run test on inventory dev mode
 * tear down to stop IBM MQ and dev mode
+
+== Great work! You're done!
+
+You just developed a reactive Java application using Jakarta Messaging and Open Liberty.
+
+include::{common-includes}/attribution.adoc[subs="attributes"]

@@ -17,36 +17,6 @@
   <variable name="https.port" defaultValue="9448"/>
 
   <httpEndpoint host="*" httpPort="${http.port}" httpsPort="${https.port}" id="defaultHttpEndpoint"/>
-
-    <!-- listen message from Inventory queue -->
-    <wasJmsEndpoint id="InboundJmsCommsEndpoint"
-                    host="*"
-                    wasJmsPort="7277"
-                    wasJmsSSLPort="9101"/>
-
-    <connectionManager id="InventoryCM" maxPoolSize="400" minPoolSize="1"/>
-
-    <messagingEngine id="InventoryME">
-        <queue id="InventoryQueue"
-               forceReliability="ReliablePersistent"
-               maxQueueDepth="5000"/>
-    </messagingEngine>
-
-    <jmsQueueConnectionFactory connectionManagerRef="InventoryCM"
-                               jndiName="InventoryQueueConnectionFactory">
-        <properties.wasJms/>
-    </jmsQueueConnectionFactory>
-
-    <jmsQueue id="InventoryQueue" jndiName="jms/InventoryQueue">
-        <properties.wasJms queueName="InventoryQueue"/>
-    </jmsQueue>
-
-    <jmsActivationSpec id="guide-jms-intro-inventory/InventoryQueueListener">
-        <properties.wasJms
-            destinationRef="InventoryQueue"
-            destinationType="jakarta.jms.Queue"
-            maxConcurrency="200"/>
-    </jmsActivationSpec>
     
   <logging consoleLogLevel="INFO"/>
   <webApplication location="guide-jms-intro-inventory.war" contextRoot="/"/>

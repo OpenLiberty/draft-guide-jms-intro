@@ -21,7 +21,9 @@ import jakarta.jms.TextMessage;
 
 import java.util.logging.Logger;
 
+// tag::messageDriven[]
 @MessageDriven(mappedName="jms/InventoryQueue")
+// end::messageDriven[]
 public class InventoryQueueListener implements MessageListener {
 
     private static Logger logger = Logger.getLogger(InventoryQueueListener.class.getName());
@@ -29,13 +31,16 @@ public class InventoryQueueListener implements MessageListener {
     @Inject
     private InventoryManager manager;
 
+    // tag::onMessage[]
     @Override
     public void onMessage(Message message) {
         try {
             if (message instanceof TextMessage) {
                 TextMessage textMessage = (TextMessage) message;
                 String json = textMessage.getText();
+                // tag::systemLoad[]
                 SystemLoad systemLoad = SystemLoad.fromJson(json);
+                // end::systemLoad[]
 
                 String hostname = systemLoad.hostname;
                 Double loadAverage = systemLoad.loadAverage;
@@ -54,4 +59,5 @@ public class InventoryQueueListener implements MessageListener {
             e.printStackTrace();
         }
     }
+    // end::onMessage[]
 }
