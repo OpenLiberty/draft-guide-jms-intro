@@ -5,12 +5,8 @@
     <feature>jsonb-3.0</feature>
     <feature>mpHealth-4.0</feature>
     <feature>mpConfig-3.1</feature>
-    <!--tag::messaging3.1[]-->
     <feature>messaging-3.1</feature>
-    <!--end::messaging3.1[]-->
-    <!--tag::messagingClient-3.0[]-->
     <feature>messagingClient-3.0</feature>
-    <!--end::messagingClient-3.0[]-->
     <feature>enterpriseBeansLite-4.0</feature>
     <feature>mdb-4.0</feature>
   </featureManager>
@@ -29,17 +25,23 @@
     <!--tag::connectionManager[]-->
     <connectionManager id="InventoryCM" maxPoolSize="400" minPoolSize="1"/>
     <!--end::connectionManager[]-->
-  <!--tag::jmsQueueConnectionFactory[]-->
+    <!--tag::jmsQueueConnectionFactory[]-->
     <jmsQueueConnectionFactory
-        connectionManagerRef="InventoryCM"
-        jndiName="InventoryQueueConnectionFactory">
-        <properties.wasJms
-            remoteServerAddress="${inventory.jms.host}:${inventory.jms.port}:BootstrapBasicMessaging" />
+          connectionManagerRef="InventoryCM"
+          jndiName="InventoryQueueConnectionFactory">
+      <properties.wmqjmsra
+            hostName="${ibmmq-hostname}"
+            port="${ibmmq-port}"
+            channel="${ibmmq-channel}"
+            queueManager="${ibmmq-queue-manager}"
+            userName="${ibmmq-username}"
+            password="${ibmmq-password}"
+            transportType="CLIENT" />
     </jmsQueueConnectionFactory>
-  <!--end::jmsQueueConnectionFactory[]-->
+    <!--end::jmsQueueConnectionFactory[]-->
   <!--tag::jmsQueue[]-->
     <jmsQueue id="InventoryQueue" jndiName="jms/InventoryQueue">
-        <properties.wasJms queueName="InventoryQueue"/>
+    <properties.wmqjmsra baseQueueName="${ibmmq-inventory-queue-name}"/>
     </jmsQueue>
   <!--end::jmsQueue[]-->
 

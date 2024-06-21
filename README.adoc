@@ -44,8 +44,6 @@ image::architecture.png[Application architecture where system and inventory serv
 == Additional prerequisites
 If you’re focusing on sections other than *Using IBM MQ*, you can move forward without running Docker and skip this part.
 
-IBM MQ container is required to run if you are using Linux.
-
 Before you begin, you need to install Docker if it is not already installed. For installation instructions, refer to the https://docs.docker.com/get-docker/[official Docker documentation^]. You will build and run the application in Docker containers.
 
 Make sure to start your Docker daemon before you proceed.
@@ -129,10 +127,7 @@ SystemService.java
 include::finish/system/src/main/java/io/openliberty/guides/system/SystemService.java[]
 ----
 
-The `SystemService` class contains a `Publisher` method that is called [hotspot=sendSystemLoad file=0]`sendSystemLoad()`, which calculates and returns the average system load. The [hotspot=createProducer file=0]`context.createProducer().send()` method publishes its calculation as a message on a topic in the Jakarta messaging system. The [hotspot=schedule file=0]`@Schedule` annotation on the [hotspot=sendSystemLoad file=0]`sendSystemLoad()` method is used to set the frequency of how often the system service publishes the calculation to the event stream.
-
-The messages are transported between the service and the messaging system through a queue called `systemLoad`. The [hotspot=schedule file=0]`@Schedule` annotation ensures the [hotspot=sendSystemLoad file=0]`sendSystemLoad()` method runs every 15 seconds.
-This method creates new SystemLoad object with the hostname and system load average, then sends this information to the specified queue using [hotspot=createProducer file=0]`context.createProducer().send()` method.
+The `SystemService` class contains a `Publisher` method that is called [hotspot=sendSystemLoad file=0]`sendSystemLoad()`, which calculates and returns the average system load. The [hotspot=createProducer file=0]`context.createProducer().send()` method publishes its calculation as a message on a topic in the Jakarta messaging system. The [hotspot=schedule file=0]`@Schedule` annotation on the [hotspot=sendSystemLoad file=0]`sendSystemLoad()` method sets the frequency at which the system service publishes the calculation to the event stream, ensuring it runs every 15 seconds. This method creates new `SystemLoad` object with the hostname and system load average, then sends this information to the specified queue using [hotspot=createProducer file=0]`context.createProducer().send()` method.
 
 // update server.xml
 [role='code_command hotspot file=1', subs="quotes"]
@@ -147,9 +142,9 @@ system/server.xml
 include::finish/system/src/main/liberty/config/server.xml[]
 ----
 
-Add the [hotspot=jms file=1]`jms` feature to the Liberty `server.xml` configuration file. This feature enables applications running on Liberty to provide Jakarta Messaging services. Add a [hotspot=connectionManager file=1]`connection manager` to handle connections for the inventory system. Then, configure a [hotspot=jmsQueueConnectionFactory file=1]`JMSQueueConnectionFactory` to use this connection manager and set its properties. Lastly, define a [hotspot=jmsQueue file=1]`JMS Queue` for the inventory system.
+Add the [hotspot=messaging3.1 file=1]`messaging-3.1` and [hotspot=messagingClient-3.0 file=1]`messagingClient-3.0` feature to the Liberty `server.xml` configuration file. This feature enables applications running on Liberty to provide Jakarta Messaging services. Add host and port variables for the [hotspot=jms file=1]`jms` service. Also, add a [hotspot=connectionManager file=1]`connectionManager` to handle connections for the inventory system. Then, define the [hotspot=jmsQueueConnectionFactory file=1]`JMSQueueConnectionFactory` element to use this connection manager and set its properties and the [hotspot=jmsQueue file=1]`jmsQueue` element for the inventory queue.
 
-If you want to learn more about configuration for the `jmsQueue` element and `jmsQueueConnectionFactory` element, see the https://openliberty.io/docs/latest/reference/config/jmsQueue.html[jmsQueue Server Properties^] and https://openliberty.io/docs/latest/reference/config/jmsQueueConnectionFactory.html[jmsQueueConnectionFactory Server Properties^].
+If you want to learn more about configuration for the `jmsQueue` element and `jmsQueueConnectionFactory` element, see the https://openliberty.io/docs/latest/reference/config/jmsQueue.html[jmsQueue^] and https://openliberty.io/docs/latest/reference/config/jmsQueueConnectionFactory.html[JMS Queue Connection Factory^].
 
 
 == Creating the consumer in the inventory microservice
@@ -287,14 +282,152 @@ mvn -pl system liberty:stop
 
 == Using IBM MQ - Optional
 
-If you are using Linux, you can continue this section.
+Now that the application is built and tested, deploy it using IBM MQ.
 
-* start IBM MQ on Linux
-* replace the server.xml of the system and inventory services
-* start dev mode for the system and inventory services
-* run the url
-* run test on inventory dev mode
-* tear down to stop IBM MQ and dev mode
+If you’re a Mac user, check out this website for a guide on building IBM-MQ container image before starting this section: https://community.ibm.com/community/user/integration/blogs/richard-coppen/2023/06/30/ibm-mq-9330-container-image-now-available-for-appl[How to build Mac IBM MQ container image^].
+
+After building the container image, you can find the image version:
+[role='command']
+```
+docker image | grep mq
+```
+If it builds successfully, you will see an image similar to `theibm-mqadvanced-server-dev:9.4.0.0-arm64`.
+
+// start IBM MQ on Linux
+If you're using Linux or Window, you can start from here.
+
+Start IBM MQ by running the following command on the command-line session:
+
+include::{common-includes}/os-tabs.adoc[]
+
+[.tab_content.windows_section.linux_section]
+--
+[role='command']
+```
+docker pull icr.io/ibm-messaging/mq:latest
+
+docker volume create qm1data
+
+docker run \
+--env LICENSE=accept --env MQ_QMGR_NAME=QM1 \
+--volume qm1data:/mnt/mqm \
+--publish 1414:1414 --publish 9443:9443 \
+--detach \
+--env MQ_APP_PASSWORD=passw0rd --env MQ_ADMIN_PASSWORD=passw0rd \
+--rm \
+--platform linux/amd64 \
+--name QM1 \
+icr.io/ibm-messaging/mq:latest
+```
+--
+
+[.tab_content.mac_section]
+--
+[role='command']
+```
+docker volume create qm1data
+
+docker run --env LICENSE=accept --env MQ_QMGR_NAME=QM1 --volume docker:/mnt/mqm --publish 1414:1414 --publish 9443:9443 --detach --env MQ_APP_PASSWORD=passw0rd --env MQ_ADMIN_PASSWORD=passw0rd --name QM1 ibm-mqadvanced-server-dev:9.4.0.0-arm64
+```
+--
+
+If the `IBM-MQ container` runs successfully, you can access https://localhost:9443/ibmmq/console[^].
+
+// replace the server.xml and pom.xml of the system and inventory services
+Next, replace the `pom.xml` files of both `system` and `inventory` services for IBM MQ configurations.
+
+[role='code_command hotspot file=0', subs="quotes"]
+----
+#Replace the `pom.xml` configuration file.#
+`system/src/main/liberty/config/pom.xml`
+----
+
+pom.xml
+[source, xml, linenums, role='code_column hide_tags=copyright']
+----
+include::ibmmq/system/pom.xml[]
+----
+
+Add property tags for [hotpot=liberty file=0]`Liberty IBM MQ container` to set up the connection to an IBM MQ server. It enables applications to send and receive messages through the IBM MQ system.
+
+
+Also, replace the `server.xml` files for both `system` and `inventory` services.
+
+[role='code_command hotspot file=1', subs="quotes"]
+----
+#Replace the system's `server.xml` configuration file.#
+`inventory/src/main/liberty/config/server.xml`
+----
+
+system/server.xml
+[source, xml, linenums, role='code_column hide_tags=copyright']
+----
+include::ibmmq/inventory/src/main/liberty/config/server.xml[]
+----
+
+Add variables for IBM MQ settings into [hotspot=jmsQueueConnectionFactory file=1]`jmsQueueConnectionFactory` configuration. Also, modify [hotspot=jmsQueue file=1]`jmsQueue` property to set the base queue name using a variable for the inventory queue name.
+
+[role='code_command hotspot file=2', subs="quotes"]
+----
+#Replace the inventory's `server.xml` configuration file.#
+`inventory/src/main/liberty/config/server.xml`
+----
+
+inventory/server.xml
+[source, xml, linenums, role='code_column hide_tags=copyright']
+----
+include::ibmmq/inventory/src/main/liberty/config/server.xml[]
+----
+
+Refine the [hotspot=jmsQueue file=2]`JmsQueue` and [hotspot=jmsActivationSpec file=2]`activation specification` for the inventory system, using variables for IBM MQ settings.
+
+// start dev mode for the system and inventory services
+Start the `inventory` service by running the following command in dev mode:
+[role='command']
+```
+mvn -pl inventory liberty:dev
+```
+
+Next, open another command-line session, navigate to the `finish` directory, and start the `system` service by using the following command:
+[role='command']
+```
+mvn -pl system liberty:dev
+```
+
+//run the url
+You can find the `inventory` and `system` services at the following URLs:
+
+* http://localhost:9080/inventory/systems
+
+//run test on inventory dev mode
+Since you've started Open Liberty in dev mode, you can run the tests by pressing the `enter/return` key from the command-line session where you started dev mode.
+
+Go to the command shell running `inventory` dev mode and press `enter/return`.
+
+If the tests pass, you see a similar output to the following example:
+
+[source, role='no_copy']
+----
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running it.io.openliberty.guides.inventory.InventoryEndpointIT
+[err] Runtime exception: RESTEASY004655: Unable to invoke request: java.net.UnknownHostException: badhostname: nodename nor servname provided, or not known
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.325 sec - in it.io.openliberty.guides.inventory.InventoryEndpointIT
+
+Results :
+
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0
+----
+
+// tear down to stop IBM MQ and dev mode
+When you’re finished trying out the IBM MQ, press `CTRL+C` in the command-line session. Alternatively, you can run the `docker stop` goal from the `finish` directory in another shell session. You can also delete all IBM MQ resources by running the `docker remove` commands:
+
+[role=command]
+```
+docker stop QM1
+docker volume remove qm1data
+```
 
 == Great work! You're done!
 
