@@ -25,7 +25,9 @@
                     wasJmsPort="7277"
                     wasJmsSSLPort="9101"/>
     <!--end::wasJmsEndpoint[]-->
+   <!--tag::connectionManager[]-->
     <connectionManager id="InventoryCM" maxPoolSize="400" minPoolSize="1"/>
+  <!--end::connectionManager[]-->
   <!--tag::messagingEngine[]-->
     <messagingEngine id="InventoryME">
         <queue id="InventoryQueue"

@@ -113,7 +113,24 @@ mvn -pl system liberty:stop
 
 Navigate to the `start` directory to begin.
 
-The `system` microservice is the producer of the messages that are published to the Jakarta messaging system as a stream of events. Every 15 seconds, the `system` microservice publishes an event that contains its calculation of the average system load (its CPU usage) for the last minute.
+When you run Open Liberty in https://openliberty.io/docs/latest/development-mode.html[dev mode^], dev mode listens for file changes and automatically recompiles and deploys your updates whenever you save a new change. Run the following goal to start Open Liberty in dev mode:
+
+//start dev mode
+[role='command']
+----
+mvn -pl system liberty:dev
+----
+After you see the following message, your Liberty instance is ready in dev mode:
+
+[role="no_copy"]
+----
+**************************************************************
+*    Liberty is running in dev mode.
+----
+
+Dev mode holds your command-line session to listen for file changes. Open another command-line session to continue, or open the project in your editor.
+
+The `system` microservice is the producer of the messages that are published to the Jakarta messaging system as a stream of events. Every 15 seconds, the `system` microservice publishes an event that contains its calculation of the average system load (CPU usage) for the last minute.
 
 [role="code_command hotspot file=0", subs="quotes"]
 ----
@@ -127,7 +144,7 @@ SystemService.java
 include::finish/system/src/main/java/io/openliberty/guides/system/SystemService.java[]
 ----
 
-The `SystemService` class contains a publisher method that is called [hotspot=sendSystemLoad file=0]`sendSystemLoad()`, which calculates and returns the average system load. The [hotspot=createProducer file=0]`send()` method publishes its calculation as a message on a topic in the Jakarta messaging system. This method creates new `SystemLoad` object with the hostname and system load average, then sends this information to the specified queue using [hotspot=createProducer file=0]`send()` method. The [hotspot=schedule file=0]`@Schedule` annotation on the [hotspot=sendSystemLoad file=0]`sendSystemLoad()` method sets the frequency at which the system service publishes the calculation to the event stream, ensuring it runs every 15 seconds.
+The `SystemService` class contains a publisher method that is called [hotspot=sendSystemLoad file=0]`sendSystemLoad()`, which calculates and returns the average system load. The [hotspot=createProducer file=0]`send()` method publishes its calculation as a message on a topic in the Jakarta messaging system. This method creates new `SystemLoad` object with the hostname and system load average, then sends this information to the specified queue. The [hotspot=schedule file=0]`@Schedule` annotation on the `sendSystemLoad()` method sets the frequency at which the system service publishes the calculation to the event stream, ensuring it runs every 15 seconds.
 
 // update server.xml
 [role='code_command hotspot file=1', subs="quotes"]
@@ -149,7 +166,6 @@ If you want to learn more about configuration for the `jmsQueue` element and `jm
 
 == Creating the consumer in the inventory microservice
 
-Navigate to the `start` directory to begin.
 ifdef::cloud-hosted[]
 ```bash
 cd /home/project/guide-jms-intro/start
@@ -162,7 +178,6 @@ When you run Open Liberty in https://openliberty.io/docs/latest/development-mode
 [role='command']
 ----
 mvn -pl inventory liberty:dev
-mvn -pl system liberty:dev
 ----
 After you see the following message, your Liberty instance is ready in dev mode:
 
@@ -171,6 +186,8 @@ After you see the following message, your Liberty instance is ready in dev mode:
 **************************************************************
 *    Liberty is running in dev mode.
 ----
+
+Dev mode holds your command-line session to listen for file changes. Open another command-line session to continue, or open the project in your editor.
 
 The `inventory` microservice records in its inventory the average system load information that it received from potentially multiple instances of the `system` service.
 
@@ -186,7 +203,7 @@ InventoryQueueListener.java
 ----
 include::finish/inventory/src/main/java/io/openliberty/guides/inventory/InventoryQueueListener.java[]
 ----
-The `inventory` microservice receives the message from the `system` microservice over the [hotspot=messageDriven file=0]`@MessageDriven` annotation. The InventoryQueueListener class contains a method called [hotspot=onMessage file=0]`onMessage()`, which processes the incoming messages, updates the data and logs the action. The [hotspot=systemLoad file=0]`systemLoad.fromjson()` method converts the hostname and the average system load information from JSON into strings so that this data can be logged.
+The `inventory` microservice receives the message from the `system` microservice over the [hotspot=messageDriven file=0]`@MessageDriven` annotation. The `InventoryQueueListener` class contains a method called [hotspot=onMessage file=0]`onMessage()`, which processes the incoming messages, updates the data and logs the action. The [hotspot=systemLoad file=0]`systemLoad.fromjson()` method converts the hostname and the average system load message from JSON into strings so that this data can be logged.
 
 // replace the server.xml and explain the JMS configration
 [role='code_command hotspot file=1', subs="quotes"]
@@ -201,7 +218,7 @@ inventory/server.xml
 include::finish/inventory/src/main/liberty/config/server.xml[]
 ----
 
-Add the [hotspot=wasJmsEndpoint file=1]`wasJmsEndpoint` to listen for message from the `InventoryQueue`. Then, configure a [hotspot=jmsQueueConnectionFactory file=1]`JMSQueueConnectionFactory` to use this connection manager and set properties for the JMS implementation. Lastly, define a [hotspot=jmsQueue file=1]`JMSQueue` for the inventory system and a [hotspot=jmsActivationSpec file=1]`JMSActivationSpec` to configures properties including the destination queue reference, destination type, and maximum concurrency.
+Add the [hotspot=wasJmsEndpoint file=1]`wasJmsEndpoint` to ensure that the application server is properly configured to listen and manage incoming JMS connections from any hosts. Set up the [hotspot=messagingEngine file=1]`messagingEngine` configuration to ensure that the application server can manage incoming message queues more effectively, assigning reliable and persistent destination for the `InventoryQueue`. Configure a [hotspot=jmsQueueConnectionFactory file=1]`JMSQueueConnectionFactory` to use the [hotspot=connectionManager file=1]`InventoryCM` and set properties for the JMS implementation. Define a [hotspot=jmsQueue file=1]`JMSQueue` for the inventory system and a [hotspot=jmsActivationSpec file=1]`JMSActivationSpec` to configures properties including the destination queue reference, destination type, and maximum concurrency.
 
 
 // =================================================================================================
@@ -213,7 +230,12 @@ include::{common-includes}/devmode-build.adoc[]
 
 You can find the `inventory` and `system` services at the following URLs:
 
-* http://localhost:9080/inventory/systems[http://localhost:9080/inventory/systems^]
+* http://localhost:9085/inventory/systems[http://localhost:9085/inventory/systems^]
+
+You can also use `curl` command to retrieve the hostname and systemLoad information from the `inventory/systems` server endpoint in another command line session:
+```
+curl http://localhost:9085/inventory/systems
+```
 
 == Testing the inventory application
 
