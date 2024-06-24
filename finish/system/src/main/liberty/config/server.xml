@@ -29,19 +29,19 @@
     <!--tag::connectionManager[]-->
     <connectionManager id="InventoryCM" maxPoolSize="400" minPoolSize="1"/>
     <!--end::connectionManager[]-->
-  <!--tag::jmsQueueConnectionFactory[]-->
+    <!--tag::jmsQueueConnectionFactory[]-->
     <jmsQueueConnectionFactory
         connectionManagerRef="InventoryCM"
         jndiName="InventoryQueueConnectionFactory">
         <properties.wasJms
             remoteServerAddress="${inventory.jms.host}:${inventory.jms.port}:BootstrapBasicMessaging" />
     </jmsQueueConnectionFactory>
-  <!--end::jmsQueueConnectionFactory[]-->
-  <!--tag::jmsQueue[]-->
+    <!--end::jmsQueueConnectionFactory[]-->
+    <!--tag::jmsQueue[]-->
     <jmsQueue id="InventoryQueue" jndiName="jms/InventoryQueue">
         <properties.wasJms queueName="InventoryQueue"/>
     </jmsQueue>
-  <!--end::jmsQueue[]-->
+    <!--end::jmsQueue[]-->
 
   <logging consoleLogLevel="INFO"/>
   <webApplication location="guide-jms-intro-system.war" contextRoot="/"/>

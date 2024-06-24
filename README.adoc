@@ -127,7 +127,7 @@ SystemService.java
 include::finish/system/src/main/java/io/openliberty/guides/system/SystemService.java[]
 ----
 
-The `SystemService` class contains a `Publisher` method that is called [hotspot=sendSystemLoad file=0]`sendSystemLoad()`, which calculates and returns the average system load. The [hotspot=createProducer file=0]`context.createProducer().send()` method publishes its calculation as a message on a topic in the Jakarta messaging system. The [hotspot=schedule file=0]`@Schedule` annotation on the [hotspot=sendSystemLoad file=0]`sendSystemLoad()` method sets the frequency at which the system service publishes the calculation to the event stream, ensuring it runs every 15 seconds. This method creates new `SystemLoad` object with the hostname and system load average, then sends this information to the specified queue using [hotspot=createProducer file=0]`context.createProducer().send()` method.
+The `SystemService` class contains a publisher method that is called [hotspot=sendSystemLoad file=0]`sendSystemLoad()`, which calculates and returns the average system load. The [hotspot=createProducer file=0]`send()` method publishes its calculation as a message on a topic in the Jakarta messaging system. This method creates new `SystemLoad` object with the hostname and system load average, then sends this information to the specified queue using [hotspot=createProducer file=0]`send()` method. The [hotspot=schedule file=0]`@Schedule` annotation on the [hotspot=sendSystemLoad file=0]`sendSystemLoad()` method sets the frequency at which the system service publishes the calculation to the event stream, ensuring it runs every 15 seconds.
 
 // update server.xml
 [role='code_command hotspot file=1', subs="quotes"]
@@ -142,9 +142,9 @@ system/server.xml
 include::finish/system/src/main/liberty/config/server.xml[]
 ----
 
-Add the [hotspot=messaging3.1 file=1]`messaging-3.1` and [hotspot=messagingClient-3.0 file=1]`messagingClient-3.0` feature to the Liberty `server.xml` configuration file. This feature enables applications running on Liberty to provide Jakarta Messaging services. Add host and port variables for the [hotspot=jms file=1]`jms` service. Also, add a [hotspot=connectionManager file=1]`connectionManager` to handle connections for the inventory system. Then, define the [hotspot=jmsQueueConnectionFactory file=1]`JMSQueueConnectionFactory` element to use this connection manager and set its properties and the [hotspot=jmsQueue file=1]`jmsQueue` element for the inventory queue.
+The [hotspot=messaging3.1 file=1]`messaging-3.1` and [hotspot=messagingClient-3.0 file=1]`messagingClient-3.0` features enable the applications running on Liberty to provide Jakarta Messaging services. Add a [hotspot=connectionManager file=1]`connectionManager` element to handle connections for the messaging server running on the `inventory` service. Define the [hotspot=jmsQueueConnectionFactory file=1]`jmsQueueConnectionFactory` element to use the [hotspot=connectionManager file=1]`InventoryCM`. Set up the required [hotspot=jms file=1]`remoteServerAddress` properties and the [hotspot=jmsQueue file=1]`jmsQueue` element for the inventory queue.
 
-If you want to learn more about configuration for the `jmsQueue` element and `jmsQueueConnectionFactory` element, see the https://openliberty.io/docs/latest/reference/config/jmsQueue.html[jmsQueue^] and https://openliberty.io/docs/latest/reference/config/jmsQueueConnectionFactory.html[JMS Queue Connection Factory^].
+If you want to learn more about configuration for the `jmsQueue` element and `jmsQueueConnectionFactory` element, see the https://openliberty.io/docs/latest/reference/config/jmsQueue.html[JMS Queue^] and https://openliberty.io/docs/latest/reference/config/jmsQueueConnectionFactory.html[JMS Queue Connection Factory^] documents respectively.
 
 
 == Creating the consumer in the inventory microservice

@@ -53,6 +53,7 @@ public class SystemService {
         }
         return hostname;
     }
+
     // tag::schedule[]
     @Schedule(second = "*/15", minute = "*", hour = "*", persistent = false)
     // end::schedule[]
