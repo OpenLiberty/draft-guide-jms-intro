@@ -32,7 +32,7 @@ public class InventoryQueueListener implements MessageListener {
     // tag::InventoryManager[]
     @Inject
     private InventoryManager manager;
-    // end::InventoryManager[]
+    //end::InventoryManager[]
 
     // tag::onMessage[]
     @Override
@@ -47,7 +47,7 @@ public class InventoryQueueListener implements MessageListener {
 
                 String hostname = systemLoad.hostname;
                 Double loadAverage = systemLoad.loadAverage;
-                // tag::InventoryManager[]
+                // tag::InventoryManagerUpdate[]
                 if (manager.getSystem(hostname).isPresent()) {
                     manager.updateCpuStatus(hostname, loadAverage);
                     logger.info("Host " + hostname + " was updated: " + loadAverage);
@@ -55,7 +55,7 @@ public class InventoryQueueListener implements MessageListener {
                     manager.addSystem(hostname, loadAverage);
                     logger.info("Host " + hostname + " was added: " + loadAverage);
                 }
-                // end::InventoryManager[]
+                // end::InventoryManagerUpdate[]
             } else {
                 logger.warning("Unsupported Message Type: " + message.getClass().getName());
             }
