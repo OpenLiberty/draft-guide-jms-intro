@@ -251,19 +251,13 @@ InventoryEndpointIT.java
 include::finish/inventory/src/test/java/it/io/openliberty/guides/inventory/InventoryEndpointIT.java[]
 ----
 
-The [hotspot=BeforeAll file=0]`@BeforeAll` annotation is placed on a method that runs before any of the test cases. In this case, the [hotspot=oneTimeSetup file=0]`oneTimeSetup()` method retrieves the port number for the Open Liberty and builds a base URL string that is used throughout the tests.
-
-The [hotspot=BeforeEach file=0]`@BeforeEach` and [hotspot=AfterEach file=0]`@AfterEach` annotations are placed on methods that run before and after every test case. These methods are generally used to perform any setup and teardown tasks. In this case, the [hotspot=setup file=0]`setup()` method creates a JAX-RS client, which makes HTTP requests to the `inventory` service. The [hotspot=teardown file=0]`teardown()` method simply destroys this client instance.
-
 See the following descriptions of the test cases:
 
-* [hotspot=testNonEmpty file=0]`testNonEmpty()` verifies that the host name and the load average for each system in the inventory are not empty.
+* [hotspot=testNonEmpty file=0]`testNonEmpty()` verifies that the hostname and the load average for each system in the inventory are not empty.
 
 * [hotspot=testValue file=0]`testValue()` verifies that the hostname and system load average returned by the system service match the ones stored in the inventory service and ensures they are not empty.
 
 * [hotspot=testUnknownHost file=0]`testUnknownHost()` verifies that an unknown host or a host that does not expose their JVM system properties is correctly handled as an error.
-
-To force these test cases to run in a particular order, annotate your [hotspot file=0]`InventoryEndpointIT` test class with the [hotspot=TestMethodOrder file=0]`@TestMethodOrder(MethodOrderer.OrderAnnotation.class)` annotation. [hotspot=TestMethodOrder file=0]`MethodOrderer.OrderAnnotation.class` runs test methods in numerical order, according to the values specified in the [hotspot=Order1 hotspot=Order2 hotspot=Order3 file=0]`@Order` annotation. Label your test cases with the [hotspot=Test1 hotspot=Test2 hotspot=Test3 file=0]`@Test` annotation so that they automatically run when your test class runs.
 
 // =================================================================================================
 // Running the tests
@@ -290,7 +284,7 @@ Tests run: 3, Failures: 0, Errors: 0, Skipped: 0
 
 The error messages are expected and result from a request to a bad or an unknown hostname. This request is made in the `testUnknownHost()` test from the `InventoryEndpointIT` integration test.
 
-When you are done checking out the service, stop the Liberty instance by pressing `CTRL+C` in each command-line sessions where you ran Liberty. Alternatively, you can run the `liberty:stop` goal from the `finish` directory in another shell session:
+When you are done checking out the service, stop the Liberty instance by pressing `CTRL+C` in each command-line sessions where you ran the `system` and `inventory` services.
 // stopping dev mode
 [role='command']
 ----
