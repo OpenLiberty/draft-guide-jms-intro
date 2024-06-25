@@ -33,17 +33,17 @@
     <jmsQueueConnectionFactory
         connectionManagerRef="InventoryCM"
         jndiName="InventoryQueueConnectionFactory">
-      <!--tag::jms[]-->
+      <!--tag::properties.wasJms[]-->
         <properties.wasJms
             remoteServerAddress="${inventory.jms.host}:${inventory.jms.port}:BootstrapBasicMessaging" />
-      <!--end::jms[]-->
+      <!--end::properties.wasJms[]-->
     </jmsQueueConnectionFactory>
     <!--end::jmsQueueConnectionFactory[]-->
     <!--tag::jmsQueue[]-->
     <jmsQueue id="InventoryQueue" jndiName="jms/InventoryQueue">
-      <!--tag::jms[]-->
+      <!--tag::properties.wasJms[]-->
         <properties.wasJms queueName="InventoryQueue"/>
-      <!--end::jms[]-->
+      <!--end::properties.wasJms[]-->
     </jmsQueue>
     <!--end::jmsQueue[]-->
 

@@ -24,12 +24,15 @@ import java.util.logging.Logger;
 // tag::messageDriven[]
 @MessageDriven(mappedName="jms/InventoryQueue")
 // end::messageDriven[]
+// tag::InventoryQueueListener[]
 public class InventoryQueueListener implements MessageListener {
 
     private static Logger logger = Logger.getLogger(InventoryQueueListener.class.getName());
 
+    // tag::InventoryManager[]
     @Inject
     private InventoryManager manager;
+    // end::InventoryManager[]
 
     // tag::onMessage[]
     @Override
@@ -44,7 +47,7 @@ public class InventoryQueueListener implements MessageListener {
 
                 String hostname = systemLoad.hostname;
                 Double loadAverage = systemLoad.loadAverage;
-
+                // tag::InventoryManager[]
                 if (manager.getSystem(hostname).isPresent()) {
                     manager.updateCpuStatus(hostname, loadAverage);
                     logger.info("Host " + hostname + " was updated: " + loadAverage);
@@ -52,6 +55,7 @@ public class InventoryQueueListener implements MessageListener {
                     manager.addSystem(hostname, loadAverage);
                     logger.info("Host " + hostname + " was added: " + loadAverage);
                 }
+                // end::InventoryManager[]
             } else {
                 logger.warning("Unsupported Message Type: " + message.getClass().getName());
             }
@@ -61,3 +65,4 @@ public class InventoryQueueListener implements MessageListener {
     }
     // end::onMessage[]
 }
+// end::InventoryQueueListener[]
