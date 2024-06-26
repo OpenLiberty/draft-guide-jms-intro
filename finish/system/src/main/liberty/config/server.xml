@@ -21,31 +21,29 @@
   <variable name="inventory.jms.host" defaultValue="localhost"/>
   <variable name="inventory.jms.port" defaultValue="7277"/>
   <!--end::jms[]-->
-  
-  <httpEndpoint host="*" httpPort="${http.port}"
-      httpsPort="${https.port}" id="defaultHttpEndpoint"/>
 
-    <!-- send message to Inventory queue -->
-    <!--tag::connectionManager[]-->
-    <connectionManager id="InventoryCM" maxPoolSize="400" minPoolSize="1"/>
-    <!--end::connectionManager[]-->
-    <!--tag::jmsQueueConnectionFactory[]-->
-    <jmsQueueConnectionFactory
-        connectionManagerRef="InventoryCM"
-        jndiName="InventoryQueueConnectionFactory">
-      <!--tag::properties.wasJms[]-->
-        <properties.wasJms
+  <httpEndpoint host="*" httpPort="${http.port}"
+                httpsPort="${https.port}" id="defaultHttpEndpoint"/>
+
+  <!-- send message to Inventory queue -->
+  <!--tag::connectionManager[]-->
+  <connectionManager id="InventoryCM" maxPoolSize="400" minPoolSize="1"/>
+  <!--end::connectionManager[]-->
+  <!--tag::jmsQueueConnectionFactory[]-->
+  <jmsQueueConnectionFactory
+          connectionManagerRef="InventoryCM"
+          jndiName="InventoryQueueConnectionFactory">
+    <!--tag::propertiesWasJms[]-->
+    <properties.wasJms
             remoteServerAddress="${inventory.jms.host}:${inventory.jms.port}:BootstrapBasicMessaging" />
-      <!--end::properties.wasJms[]-->
-    </jmsQueueConnectionFactory>
-    <!--end::jmsQueueConnectionFactory[]-->
-    <!--tag::jmsQueue[]-->
-    <jmsQueue id="InventoryQueue" jndiName="jms/InventoryQueue">
-      <!--tag::properties.wasJms[]-->
-        <properties.wasJms queueName="InventoryQueue"/>
-      <!--end::properties.wasJms[]-->
-    </jmsQueue>
-    <!--end::jmsQueue[]-->
+    <!--end::propertiesWasJms[]-->
+  </jmsQueueConnectionFactory>
+  <!--end::jmsQueueConnectionFactory[]-->
+  <!--tag::jmsQueue[]-->
+  <jmsQueue id="InventoryQueue" jndiName="jms/InventoryQueue">
+    <properties.wasJms queueName="InventoryQueue"/>
+  </jmsQueue>
+  <!--end::jmsQueue[]-->
 
   <logging consoleLogLevel="INFO"/>
   <webApplication location="guide-jms-intro-system.war" contextRoot="/"/>
