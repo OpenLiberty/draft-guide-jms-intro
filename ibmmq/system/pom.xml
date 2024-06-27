@@ -20,7 +20,7 @@
         <liberty.var.inventory.jms.host>localhost</liberty.var.inventory.jms.host>
         <liberty.var.inventory.jms.port>7277</liberty.var.inventory.jms.port>
         <!-- IBM MQ -->
-        <!--tag::liberty-->
+        <!-- tag::liberty[] -->
         <liberty.var.ibmmq-hostname>localhost</liberty.var.ibmmq-hostname>
         <liberty.var.ibmmq-port>1414</liberty.var.ibmmq-port>
         <liberty.var.ibmmq-channel>DEV.APP.SVRCONN</liberty.var.ibmmq-channel>
@@ -28,7 +28,7 @@
         <liberty.var.ibmmq-username>app</liberty.var.ibmmq-username>
         <liberty.var.ibmmq-password>passw0rd</liberty.var.ibmmq-password>
         <liberty.var.ibmmq-inventory-queue-name>DEV.QUEUE.1</liberty.var.ibmmq-inventory-queue-name>
-        <!--end::liberty-->
+        <!-- end::liberty[] -->
     </properties>
 
     <dependencies>

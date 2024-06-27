@@ -19,35 +19,35 @@
   <httpEndpoint host="*" httpPort="${http.port}" httpsPort="${https.port}" id="defaultHttpEndpoint"/>
 
     <!-- listen message from Inventory queue -->
-    <!--tag::wasJmsEndpoint[]-->
+    <!-- tag::wasJmsEndpoint[] -->
     <wasJmsEndpoint id="InboundJmsCommsEndpoint"
                     host="*"
                     wasJmsPort="7277"
                     wasJmsSSLPort="9101"/>
-    <!--end::wasJmsEndpoint[]-->
+    <!-- end::wasJmsEndpoint[]-->
     <connectionManager id="InventoryCM" maxPoolSize="400" minPoolSize="1"/>
-  <!--tag::messagingEngine[]-->
+  <!-- tag::messagingEngine[] -->
     <messagingEngine id="InventoryME">
         <queue id="InventoryQueue"
                forceReliability="ReliablePersistent"
                maxQueueDepth="5000"/>
     </messagingEngine>
-  <!--end::messagingEngine[]-->
+  <!-- end::messagingEngine[] -->
 
-  <!--tag::jmsQueueConnectionFactory[]-->
+  <!-- tag::jmsQueueConnectionFactory[] -->
     <jmsQueueConnectionFactory connectionManagerRef="InventoryCM"
                                jndiName="InventoryQueueConnectionFactory">
         <properties.wasJms/>
     </jmsQueueConnectionFactory>
-  <!--end::jmsQueueConnectionFactory[]-->
+  <!-- end::jmsQueueConnectionFactory[] -->
 
-  <!--tag::jmsQueue[]-->
+  <!-- tag::jmsQueue[] -->
     <jmsQueue id="InventoryQueue" jndiName="jms/InventoryQueue">
       <properties.wmqjmsra baseQueueName="${ibmmq-inventory-queue-name}"/>
     </jmsQueue>
-  <!--end::jmsQueue[]-->
+  <!-- end::jmsQueue[] -->
 
-  <!--tag::jmsActivationSpec[]-->
+  <!-- tag::jmsActivationSpec[] -->
     <jmsActivationSpec id="guide-jms-intro-inventory/InventoryQueueListener">
       <properties.wmqjmsra
             hostName="${ibmmq-hostname}"
@@ -60,7 +60,7 @@
             destinationRef="InventoryQueue"
             destinationType="jakarta.jms.Queue" />
     </jmsActivationSpec>
-  <!--end::jmsActivationSpec[]-->
+  <!-- end::jmsActivationSpec[] -->
     
   <logging consoleLogLevel="INFO"/>
   <webApplication location="guide-jms-intro-inventory.war" contextRoot="/"/>

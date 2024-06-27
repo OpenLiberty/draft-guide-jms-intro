@@ -16,6 +16,7 @@
         <liberty.var.http.port>9085</liberty.var.http.port>
         <liberty.var.https.port>9448</liberty.var.https.port>
         <!-- IBM MQ -->
+        <!-- tag::liberty[] -->
         <liberty.var.ibmmq-hostname>localhost</liberty.var.ibmmq-hostname>
         <liberty.var.ibmmq-port>1414</liberty.var.ibmmq-port>
         <liberty.var.ibmmq-channel>DEV.APP.SVRCONN</liberty.var.ibmmq-channel>
@@ -23,6 +24,7 @@
         <liberty.var.ibmmq-username>app</liberty.var.ibmmq-username>
         <liberty.var.ibmmq-password>passw0rd</liberty.var.ibmmq-password>
         <liberty.var.ibmmq-inventory-queue-name>DEV.QUEUE.1</liberty.var.ibmmq-inventory-queue-name>
+        <!-- end::liberty[] -->
     </properties>
     
     <dependencies>
