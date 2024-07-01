@@ -107,7 +107,7 @@ public class InventoryEndpointIT {
                 break;
             }
         }
-
+        assertNotNull(hostname, "Hostname should be set by the first test. (1)");
         response.close();
     }
     // end::testNonEmpty[]
@@ -120,7 +120,7 @@ public class InventoryEndpointIT {
     @Order(2)
     // end::Order2[]
     public void testValue() {
-        assertNotNull(hostname, "Hostname should be set by the first test.");
+        assertNotNull(hostname, "Hostname should be set by the first test. (2)");
 
         Response response =
             this.getResponse(baseUrl + INVENTORY_SYSTEMS + "/" + hostname);

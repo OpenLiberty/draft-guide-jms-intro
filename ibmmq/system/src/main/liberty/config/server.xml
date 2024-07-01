@@ -29,19 +29,23 @@
     <jmsQueueConnectionFactory
           connectionManagerRef="InventoryCM"
           jndiName="InventoryQueueConnectionFactory">
-      <properties.wmqjmsra
-            hostName="${ibmmq-hostname}"
-            port="${ibmmq-port}"
-            channel="${ibmmq-channel}"
-            queueManager="${ibmmq-queue-manager}"
-            userName="${ibmmq-username}"
-            password="${ibmmq-password}"
-            transportType="CLIENT" />
+      <!-- tag::properties.wmqjmsra[] -->
+        <properties.wmqjmsra
+              hostName="${ibmmq-hostname}"
+              port="${ibmmq-port}"
+              channel="${ibmmq-channel}"
+              queueManager="${ibmmq-queue-manager}"
+              userName="${ibmmq-username}"
+              password="${ibmmq-password}"
+              transportType="CLIENT" />
+      <!-- end::properties.wmqjmsra[] -->
     </jmsQueueConnectionFactory>
     <!-- end::jmsQueueConnectionFactory[] -->
   <!-- tag::jmsQueue[] -->
     <jmsQueue id="InventoryQueue" jndiName="jms/InventoryQueue">
-    <properties.wmqjmsra baseQueueName="${ibmmq-inventory-queue-name}"/>
+      <!-- tag::baseQueueName[] -->
+        <properties.wmqjmsra baseQueueName="${ibmmq-inventory-queue-name}"/>
+      <!-- end::baseQueueName[] -->
     </jmsQueue>
   <!-- end::jmsQueue[] -->
 
