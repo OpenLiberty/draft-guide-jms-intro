@@ -28,15 +28,12 @@ mvn -ntp -pl inventory failsafe:verify
 mvn -ntp -pl system liberty:stop
 mvn -ntp -pl inventory liberty:stop
 
+# IBM MQ test
+
 #cp system/pom.xml system/pom.xml.bak
 #cp inventory/pom.xml inventory/pom.xml.bak
 #cp system/src/main/liberty/config/server.xml system/src/main/liberty/config/server.xml.bak
 #cp inventory/src/main/liberty/config/server.xml inventory/src/main/liberty/config/server.xml.bak
-
-cp ../ibmmq/system/pom.xml system/pom.xml
-cp ../ibmmq/inventory/pom.xml inventory/pom.xml
-cp ../ibmmq/system/src/main/liberty/config/server.xml system/src/main/liberty/config/server.xml
-cp ../ibmmq/inventory/src/main/liberty/config/server.xml inventory/src/main/liberty/config/server.xml
 
 docker pull --platform linux/amd64 icr.io/ibm-messaging/mq:latest
 
@@ -62,7 +59,7 @@ icr.io/ibm-messaging/mq:latest
 mvn -ntp -pl inventory liberty:start
 sleep 10
 mvn -ntp -pl system liberty:start
-sleep 15
+sleep 20
 
 mvn -ntp -Dhttp.keepAlive=false \
     -Dmaven.wagon.http.pool=false \

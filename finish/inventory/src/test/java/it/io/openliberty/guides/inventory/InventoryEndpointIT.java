@@ -123,7 +123,7 @@ public class InventoryEndpointIT {
         assertNotNull(hostname, "Hostname should be set by the first test. (2)");
 
         Response response =
-            this.getResponse(baseUrl + INVENTORY_SYSTEMS + "/" + hostname);
+                this.getResponse(baseUrl + INVENTORY_SYSTEMS + "/" + hostname);
         this.assertResponse(baseUrl, response);
 
         JsonObject system = response.readEntity(JsonObject.class);
@@ -148,15 +148,15 @@ public class InventoryEndpointIT {
     // tag::testUnknownHost[]
     public void testUnknownHost() {
         Response badResponse = client
-            .target(baseUrl + INVENTORY_SYSTEMS + "/" + "badhostname")
-            .request(MediaType.APPLICATION_JSON).get();
+                .target(baseUrl + INVENTORY_SYSTEMS + "/" + "badhostname")
+                .request(MediaType.APPLICATION_JSON).get();
 
         assertEquals(404, badResponse.getStatus(),
-            "BadResponse expected status: 404. Response code not as expected.");
+                "BadResponse expected status: 404. Response code not as expected.");
 
         String stringObj = badResponse.readEntity(String.class);
         assertTrue(stringObj.contains("hostname does not exist."),
-            "badhostname is not a valid host but it didn't raise an error");
+                "badhostname is not a valid host but it didn't raise an error");
 
         badResponse.close();
     }
