@@ -30,20 +30,9 @@ mvn -ntp -pl inventory liberty:stop
 
 # IBM MQ test
 
-#cp system/pom.xml system/pom.xml.bak
-#cp inventory/pom.xml inventory/pom.xml.bak
-#cp system/src/main/liberty/config/server.xml system/src/main/liberty/config/server.xml.bak
-#cp inventory/src/main/liberty/config/server.xml inventory/src/main/liberty/config/server.xml.bak
-
 docker pull --platform linux/amd64 icr.io/ibm-messaging/mq:latest
 
 docker volume create qm1data
-
-#if [ "$(docker ps -aq -f name=QM1)" ]; then
-#        echo "Stopping and removing existing QM1 container..."
-#        docker stop QM1 || true
-#        docker rm QM1 || true
-#fi
 
 docker run \
 --env LICENSE=accept --env MQ_QMGR_NAME=QM1 \
@@ -71,13 +60,6 @@ mvn -ntp -pl inventory failsafe:verify
 mvn -ntp -pl system liberty:stop
 mvn -ntp -pl inventory liberty:stop
 
-#mv system/pom.xml.bak system/pom.xml
-#mv inventory/pom.xml.bak inventory/pom.xml
-#mv system/src/main/liberty/config/server.xml.bak system/src/main/liberty/config/server.xml
-#mv inventory/src/main/liberty/config/server.xml.bak inventory/src/main/liberty/config/server.xml
-#
-#rm system/pom.xml.bak
-#rm inventory/pom.xml.bak
-#rm system/src/main/liberty/config/server.xml.bak
-#rm inventory/src/main/liberty/config/server.xml.bak
+docker stop QM1
+docker volume remove qm1data
 
