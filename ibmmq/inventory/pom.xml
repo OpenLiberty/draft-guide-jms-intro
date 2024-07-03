@@ -93,13 +93,6 @@
                 <groupId>io.openliberty.tools</groupId>
                 <artifactId>liberty-maven-plugin</artifactId>
                 <version>3.10.2</version>
-                <configuration>
-                    <!-- devc config -->
-                    <containerRunOpts>
-                        -p 9085:9085
-                        --network=reactive-app
-                    </containerRunOpts>
-                </configuration>
             </plugin>
 
             <!-- Plugin to run unit tests -->
