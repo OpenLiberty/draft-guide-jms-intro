@@ -310,7 +310,8 @@ docker run \
 --volume qm1data:/mnt/mqm \
 --publish 1414:1414 --publish 9443:9443 \
 --detach \
---env MQ_APP_PASSWORD=passw0rd --env MQ_ADMIN_PASSWORD=passw0rd \
+--env MQ_APP_PASSWORD=passw0rd \
+--env MQ_ADMIN_PASSWORD=passw0rd \
 --rm \
 --platform linux/amd64 \
 --name QM1 \
@@ -338,7 +339,8 @@ docker run \
 --env MQ_QMGR_NAME=QM1 \
 --volume docker:/mnt/mqm \
 --publish 1414:1414 --publish 9443:9443 \
---detach --env MQ_APP_PASSWORD=passw0rd \
+--detach \
+--env MQ_APP_PASSWORD=passw0rd \
 --env MQ_ADMIN_PASSWORD=passw0rd \
 --name QM1 ibm-mqadvanced-server-dev:9.4.0.0-arm64
 ```
@@ -426,7 +428,7 @@ The defaultServer server is ready to run a smarter planet.
 You can access the `inventory` service by the http://localhost:9085/inventory/systems URL.
 
 //run test on inventory dev mode
-Go to the command shell running `inventory` dev mode and press `enter/return`. If the tests pass, you'll see similar output to the following example:
+Go to the command shell running `inventory` dev mode and press `enter/return` to run the tests. If the tests pass, you'll see similar output to the following example:
 
 [source, role='no_copy']
 ----

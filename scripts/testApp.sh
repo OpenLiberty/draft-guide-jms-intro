@@ -30,12 +30,32 @@ mvn -ntp -pl inventory liberty:stop
 
 # IBM MQ test
 
+cp ../ibmmq/system/pom.xml system/pom.xml
+cp ../ibmmq/inventory/pom.xml inventory/pom.xml
+cp ../ibmmq/system/src/main/liberty/config/server.xml system/src/main/liberty/config/server.xml
+cp ../ibmmq/inventory/src/main/liberty/config/server.xml inventory/src/main/liberty/config/server.xml
+
+mvn -ntp -Dhttp.keepAlive=false \
+    -Dmaven.wagon.http.pool=false \
+    -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 \
+    -pl system -q package liberty:create liberty:install-feature liberty:deploy
+
+mvn -ntp -Dhttp.keepAlive=false \
+    -Dmaven.wagon.http.pool=false \
+    -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 \
+    -pl inventory -q package liberty:create liberty:install-feature liberty:deploy
+
 docker pull --platform linux/amd64 icr.io/ibm-messaging/mq:latest
 
 docker volume create qm1data
 
+docker pull icr.io/ibm-messaging/mq:latest
+
+docker volume create qm1data
+
 docker run \
---env LICENSE=accept --env MQ_QMGR_NAME=QM1 \
+--env LICENSE=accept \
+--env MQ_QMGR_NAME=QM1 \
 --volume qm1data:/mnt/mqm \
 --publish 1414:1414 --publish 9443:9443 \
 --detach \
@@ -45,10 +65,13 @@ docker run \
 --name QM1 \
 icr.io/ibm-messaging/mq:latest
 
+sleep 10
+docker ps
+
 mvn -ntp -pl inventory liberty:start
 sleep 10
 mvn -ntp -pl system liberty:start
-sleep 20
+sleep 10
 
 mvn -ntp -Dhttp.keepAlive=false \
     -Dmaven.wagon.http.pool=false \
