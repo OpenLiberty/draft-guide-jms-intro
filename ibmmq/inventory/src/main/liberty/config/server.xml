@@ -61,6 +61,10 @@
             destinationType="jakarta.jms.Queue" />
     </jmsActivationSpec>
   <!-- end::jmsActivationSpec[] -->
+  <!-- tag::resourceAdapter[] -->
+  <resourceAdapter id="wmqjmsra"
+                   location="https://repo.maven.apache.org/maven2/com/ibm/mq/wmq.jakarta.jmsra/9.3.5.0/wmq.jakarta.jmsra-9.3.5.0.rar" />
+  <!-- end::resourceAdapter[] -->
     
   <logging consoleLogLevel="INFO"/>
   <webApplication location="guide-jms-intro-inventory.war" contextRoot="/"/>
