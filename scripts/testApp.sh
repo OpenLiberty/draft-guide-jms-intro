@@ -49,10 +49,6 @@ docker pull --platform linux/amd64 icr.io/ibm-messaging/mq:latest
 
 docker volume create qm1data
 
-docker pull icr.io/ibm-messaging/mq:latest
-
-docker volume create qm1data
-
 docker run \
 --env LICENSE=accept \
 --env MQ_QMGR_NAME=QM1 \
@@ -61,7 +57,6 @@ docker run \
 --detach \
 --env MQ_APP_PASSWORD=passw0rd --env MQ_ADMIN_PASSWORD=passw0rd \
 --rm \
---platform linux/amd64 \
 --name QM1 \
 icr.io/ibm-messaging/mq:latest
 
