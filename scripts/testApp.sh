@@ -45,7 +45,7 @@ mvn -ntp -Dhttp.keepAlive=false \
     -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 \
     -pl inventory -q package liberty:create liberty:install-feature liberty:deploy
 
-docker pull --platform linux/amd64 icr.io/ibm-messaging/mq:latest
+docker pull icr.io/ibm-messaging/mq:latest
 
 docker volume create qm1data
 
