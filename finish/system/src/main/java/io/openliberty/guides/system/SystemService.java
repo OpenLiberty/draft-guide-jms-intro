@@ -40,8 +40,10 @@ public class SystemService {
     @JMSConnectionFactory("InventoryQueueConnectionFactory")
     private JMSContext context;
 
+    //tag::jms/InventoryQueue[]
     @Resource(lookup = "jms/InventoryQueue")
     private Queue queue;
+    //end::jms/InventoryQueue[]
 
     private static String getHostname() {
         if (hostname == null) {
@@ -53,13 +55,19 @@ public class SystemService {
         }
         return hostname;
     }
+
     // tag::schedule[]
     @Schedule(second = "*/15", minute = "*", hour = "*", persistent = false)
     // end::schedule[]
     // tag::sendSystemLoad[]
     public void sendSystemLoad() {
-      SystemLoad systemLoad = new SystemLoad(getHostname(), Double.valueOf(OS_MEAN.getSystemLoadAverage()));
+        //tag::SystemLoad[]
+      SystemLoad systemLoad = new SystemLoad(getHostname(),
+              Double.valueOf(OS_MEAN.getSystemLoadAverage()));
+        //end::SystemLoad[]
+      //tag::createProducer[]
       context.createProducer().send(queue, systemLoad.toString());
+      //end::createProducer[]
       logger.info(systemLoad.toString());   
      }
     // end::sendSystemLoad[]

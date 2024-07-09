@@ -24,40 +24,48 @@
                   host="*"
                   wasJmsPort="7277"
                   wasJmsSSLPort="9101"/>
-  <!-- end::wasJmsEndpoint[] -->
-  <!-- tag::connectionManager[] -->
+  <!-- end::wasJmsEndpoint[]-->
   <connectionManager id="InventoryCM" maxPoolSize="400" minPoolSize="1"/>
-  <!-- end::connectionManager[] -->
   <!-- tag::messagingEngine[] -->
   <messagingEngine id="InventoryME">
-    <queue id="InventoryQueue"
-           forceReliability="ReliablePersistent"
-           maxQueueDepth="5000"/>
+      <queue id="InventoryQueue"
+             forceReliability="ReliablePersistent"
+             maxQueueDepth="5000"/>
   </messagingEngine>
   <!-- end::messagingEngine[] -->
 
   <!-- tag::jmsQueueConnectionFactory[] -->
   <jmsQueueConnectionFactory connectionManagerRef="InventoryCM"
                              jndiName="InventoryQueueConnectionFactory">
-    <properties.wasJms/>
+      <properties.wasJms/>
   </jmsQueueConnectionFactory>
   <!-- end::jmsQueueConnectionFactory[] -->
 
   <!-- tag::jmsQueue[] -->
   <jmsQueue id="InventoryQueue" jndiName="jms/InventoryQueue">
-    <properties.wasJms queueName="InventoryQueue"/>
+    <properties.wmqjmsra baseQueueName="${ibmmq-inventory-queue-name}"/>
   </jmsQueue>
   <!-- end::jmsQueue[] -->
 
   <!-- tag::jmsActivationSpec[] -->
   <jmsActivationSpec id="guide-jms-intro-inventory/InventoryQueueListener">
-    <properties.wasJms
-            destinationRef="InventoryQueue"
-            destinationType="jakarta.jms.Queue"
-            maxConcurrency="200"/>
+    <properties.wmqjmsra
+          hostName="${ibmmq-hostname}"
+          port="${ibmmq-port}"
+          channel="${ibmmq-channel}"
+          queueManager="${ibmmq-queue-manager}"
+          userName="${ibmmq-username}"
+          password="${ibmmq-password}"
+          transportType="CLIENT"
+          destinationRef="InventoryQueue"
+          destinationType="jakarta.jms.Queue" />
   </jmsActivationSpec>
   <!-- end::jmsActivationSpec[] -->
-
+  <!-- tag::resourceAdapter[] -->
+  <resourceAdapter id="wmqjmsra"
+                   location="https://repo.maven.apache.org/maven2/com/ibm/mq/wmq.jakarta.jmsra/9.3.5.0/wmq.jakarta.jmsra-9.3.5.0.rar" />
+  <!-- end::resourceAdapter[] -->
+    
   <logging consoleLogLevel="INFO"/>
   <webApplication location="guide-jms-intro-inventory.war" contextRoot="/"/>
 </server>

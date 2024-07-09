@@ -34,9 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
-// tag::TestMethodOrder[]
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-// end::TestMethodOrder[]
 public class InventoryEndpointIT {
 
     private static String port;
@@ -47,42 +45,26 @@ public class InventoryEndpointIT {
 
     private final String INVENTORY_SYSTEMS = "inventory/systems";
 
-    // tag::BeforeAll[]
     @BeforeAll
-    // end::BeforeAll[]
-    // tag::oneTimeSetup[]
     public static void oneTimeSetup() {
         port = System.getProperty("http.port");
         baseUrl = "http://localhost:" + port + "/";
     }
-    // end::oneTimeSetup[]
 
-    // tag::BeforeEach[]
     @BeforeEach
-    // end::BeforeEach[]
-    // tag::setup[]
     public void setup() {
         client = ClientBuilder.newClient();
     }
-    // end::setup[]
 
-    // tag::AfterEach[]
     @AfterEach
-    // end::AfterEach[]
-    // tag::teardown[]
     public void teardown() {
         client.close();
     }
-    // end::teardown[]
 
 
     // tag::tests[]
-    // tag::Test1[]
     @Test
-    // end::Test1[]
-    // tag::Order1[]
     @Order(1)
-    // end::Order1[]
     // tag::testNonEmpty[]
     public void testNonEmpty() {
         Response response = this.getResponse(baseUrl + INVENTORY_SYSTEMS);
@@ -107,23 +89,19 @@ public class InventoryEndpointIT {
                 break;
             }
         }
-        assertNotNull(hostname, "Hostname should be set by the first test. (1)");
+
         response.close();
     }
     // end::testNonEmpty[]
 
     // tag::testValue[]
-    // tag::Test2[]
     @Test
-    // end::Test2[]
-    // tag::Order2[]
     @Order(2)
-    // end::Order2[]
     public void testValue() {
-        assertNotNull(hostname, "Hostname should be set by the first test. (2)");
+        assertNotNull(hostname, "Hostname should be set by the first test.");
 
         Response response =
-                this.getResponse(baseUrl + INVENTORY_SYSTEMS + "/" + hostname);
+            this.getResponse(baseUrl + INVENTORY_SYSTEMS + "/" + hostname);
         this.assertResponse(baseUrl, response);
 
         JsonObject system = response.readEntity(JsonObject.class);
@@ -139,24 +117,20 @@ public class InventoryEndpointIT {
     }
     // end::testValue[]
 
-    // tag::Test3[]
     @Test
-    // end::Test3[]
-    // tag::Order3[]
     @Order(3)
-    // end::Order3[]
     // tag::testUnknownHost[]
     public void testUnknownHost() {
         Response badResponse = client
-                .target(baseUrl + INVENTORY_SYSTEMS + "/" + "badhostname")
-                .request(MediaType.APPLICATION_JSON).get();
+            .target(baseUrl + INVENTORY_SYSTEMS + "/" + "badhostname")
+            .request(MediaType.APPLICATION_JSON).get();
 
         assertEquals(404, badResponse.getStatus(),
-                "BadResponse expected status: 404. Response code not as expected.");
+            "BadResponse expected status: 404. Response code not as expected.");
 
         String stringObj = badResponse.readEntity(String.class);
         assertTrue(stringObj.contains("hostname does not exist."),
-                "badhostname is not a valid host but it didn't raise an error");
+            "badhostname is not a valid host but it didn't raise an error");
 
         badResponse.close();
     }

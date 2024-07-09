@@ -10,7 +10,7 @@
 :page-duration: 30 minutes
 :page-releasedate: 2024-08-29
 :page-description: Learn how to produce and consume messages in Java microservices by using Jakarta Messaging with Liberty Messaging Server, Liberty Messaging Server Client, and IBM MQ.
-:page-tags: ['jakartaee']
+:page-tags: ['jakarta-ee']
 :page-permalink: /guides/{projectid}
 :imagesdir: /img/guide/{projectid}
 :page-related-guides: ['jakarta-websocket']
@@ -27,88 +27,437 @@ NOTE: This repository contains the guide documentation source. To view the guide
 Learn how to produce and consume messages in Java microservices by using Jakarta Messaging with Liberty Messaging Server, Liberty Messaging Server Client, and IBM MQ.
 
 == What you'll learn
+You will learn how to communicate Java services by using Jakarta Messaging with Liberty Messaging Server, Liberty Messaging Server Client, and IBM MQ. You will use a Jakarta Messaging system to handle the asynchronous messages that are sent and received between the microservices as streams of events.
 
-Introduction
+You'll also explore the configuration and use of Liberty Messaging Server, along with examples of message production and consumption with Liberty Messaging Server Client. Additionally, you will discover how to use IBM MQ for Jakarta Messaging.
 
-- explain what is JMS
-- describe the application
+In this guide, you will use Jakarta Messaging APIs to build the application and implement a messaging solution that enables communication between different parts of Java microservices. Jakarta Messaging makes it easy to write and configure your application to send, receive, and process the events efficiently.
 
+*What is Jakarta Messaging?*
+
+Jakarta Messaging provides an easy way to asynchronously send, receive, and process messages that are received as continuous streams of events. By integrating Jakarta Messaging with Open Liberty, you can easily configure and manage message producers and consumers within your Java microservices. You simply use the Jakarta Messaging API to annotate methods in your application beans, and Open Liberty handles the communication infrastructure, ensuring messages are reliably exchanged. This integration allows your services to connect easily with external messaging systems, such as IBM MQ.
+
+The application in this guide consists of two microservices, `system` and `inventory`. Every 15 seconds, the `system` microservice calculates and publishes an event that contains its current average system load. The `inventory` microservice subscribes to that information so that it can keep an updated list of all the systems and their current system loads. The current inventory of systems can be accessed via the `/systems` REST endpoint. You'll create the `system` and `inventory` microservices using Java Message System.
 
 image::architecture.png[Application architecture where system and inventory services use the Jakarta Messaging to communicate.,align="center"]
 
-
 == Additional prerequisites
+If you’re focusing on sections other than *Using IBM MQ*, you can move forward without running Docker and skip this part.
 
-Docker - copy from the docker guide
+Before you begin, you need to install Docker if it is not already installed. For installation instructions, refer to the https://docs.docker.com/get-docker/[official Docker documentation^]. You will build and run the application in Docker containers.
 
+Make sure to start your Docker daemon before you proceed.
 // =================================================================================================
 // Getting started
 // =================================================================================================
 [role='command']
 include::{common-includes}/gitclone.adoc[]
+// =================================================================================================
+// Try what you'll build
+// =================================================================================================
 
 === Try what you'll build
 
-Polish the following instruction.
+The `finish` directory in the root of this guide contains the finished application. Give it a try before you proceed.
 
-Navigate to the finish directory.
+To try out the application, first go to the `finish` directory and run the following Maven goal to build and install the `models` module.
 ```
 cd finish
-```
-
-Build and install the models
-```
 mvn -pl models clean install
 ```
 
-Start `inventory` service in dev mode:
+Start the `inventory` service by running the following command:
 ```
 mvn -pl inventory liberty:run
 ```
 
-Start `system` service in dev mode:
+Next, open another command-line session, navigate to the `finish` directory, and start the `system` service by using the following command:
 ```
 mvn -pl system liberty:run
 ```
 
-Visit http://localhost:9085/health or try out http://localhost:9085/inventory/systems
+After you see the following message, your Liberty instances are ready:
+[role="no_copy"]
+----
+The defaultServer server is ready to run a smarter planet.
+----
 
-Get
+Visit the http://localhost:9085/health[^] URL to confirm that the `inventory` microservice is up and running.
+
+When both the liveness and readiness health checks are up, go to the http://localhost:9085/inventory/systems[^] URL to access the `inventory` microservice. You see the CPU systemLoad property for all the systems:
+
+[source, role='no_copy']
+----
+{
+   "hostname": <your hostname>,
+   "systemLoad": 2.25927734375
+}
+----
+
+You can revisit the http://localhost:9085/inventory/systems[^] URL after a while, and you will notice the CPU `systemLoad` property for the systems changed.
+
+You can also use `curl` command to retrieve the hostname and systemLoad information from the `inventory/systems` server endpoint in another command line session:
 ```
 curl http://localhost:9085/inventory/systems
 ```
 
+After you are finished checking out the application, stop the Liberty instance by pressing `CTRL+C` in each command-line sessions where you ran Liberty. Alternatively, you can run the `liberty:stop` goal from the `finish` directory in another shell session:
+// stopping dev mode
+[role='command']
+----
+mvn -pl inventory liberty:stop
+mvn -pl system liberty:stop
+----
+
 == Creating the message producer in the system service 
 
-- start the dev mode
-- create and explain SystemService class
-- replace the server.xml and explain the JMS configration
+Navigate to the `start` directory to begin.
+
+When you run Open Liberty in https://openliberty.io/docs/latest/development-mode.html[dev mode^], dev mode listens for file changes and automatically recompiles and deploys your updates whenever you save a new change. Run the following goal to start Open Liberty in dev mode:
+
+//start dev mode
+[role='command']
+----
+mvn -pl system liberty:dev
+----
+After you see the following message, your Liberty instance is ready in dev mode:
+
+[role="no_copy"]
+----
+**************************************************************
+*    Liberty is running in dev mode.
+----
+
+Dev mode holds your command-line session to listen for file changes. Open another command-line session to continue, or open the project in your editor.
+
+The `system` microservice is the producer of the messages that are published to the Jakarta messaging system as a stream of events. Every 15 seconds, the `system` microservice publishes an event that contains its calculation of the average system load (CPU usage) for the last minute.
+
+[role="code_command hotspot file=0", subs="quotes"]
+----
+#Create the `SystemService` class.#
+`system/src/main/java/io/openliberty/guides/system/SystemService.java`
+----
+
+SystemService.java
+[source, Java, linenums, role='code_column hide_tags=copyright']
+----
+include::finish/system/src/main/java/io/openliberty/guides/system/SystemService.java[]
+----
+The `SystemService` class contains the [hotspot=sendSystemLoad file=0]`sendSystemLoad()` method that calculates the average system load, creates a [hotspot=SystemLoad file=0]`SystemLoad` object, and publishes the object as a message by using the [hotspot=createProducer file=0]`send()` API to the [hotspot=jms/InventoryQueue file=0]`jms/InventoryQueue` queue running in the Jakarta messaging system. The [hotspot=schedule file=0]`@Schedule` annotation on the `sendSystemLoad()` method sets the frequency at which the system service publishes the calculation to the event stream, ensuring it runs every 15 seconds.
+
+// update server.xml
+[role='code_command hotspot file=1', subs="quotes"]
+----
+#Replace the system's `server.xml` configuration file.#
+`system/src/main/liberty/config/server.xml`
+----
+
+system/server.xml
+[source, xml, linenums, role='code_column hide_tags=copyright']
+----
+include::finish/system/src/main/liberty/config/server.xml[]
+----
+
+The [hotspot=messaging3.1 file=1]`messaging-3.1` and [hotspot=messagingClient-3.0 file=1]`messagingClient-3.0` features enable the applications running on Liberty to provide Jakarta Messaging services. Add a [hotspot=connectionManager file=1]`connectionManager` element to handle connections for the messaging server running on the `inventory` service. Define the [hotspot=jmsQueueConnectionFactory file=1]`jmsQueueConnectionFactory` element to use the [hotspot=connectionManager file=1]`InventoryCM` and set up the required [hotspot=jms hotspot=propertiesWasJms file=1]`remoteServerAddress` properties. Use the [hotspot=jmsQueue file=1]`jmsQueue` element to define the inventory queue.
+
+If you want to learn more about configuration for the `jmsQueue` element and `jmsQueueConnectionFactory` element, see the https://openliberty.io/docs/latest/reference/config/jmsQueue.html[JMS Queue^] and https://openliberty.io/docs/latest/reference/config/jmsQueueConnectionFactory.html[JMS Queue Connection Factory^] documents respectively.
+
 
 == Creating the consumer in the inventory microservice
 
-- start the dev mode
-- Create and explain InventoryQueueListener class
-- replace the server.xml and explain the JMS configration
+ifdef::cloud-hosted[]
+```bash
+cd /home/project/guide-jms-intro/start
+```
+endif::[]
 
-== Running the application
+Run the following goal to start Open Liberty in dev mode:
+//start dev mode
+[role='command']
+----
+mvn -pl inventory liberty:dev
+----
+After you see the following message, your Liberty instance is ready in dev mode:
 
-- similar to the https://openliberty.io/guides/cdi-intro.html#running-the-application
+[role="no_copy"]
+----
+**************************************************************
+*    Liberty is running in dev mode.
+----
+
+The `inventory` microservice records in its inventory the average system load information that it received from potentially multiple instances of the `system` service.
+
+// Create and explain InventoryQueueListener class
+[role="code_command hotspot file=0", subs="quotes"]
+----
+#Create the `InventoryQueueListener` class.#
+`inventory/src/main/java/io/openliberty/guides/inventory/InventoryQueueListener.java`
+----
+
+InventoryQueueListener.java
+[source, Java, linenums, role='code_column hide_tags=copyright']
+----
+include::finish/inventory/src/main/java/io/openliberty/guides/inventory/InventoryQueueListener.java[]
+----
+The `inventory` microservice receives the messages from the `system` microservice. Implement the [hotspot=InventoryQueueListener file=0]`InventoryQueueListener` class with the `MessageListener` interface and annotate with [hotspot=messageDriven file=0]`@MessageDriven` for listening the `jms/InventoryQueue` queue. Override the [hotspot=onMessage file=0]`onMessage()` method that processes the incoming messages, updates the inventory by using the [hotspot=InventoryManager hotspot=InventoryManagerUpdate file=0]`InventoryManager` bean, and logs the action. Use the [hotspot=systemLoad file=0]`SystemLoad.fromJson()` method to convert the JSON message string to `SystemLoad` object.
+
+// replace the server.xml and explain the JMS configration
+[role='code_command hotspot file=1', subs="quotes"]
+----
+#Replace the inventory's `server.xml` configuration file.#
+`inventory/src/main/liberty/config/server.xml`
+----
+
+inventory/server.xml
+[source, xml, linenums, role='code_column hide_tags=copyright']
+----
+include::finish/inventory/src/main/liberty/config/server.xml[]
+----
+
+Add the [hotspot=wasJmsEndpoint file=1]`wasJmsEndpoint` element to ensure that the application server is properly configured to listen and manage incoming JMS connections from any hosts. Set up the [hotspot=messagingEngine file=1]`messagingEngine` configuration to ensure that the application server can manage incoming message queues more effectively, assigning reliable and persistent destination for the `InventoryQueue`. Configure a [hotspot=jmsQueueConnectionFactory file=1]`jmsQueueConnectionFactory` element to use the [hotspot=connectionManager file=1]`InventoryCM` and set properties for the JMS implementation. Define a [hotspot=jmsQueue file=1]`jmsQueue` element for the inventory system and a [hotspot=jmsActivationSpec file=1]`jmsActivationSpec` element to configure properties including the destination queue reference, destination type, and maximum concurrency.
+
+
+// =================================================================================================
+// Running the application
+// =================================================================================================
+
+[role='command']
+include::{common-includes}/devmode-build.adoc[]
+
+You can find the `inventory` and `system` services at the following URLs:
+
+* http://localhost:9085/inventory/systems[http://localhost:9085/inventory/systems^]
+
+You can also use `curl` command to retrieve the hostname and systemLoad information from the `inventory/systems` server endpoint in another command line session:
+```
+curl http://localhost:9085/inventory/systems
+```
 
 == Testing the inventory application
 
-- similar to https://openliberty.io/guides/cdi-intro.html#testing-the-inventory-application
-- explain the test
+//similar to https://openliberty.io/guides/cdi-intro.html#testing-the-inventory-application
+//explain the test
+While you can test your application manually, you should rely on automated tests because they trigger a failure whenever a code change introduces a defect. Because the application is a RESTful web service application, you can use JUnit and the RESTful web service Client API to write tests. In testing the functionality of the application, the scopes and dependencies are being tested.
+
+[role='code_command hotspot file=0', subs='quotes']
+----
+#Create the `InventoryEndpointIT` class.#
+`src/test/java/it/io/openliberty/guides/inventory/InventoryEndpointIT.java`
+----
+
+InventoryEndpointIT.java
+[source, Java, linenums, role='code_column hide_tags=copyright']
+----
+include::finish/inventory/src/test/java/it/io/openliberty/guides/inventory/InventoryEndpointIT.java[]
+----
+
+See the following descriptions of the test cases:
+
+* [hotspot=testNonEmpty file=0]`testNonEmpty()` verifies that the hostname and the load average for each system in the inventory are not empty.
+
+* [hotspot=testValue file=0]`testValue()` verifies that the hostname and system load average returned by the system service match the ones stored in the inventory service and ensures they are not empty.
+
+* [hotspot=testUnknownHost file=0]`testUnknownHost()` verifies that an unknown host or a host that does not expose their JVM system properties is correctly handled as an error.
+
+// =================================================================================================
+// Running the tests
+// =================================================================================================
 
 === Running the tests
 
-- similar to https://openliberty.io/guides/cdi-intro.html#running-the-tests
-- stop the dev mode of the system and inventory services
+Because you started Open Liberty in dev mode, you can run the tests by pressing the `enter/return` key from the command-line session where you started dev mode for the `inventory` service.
+
+If the tests pass, you see a similar output to the following example:
+
+[source, role='no_copy']
+----
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running it.io.openliberty.guides.inventory.InventoryEndpointIT
+[err] Runtime exception: RESTEASY004655: Unable to invoke request: java.net.UnknownHostException: badhostname: nodename nor servname provided, or not known
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.325 sec - in it.io.openliberty.guides.inventory.InventoryEndpointIT
+
+Results :
+
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0
+----
+
+The error messages are expected and result from a request to a bad or an unknown hostname. This request is made in the `testUnknownHost()` test from the `InventoryEndpointIT` integration test.
+
+When you are done checking out the service, stop the Liberty instance by pressing `CTRL+C` in each command-line sessions where you ran the `system` and `inventory` services.
 
 == Using IBM MQ - Optional
 
-- start IBM MQ on Linux
-- replace the server.xml of the system and inventory services
-- start dev mode for the system and inventory services
-- run the url
-- run test on inventory dev mode
-- tear down to stop IBM MQ and dev mode
+The application has been built and tested. In this section, you'll learn how to configure Liberty to use IBM MQ as the messaging server.
+
+// start IBM MQ on Linux
+Start IBM MQ by running the following command on the command-line session:
+
+include::{common-includes}/os-tabs.adoc[]
+
+[.tab_content.windows_section.linux_section]
+--
+[role='command']
+```
+docker pull icr.io/ibm-messaging/mq:latest
+
+docker volume create qm1data
+
+docker run \
+--env LICENSE=accept \
+--env MQ_QMGR_NAME=QM1 \
+--volume qm1data:/mnt/mqm \
+--publish 1414:1414 --publish 9443:9443 \
+--detach \
+--env MQ_APP_PASSWORD=passw0rd \
+--env MQ_ADMIN_PASSWORD=passw0rd \
+--rm \
+--platform linux/amd64 \
+--name QM1 \
+icr.io/ibm-messaging/mq:latest
+```
+--
+
+[.tab_content.mac_section]
+--
+If you’re a Mac user, check out this website for the https://community.ibm.com/community/user/integration/blogs/richard-coppen/2023/06/30/ibm-mq-9330-container-image-now-available-for-appl[How to build Mac IBM MQ container image^] guide on building IBM MQ container image.
+
+After building the container image, you can find the image version:
+[role='command']
+```
+docker image | grep mq
+```
+
+If it builds successfully, you will see an image similar to the `ibm-mqadvanced-server-dev:9.4.0.0-arm64`.
+[role='command']
+```
+docker volume create qm1data
+
+docker run \
+--env LICENSE=accept \
+--env MQ_QMGR_NAME=QM1 \
+--volume docker:/mnt/mqm \
+--publish 1414:1414 --publish 9443:9443 \
+--detach \
+--env MQ_APP_PASSWORD=passw0rd \
+--env MQ_ADMIN_PASSWORD=passw0rd \
+--name QM1 ibm-mqadvanced-server-dev:9.4.0.0-arm64
+```
+--
+
+If the `IBM MQ container` runs successfully, you can access https://localhost:9443/ibmmq/console[^].
+
+// replace the server.xml and pom.xml of the system and inventory services
+
+[role='code_command hotspot file=0', subs="quotes"]
+----
+#Replace the `pom.xml` file of the system service.#
+`system/pom.xml`
+----
+
+system/pom.xml
+[source, xml, linenums, role='code_column hide_tags=copyright']
+----
+include::ibmmq/system/pom.xml[]
+----
+Add the [hotspot=liberty file=0]`liberty.var.ibmmq-*` properties for the IBM MQ container. You can change to different values when you deploy the application on production environment without modifying the Liberty `server.xml` configuration file.
+
+[role='code_command hotspot file=1', subs="quotes"]
+----
+#Replace the `pom.xml` file of the inventory service.#
+`inventory/pom.xml`
+----
+
+inventory/pom.xml
+[source, xml, linenums, role='code_column hide_tags=copyright']
+----
+include::ibmmq/inventory/pom.xml[]
+----
+
+Add the [hotspot=liberty file=1]`liberty.var.ibmmq-*` properties for the IBM MQ container. You can change to different values when you deploy the application on production environment without modifying the Liberty `server.xml` configuration file.
+
+
+[role='code_command hotspot file=2', subs="quotes"]
+----
+#Replace the `server.xml` file of the system service.#
+`system/src/main/liberty/config/server.xml`
+----
+
+system/server.xml
+[source, xml, linenums, role='code_column hide_tags=copyright']
+----
+include::ibmmq/system/src/main/liberty/config/server.xml[]
+----
+Replace the `properties.wasJms` configuration by the [hotspot=properties.wmqjmsra file=2]`properties.wmqjmsra` configuration. All property values are defined in the `pom.xml` file that you have replaced in the step. Also, modify `jmsQueue` property to set the [hotspot=baseQueueName file=2]`baseQueueName` value with the `${ibmmq-inventory-queue-name}` variable. Add [hotspot=resourceAdapter file=2]`resourceAdapter` element to provide the RAR file that provides the IBM MQ classes for Java and JMS.
+
+[role='code_command hotspot file=3', subs="quotes"]
+----
+#Replace the `server.xml` file fo the inventory service.#
+`inventory/src/main/liberty/config/server.xml`
+----
+
+inventory/server.xml
+[source, xml, linenums, role='code_column hide_tags=copyright']
+----
+include::ibmmq/inventory/src/main/liberty/config/server.xml[]
+----
+
+Refine the [hotspot=jmsQueue file=3]`jmsQueue` and [hotspot=jmsActivationSpec file=3]`jmsActivationSpec` configurations with the variables for IBM MQ settings. Add [hotspot=resourceAdapter file=3]`resourceAdapter` element as done for the system service above.
+
+// start dev mode for the system and inventory services
+Start the `inventory` service by running the following command in dev mode:
+[role='command']
+```
+mvn -pl inventory liberty:dev
+```
+
+Next, open another command-line session, navigate to the `finish` directory, and start the `system` service by using the following command:
+[role='command']
+```
+mvn -pl system liberty:dev
+```
+
+After you see the following message, your Liberty instances are ready in dev mode:
+[role="no_copy"]
+----
+The defaultServer server is ready to run a smarter planet.
+----
+
+//run the url
+You can access the `inventory` service by the http://localhost:9085/inventory/systems URL.
+
+//run test on inventory dev mode
+Go to the command shell running `inventory` dev mode and press `enter/return` to run the tests. If the tests pass, you'll see similar output to the following example:
+
+[source, role='no_copy']
+----
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running it.io.openliberty.guides.inventory.InventoryEndpointIT
+[err] Runtime exception: RESTEASY004655: Unable to invoke request: java.net.UnknownHostException: badhostname: nodename nor servname provided, or not known
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.325 sec - in it.io.openliberty.guides.inventory.InventoryEndpointIT
+
+Results :
+
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0
+----
+
+//stopping dev mode
+After you are finished checking out the application, stop the Liberty instances by pressing `CTRL+C` in each command-line sessions where you ran `system` and `inventory` services.
+
+//tear down IBM MQ
+Run the following commands to stop the running IBM MQ container and clean up the `qm1data` volume:
+
+[role=command]
+```
+docker stop QM1
+docker volume remove qm1data
+```
+
+== Great work! You're done!
+
+You just developed a reactive Java application using Jakarta Messaging and Open Liberty.
+
+include::{common-includes}/attribution.adoc[subs="attributes"]
