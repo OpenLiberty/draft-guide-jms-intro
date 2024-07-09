@@ -18,48 +18,48 @@
 
   <httpEndpoint host="*" httpPort="${http.port}" httpsPort="${https.port}" id="defaultHttpEndpoint"/>
 
-    <!-- listen message from Inventory queue -->
-    <!-- tag::wasJmsEndpoint[] -->
-    <wasJmsEndpoint id="InboundJmsCommsEndpoint"
-                    host="*"
-                    wasJmsPort="7277"
-                    wasJmsSSLPort="9101"/>
-    <!-- end::wasJmsEndpoint[]-->
-    <connectionManager id="InventoryCM" maxPoolSize="400" minPoolSize="1"/>
+  <!-- listen message from Inventory queue -->
+  <!-- tag::wasJmsEndpoint[] -->
+  <wasJmsEndpoint id="InboundJmsCommsEndpoint"
+                  host="*"
+                  wasJmsPort="7277"
+                  wasJmsSSLPort="9101"/>
+  <!-- end::wasJmsEndpoint[]-->
+  <connectionManager id="InventoryCM" maxPoolSize="400" minPoolSize="1"/>
   <!-- tag::messagingEngine[] -->
-    <messagingEngine id="InventoryME">
-        <queue id="InventoryQueue"
-               forceReliability="ReliablePersistent"
-               maxQueueDepth="5000"/>
-    </messagingEngine>
+  <messagingEngine id="InventoryME">
+      <queue id="InventoryQueue"
+             forceReliability="ReliablePersistent"
+             maxQueueDepth="5000"/>
+  </messagingEngine>
   <!-- end::messagingEngine[] -->
 
   <!-- tag::jmsQueueConnectionFactory[] -->
-    <jmsQueueConnectionFactory connectionManagerRef="InventoryCM"
-                               jndiName="InventoryQueueConnectionFactory">
-        <properties.wasJms/>
-    </jmsQueueConnectionFactory>
+  <jmsQueueConnectionFactory connectionManagerRef="InventoryCM"
+                             jndiName="InventoryQueueConnectionFactory">
+      <properties.wasJms/>
+  </jmsQueueConnectionFactory>
   <!-- end::jmsQueueConnectionFactory[] -->
 
   <!-- tag::jmsQueue[] -->
-    <jmsQueue id="InventoryQueue" jndiName="jms/InventoryQueue">
-      <properties.wmqjmsra baseQueueName="${ibmmq-inventory-queue-name}"/>
-    </jmsQueue>
+  <jmsQueue id="InventoryQueue" jndiName="jms/InventoryQueue">
+    <properties.wmqjmsra baseQueueName="${ibmmq-inventory-queue-name}"/>
+  </jmsQueue>
   <!-- end::jmsQueue[] -->
 
   <!-- tag::jmsActivationSpec[] -->
-    <jmsActivationSpec id="guide-jms-intro-inventory/InventoryQueueListener">
-      <properties.wmqjmsra
-            hostName="${ibmmq-hostname}"
-            port="${ibmmq-port}"
-            channel="${ibmmq-channel}"
-            queueManager="${ibmmq-queue-manager}"
-            userName="${ibmmq-username}"
-            password="${ibmmq-password}"
-            transportType="CLIENT"
-            destinationRef="InventoryQueue"
-            destinationType="jakarta.jms.Queue" />
-    </jmsActivationSpec>
+  <jmsActivationSpec id="guide-jms-intro-inventory/InventoryQueueListener">
+    <properties.wmqjmsra
+          hostName="${ibmmq-hostname}"
+          port="${ibmmq-port}"
+          channel="${ibmmq-channel}"
+          queueManager="${ibmmq-queue-manager}"
+          userName="${ibmmq-username}"
+          password="${ibmmq-password}"
+          transportType="CLIENT"
+          destinationRef="InventoryQueue"
+          destinationType="jakarta.jms.Queue" />
+  </jmsActivationSpec>
   <!-- end::jmsActivationSpec[] -->
   <!-- tag::resourceAdapter[] -->
   <resourceAdapter id="wmqjmsra"

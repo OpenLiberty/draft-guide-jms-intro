@@ -21,33 +21,33 @@
   <httpEndpoint host="*" httpPort="${http.port}"
       httpsPort="${https.port}" id="defaultHttpEndpoint"/>
 
-    <!-- send message to Inventory queue -->
-    <!-- tag::connectionManager[] -->
-    <connectionManager id="InventoryCM" maxPoolSize="400" minPoolSize="1"/>
-    <!-- end::connectionManager[] -->
-    <!-- tag::jmsQueueConnectionFactory[] -->
-    <jmsQueueConnectionFactory
+  <!-- send message to Inventory queue -->
+  <!-- tag::connectionManager[] -->
+  <connectionManager id="InventoryCM" maxPoolSize="400" minPoolSize="1"/>
+  <!-- end::connectionManager[] -->
+  <!-- tag::jmsQueueConnectionFactory[] -->
+  <jmsQueueConnectionFactory
           connectionManagerRef="InventoryCM"
           jndiName="InventoryQueueConnectionFactory">
-      <!-- tag::properties.wmqjmsra[] -->
-        <properties.wmqjmsra
-              hostName="${ibmmq-hostname}"
-              port="${ibmmq-port}"
-              channel="${ibmmq-channel}"
-              queueManager="${ibmmq-queue-manager}"
-              userName="${ibmmq-username}"
-              password="${ibmmq-password}"
-              transportType="CLIENT" />
-      <!-- end::properties.wmqjmsra[] -->
-    </jmsQueueConnectionFactory>
+  <!-- tag::properties.wmqjmsra[] -->
+    <properties.wmqjmsra
+          hostName="${ibmmq-hostname}"
+          port="${ibmmq-port}"
+          channel="${ibmmq-channel}"
+          queueManager="${ibmmq-queue-manager}"
+          userName="${ibmmq-username}"
+          password="${ibmmq-password}"
+          transportType="CLIENT" />
+  <!-- end::properties.wmqjmsra[] -->
+  </jmsQueueConnectionFactory>
     <!-- end::jmsQueueConnectionFactory[] -->
-  <!-- tag::jmsQueue[] -->
-    <jmsQueue id="InventoryQueue" jndiName="jms/InventoryQueue">
-      <!-- tag::baseQueueName[] -->
-        <properties.wmqjmsra baseQueueName="${ibmmq-inventory-queue-name}"/>
-      <!-- end::baseQueueName[] -->
-    </jmsQueue>
-  <!-- end::jmsQueue[] -->
+<!-- tag::jmsQueue[] -->
+  <jmsQueue id="InventoryQueue" jndiName="jms/InventoryQueue">
+    <!-- tag::baseQueueName[] -->
+    <properties.wmqjmsra baseQueueName="${ibmmq-inventory-queue-name}"/>
+    <!-- end::baseQueueName[] -->
+  </jmsQueue>
+<!-- end::jmsQueue[] -->
 
   <!-- tag::resourceAdapter[] -->
   <resourceAdapter id="wmqjmsra"
