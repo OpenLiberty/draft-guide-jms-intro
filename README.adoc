@@ -42,17 +42,13 @@ The application in this guide consists of two microservices, `system` and `inven
 image::architecture.png[Application architecture where system and inventory services use the Jakarta Messaging to communicate.,align="center"]
 
 == Additional prerequisites
-<<<<<<< HEAD
-If you’re focusing on sections other than *Using IBM MQ*, you can move forward without running Docker and skip this part.
 
-Before you begin, you need to install Docker if it is not already installed. For installation instructions, refer to the https://docs.docker.com/get-docker/[official Docker documentation^]. You will build and run the application in Docker containers.
-=======
 If you’re focusing on sections other than the *Using IBM MQ* optional section, you can move forward without running Docker and skip this section.
 
 You need to install Docker if it is not already installed. For installation instructions, refer to the https://docs.docker.com/get-docker/[official Docker documentation^]. You will build and run the application in Docker containers.
->>>>>>> 17eb744b7609926082dc6e0c06aa3b55f2fcdb44
 
 Make sure to start your Docker daemon before you proceed.
+
 // =================================================================================================
 // Getting started
 // =================================================================================================
@@ -409,11 +405,7 @@ inventory/server.xml
 include::ibmmq/inventory/src/main/liberty/config/server.xml[]
 ----
 
-<<<<<<< HEAD
-Refine the [hotspot=jmsQueue file=3]`jmsQueue` and [hotspot=jmsActivationSpec file=3]`jmsActivationSpec` configurations with the variables for IBM MQ settings. Add [hotspot=resourceAdapter file=3]`resourceAdapter` element as done for the system service above.
-=======
 Refine the [hotspot=jmsQueue file=3]`jmsQueue` and [hotspot=jmsActivationSpec file=3]`jmsActivationSpec` configurations with the variables for IBM MQ settings. Add [hotspot=resourceAdapter file=3]`resourceAdapter` element as you did for the `system` service in above.
->>>>>>> 17eb744b7609926082dc6e0c06aa3b55f2fcdb44
 
 // start dev mode for the system and inventory services
 Start the `inventory` service by running the following command in dev mode:
