@@ -42,11 +42,13 @@ The application in this guide consists of two microservices, `system` and `inven
 image::architecture.png[Application architecture where system and inventory services use the Jakarta Messaging to communicate.,align="center"]
 
 == Additional prerequisites
+
 If you’re focusing on sections other than the *Using IBM MQ* optional section, you can move forward without running Docker and skip this section.
 
 You need to install Docker if it is not already installed. For installation instructions, refer to the https://docs.docker.com/get-docker/[official Docker documentation^]. You will build and run the application in Docker containers.
 
 Make sure to start your Docker daemon before you proceed.
+
 // =================================================================================================
 // Getting started
 // =================================================================================================
@@ -101,7 +103,7 @@ You can also use `curl` command to retrieve the hostname and systemLoad informat
 curl http://localhost:9085/inventory/systems
 ```
 
-After you are finished checking out the application, stop the Liberty instance by pressing `CTRL+C` in each command-line sessions where you ran Liberty. Alternatively, you can run the `liberty:stop` goal from the `finish` directory in another shell session:
+After you are finished checking out the application, stop the Liberty instance by pressing `CTRL+C` in each command-line session where you ran Liberty. Alternatively, you can run the `liberty:stop` goal from the `finish` directory in another shell session:
 // stopping dev mode
 [role='command']
 ----
@@ -214,7 +216,7 @@ inventory/server.xml
 include::finish/inventory/src/main/liberty/config/server.xml[]
 ----
 
-Add the [hotspot=wasJmsEndpoint file=1]`wasJmsEndpoint` element to ensure that the application server is properly configured to listen and manage incoming JMS connections from any hosts. Set up the [hotspot=messagingEngine file=1]`messagingEngine` configuration to ensure that the application server can manage incoming message queues more effectively, assigning reliable and persistent destination for the `InventoryQueue`. Configure a [hotspot=jmsQueueConnectionFactory file=1]`jmsQueueConnectionFactory` element to use the [hotspot=connectionManager file=1]`InventoryCM` and set properties for the JMS implementation. Define a [hotspot=jmsQueue file=1]`jmsQueue` element for the inventory system and a [hotspot=jmsActivationSpec file=1]`jmsActivationSpec` element to configure properties including the destination queue reference, destination type, and maximum concurrency.
+Add the [hotspot=wasJmsEndpoint file=1]`wasJmsEndpoint` element to ensure that the application server is properly configured to listen and manage incoming JMS connections from any hosts. Set up the [hotspot=messagingEngine file=1]`messagingEngine` configuration to ensure that the application server can manage incoming message queues more effectively, assigning a reliable and persistent destination for the `InventoryQueue`. Configure a [hotspot=jmsQueueConnectionFactory file=1]`jmsQueueConnectionFactory` element to use the [hotspot=connectionManager file=1]`InventoryCM` and set properties for the JMS implementation. Define a [hotspot=jmsQueue file=1]`jmsQueue` element for the inventory system and a [hotspot=jmsActivationSpec file=1]`jmsActivationSpec` element to configure properties including the destination queue reference, destination type, and maximum concurrency.
 
 
 // =================================================================================================
@@ -285,7 +287,7 @@ Tests run: 3, Failures: 0, Errors: 0, Skipped: 0
 
 The error messages are expected and result from a request to a bad or an unknown hostname. This request is made in the `testUnknownHost()` test from the `InventoryEndpointIT` integration test.
 
-When you are done checking out the service, stop the Liberty instance by pressing `CTRL+C` in each command-line sessions where you ran the `system` and `inventory` services.
+When you are done checking out the service, stop the Liberty instance by pressing `CTRL+C` in each command-line session where you ran the `system` and `inventory` services.
 
 == Using IBM MQ - Optional
 
