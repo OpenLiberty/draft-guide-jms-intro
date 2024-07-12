@@ -460,6 +460,6 @@ docker volume remove qm1data
 
 == Great work! You're done!
 
-You just developed a reactive Java application using Jakarta Messaging and Open Liberty.
+You just developed a Java cloud-native application that uses Jakarta Messaging to produce and consume messages in Open Liberty.
 
 include::{common-includes}/attribution.adoc[subs="attributes"]
