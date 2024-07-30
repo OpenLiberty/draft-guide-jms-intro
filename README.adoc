@@ -284,8 +284,6 @@ Results :
 Tests run: 3, Failures: 0, Errors: 0, Skipped: 0
 ----
 
-The error messages are expected and result from a request to a bad or an unknown hostname. This request is made in the `testUnknownHost()` test from the `InventoryEndpointIT` integration test.
-
 When you are done checking out the service, stop the Liberty instance by pressing `CTRL+C` in each command-line session where you ran the `system` and `inventory` services.
 
 == Using IBM MQ - Optional
