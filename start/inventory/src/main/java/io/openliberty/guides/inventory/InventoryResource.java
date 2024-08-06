@@ -14,7 +14,6 @@ package io.openliberty.guides.inventory;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -30,8 +29,6 @@ import jakarta.ws.rs.core.Response;
 @ApplicationScoped
 @Path("/inventory")
 public class InventoryResource {
-
-    private static Logger logger = Logger.getLogger(InventoryResource.class.getName());
 
     @Inject
     private InventoryManager manager;

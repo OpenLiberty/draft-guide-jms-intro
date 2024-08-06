@@ -11,12 +11,8 @@
 // end::copyright[]
 package io.openliberty.guides.inventory.health;
 
-import java.util.logging.Logger;
-
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.health.HealthCheck;
 import org.eclipse.microprofile.health.HealthCheckResponse;
 import org.eclipse.microprofile.health.Readiness;
@@ -24,9 +20,6 @@ import org.eclipse.microprofile.health.Readiness;
 @Readiness
 @ApplicationScoped
 public class InventoryReadinessCheck implements HealthCheck {
-
-    private static Logger logger = Logger.getLogger(
-        InventoryReadinessCheck.class.getName());
 
     @Override
     public HealthCheckResponse call() {
