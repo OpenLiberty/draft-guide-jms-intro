@@ -12,7 +12,6 @@
 package io.openliberty.guides.system.health;
 
 import java.net.Socket;
-import java.util.logging.Logger;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -25,9 +24,6 @@ import org.eclipse.microprofile.health.Readiness;
 @Readiness
 @ApplicationScoped
 public class SystemReadinessCheck implements HealthCheck {
-
-    private static Logger logger = Logger.getLogger(
-        SystemReadinessCheck.class.getName());
 
     @Inject
     @ConfigProperty(name = "inventory.jms.host", defaultValue = "localhost")
