@@ -53,7 +53,7 @@ public class SystemLoad {
     public String toString() {
         return JSONB.toJson(this);
     }
-    
+
     public static SystemLoad fromJson(String json) {
         return JSONB.fromJson(json, SystemLoad.class);
     }

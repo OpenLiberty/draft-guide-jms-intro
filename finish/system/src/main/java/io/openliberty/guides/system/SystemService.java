@@ -35,7 +35,7 @@ public class SystemService {
     private static String hostname = null;
 
     private static Logger logger = Logger.getLogger(SystemService.class.getName());
-    
+
     @Inject
     @JMSConnectionFactory("InventoryQueueConnectionFactory")
     private JMSContext context;
@@ -68,7 +68,7 @@ public class SystemService {
       //tag::createProducer[]
       context.createProducer().send(queue, systemLoad.toString());
       //end::createProducer[]
-      logger.info(systemLoad.toString());   
+      logger.info(systemLoad.toString());
      }
     // end::sendSystemLoad[]
 }

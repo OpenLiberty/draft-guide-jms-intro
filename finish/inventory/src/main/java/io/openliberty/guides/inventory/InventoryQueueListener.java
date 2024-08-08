@@ -22,12 +22,13 @@ import jakarta.jms.TextMessage;
 import java.util.logging.Logger;
 
 // tag::messageDriven[]
-@MessageDriven(mappedName="jms/InventoryQueue")
+@MessageDriven(mappedName = "jms/InventoryQueue")
 // end::messageDriven[]
 // tag::InventoryQueueListener[]
 public class InventoryQueueListener implements MessageListener {
 
-    private static Logger logger = Logger.getLogger(InventoryQueueListener.class.getName());
+    private static Logger logger =
+            Logger.getLogger(InventoryQueueListener.class.getName());
 
     // tag::InventoryManager[]
     @Inject
@@ -57,7 +58,8 @@ public class InventoryQueueListener implements MessageListener {
                 }
                 // end::InventoryManagerUpdate[]
             } else {
-                logger.warning("Unsupported Message Type: " + message.getClass().getName());
+                logger.warning(
+                    "Unsupported Message Type: " + message.getClass().getName());
             }
         } catch (JMSException e) {
             e.printStackTrace();
