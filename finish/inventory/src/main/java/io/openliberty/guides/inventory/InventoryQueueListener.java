@@ -46,14 +46,14 @@ public class InventoryQueueListener implements MessageListener {
                 // end::systemLoad[]
 
                 String hostname = systemLoad.hostname;
-                Double loadAverage = systemLoad.loadAverage;
+                Double recentLoad = systemLoad.recentLoad;
                 // tag::InventoryManagerUpdate[]
                 if (manager.getSystem(hostname).isPresent()) {
-                    manager.updateCpuStatus(hostname, loadAverage);
-                    logger.info("Host " + hostname + " was updated: " + loadAverage);
+                    manager.updateCpuStatus(hostname, recentLoad);
+                    logger.info("Host " + hostname + " was updated: " + recentLoad);
                 } else {
-                    manager.addSystem(hostname, loadAverage);
-                    logger.info("Host " + hostname + " was added: " + loadAverage);
+                    manager.addSystem(hostname, recentLoad);
+                    logger.info("Host " + hostname + " was added: " + recentLoad);
                 }
                 // end::InventoryManagerUpdate[]
             } else {

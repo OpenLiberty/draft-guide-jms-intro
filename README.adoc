@@ -37,7 +37,7 @@ In this guide, you will use Jakarta Messaging APIs to build the application and 
 
 Jakarta Messaging provides an easy way to asynchronously send, receive, and process messages that are received as continuous streams of events. By integrating Jakarta Messaging with Open Liberty, you can easily configure and manage message producers and consumers within your Java microservices. You simply use the Jakarta Messaging API to annotate methods in your application beans, and Open Liberty handles the communication infrastructure, ensuring messages are reliably exchanged. This integration allows your services to connect easily with external messaging systems, such as IBM MQ.
 
-The application in this guide consists of two microservices, `system` and `inventory`. Every 15 seconds, the `system` microservice calculates and publishes an event that contains its current average system load. The `inventory` microservice subscribes to that information so that it can keep an updated list of all the systems and their current system loads. The current inventory of systems can be accessed via the `/systems` REST endpoint. You'll create the `system` and `inventory` microservices using Java Message System.
+The application in this guide consists of two microservices, `system` and `inventory`. Every 15 seconds, the `system` microservice computes and publishes an event that contains the recent CPU load usage. The `inventory` microservice subscribes to that information so that it can keep an updated list of all the systems and their current system loads. The current inventory of systems can be accessed via the `/systems` REST endpoint. You'll create the `system` and `inventory` microservices using Java Message System.
 
 image::architecture.png[Application architecture where system and inventory services use the Jakarta Messaging to communicate.,align="center"]
 
@@ -92,7 +92,7 @@ When both the liveness and readiness health checks are up, go to the http://loca
 ----
 {
    "hostname": <your hostname>,
-   "systemLoad": 2.25927734375
+   "systemLoad": 6.037155240703536E-9
 }
 ----
 
@@ -132,7 +132,7 @@ After you see the following message, your Liberty instance is ready in dev mode:
 
 Dev mode holds your command-line session to listen for file changes. Open another command-line session to continue, or open the project in your editor.
 
-The `system` microservice is the producer of the messages that are published to the Jakarta messaging system as a stream of events. Every 15 seconds, the `system` microservice publishes an event that contains its calculation of the average system load (CPU usage) for the last minute.
+The `system` microservice is the producer of the messages that are published to the Jakarta messaging system as a stream of events. Every 15 seconds, the `system` microservice publishes an event that contains its calculation of the recent system load (CPU usage) for the last minute.
 
 [role="code_command hotspot file=0", subs="quotes"]
 ----
@@ -145,7 +145,7 @@ SystemService.java
 ----
 include::finish/system/src/main/java/io/openliberty/guides/system/SystemService.java[]
 ----
-The `SystemService` class contains the [hotspot=sendSystemLoad file=0]`sendSystemLoad()` method that calculates the average system load, creates a [hotspot=SystemLoad file=0]`SystemLoad` object, and publishes the object as a message by using the [hotspot=createProducer file=0]`send()` API to the [hotspot=jms/InventoryQueue file=0]`jms/InventoryQueue` queue running in the Jakarta messaging system. The [hotspot=schedule file=0]`@Schedule` annotation on the `sendSystemLoad()` method sets the frequency at which the system service publishes the calculation to the event stream, ensuring it runs every 15 seconds.
+The `SystemService` class contains the [hotspot=sendSystemLoad file=0]`sendSystemLoad()` method that calculates the recent system load, creates a [hotspot=SystemLoad file=0]`SystemLoad` object, and publishes the object as a message by using the [hotspot=createProducer file=0]`send()` API to the [hotspot=jms/InventoryQueue file=0]`jms/InventoryQueue` queue running in the Jakarta messaging system. The [hotspot=schedule file=0]`@Schedule` annotation on the `sendSystemLoad()` method sets the frequency at which the system service publishes the calculation to the event stream, ensuring it runs every 15 seconds.
 
 // update server.xml
 [role='code_command hotspot file=1', subs="quotes"]
@@ -187,7 +187,7 @@ After you see the following message, your Liberty instance is ready in dev mode:
 *    Liberty is running in dev mode.
 ----
 
-The `inventory` microservice records in its inventory the average system load information that it received from potentially multiple instances of the `system` service.
+The `inventory` microservice records in its inventory the recent system load information that it received from potentially multiple instances of the `system` service.
 
 // Create and explain InventoryQueueListener class
 [role="code_command hotspot file=0", subs="quotes"]
@@ -255,9 +255,9 @@ include::finish/inventory/src/test/java/it/io/openliberty/guides/inventory/Inven
 
 See the following descriptions of the test cases:
 
-* [hotspot=testNonEmpty file=0]`testNonEmpty()` verifies that the hostname and the load average for each system in the inventory are not empty.
+* [hotspot=testNonEmpty file=0]`testNonEmpty()` verifies that the hostname and the CPU load for each system in the inventory are not empty.
 
-* [hotspot=testValue file=0]`testValue()` verifies that the hostname and system load average returned by the system service match the ones stored in the inventory service and ensures they are not empty.
+* [hotspot=testValue file=0]`testValue()` verifies that the hostname and CPU load returned by the system service match the ones stored in the inventory service and ensures they are not empty.
 
 * [hotspot=testUnknownHost file=0]`testUnknownHost()` verifies that an unknown host or a host that does not expose their JVM system properties is correctly handled as an error.
 

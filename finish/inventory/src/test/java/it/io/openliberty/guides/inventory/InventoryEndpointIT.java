@@ -91,17 +91,17 @@ public class InventoryEndpointIT {
         JsonArray systems = response.readEntity(JsonArray.class);
 
         boolean hostnameExists = false;
-        boolean loadAverageExists = false;
+        boolean recentLoadExists = false;
         for (int n = 0; n < systems.size(); n++) {
             hostnameExists = systems.getJsonObject(n).get("hostname")
                     .toString().isEmpty();
-            loadAverageExists = systems.getJsonObject(n).get("systemLoad")
+            recentLoadExists = systems.getJsonObject(n).get("systemLoad")
                     .toString().isEmpty();
 
             assertFalse(hostnameExists, "A host was registered, but it was empty");
-            assertFalse(loadAverageExists,
-                    "A load average was registered, but it was empty");
-            if (!hostnameExists && !loadAverageExists) {
+            assertFalse(recentLoadExists,
+                    "A recent CPU load was registered, but it was empty");
+            if (!hostnameExists && !recentLoadExists) {
                 String host = systems.getJsonObject(n).get("hostname").toString();
                 hostname = host.substring(1, host.length() - 1);
                 break;
@@ -129,11 +129,11 @@ public class InventoryEndpointIT {
         JsonObject system = response.readEntity(JsonObject.class);
 
         String responseHostname = system.getString("hostname");
-        Boolean loadAverageExists = system.get("systemLoad").toString().isEmpty();
+        Boolean recentLoadExists = system.get("systemLoad").toString().isEmpty();
 
         assertEquals(hostname, responseHostname,
                 "Hostname should match the one from the TestNonEmpty");
-        assertFalse(loadAverageExists, "A Load Average should not be empty");
+        assertFalse(recentLoadExists, "A recent CPU load should not be empty");
 
         response.close();
     }
