@@ -62,13 +62,13 @@ public class SystemService {
     // tag::sendSystemLoad[]
     public void sendSystemLoad() {
         //tag::SystemLoad[]
-      SystemLoad systemLoad = new SystemLoad(getHostname(),
-              Double.valueOf(OS_MEAN.getCpuLoad()));
+        SystemLoad systemLoad = new SystemLoad(getHostname(),
+                                    Double.valueOf(OS_MEAN.getCpuLoad()));
         //end::SystemLoad[]
-      //tag::createProducer[]
-      context.createProducer().send(queue, systemLoad.toString());
-      //end::createProducer[]
-      logger.info(systemLoad.toString());
-     }
+        //tag::createProducer[]
+        context.createProducer().send(queue, systemLoad.toString());
+        //end::createProducer[]
+        logger.info(systemLoad.toString());
+    }
     // end::sendSystemLoad[]
 }
