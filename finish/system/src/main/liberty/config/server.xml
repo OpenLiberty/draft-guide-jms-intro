@@ -22,8 +22,8 @@
   <variable name="inventory.jms.port" defaultValue="7277"/>
   <!--end::jms[]-->
 
-  <httpEndpoint host="*" httpPort="${http.port}"
-                httpsPort="${https.port}" id="defaultHttpEndpoint"/>
+  <httpEndpoint id="defaultHttpEndpoint" host="*"
+                httpPort="${http.port}" httpsPort="${https.port}"/>
 
   <!-- send message to Inventory queue -->
   <!-- tag::connectionManager[] -->
@@ -31,11 +31,11 @@
   <!-- end::connectionManager[] -->
   <!-- tag::jmsQueueConnectionFactory[] -->
   <jmsQueueConnectionFactory
-          connectionManagerRef="InventoryCM"
-          jndiName="InventoryQueueConnectionFactory">
+    connectionManagerRef="InventoryCM"
+    jndiName="InventoryQueueConnectionFactory">
     <!-- tag::propertiesWasJms[] -->
     <properties.wasJms
-            remoteServerAddress="${inventory.jms.host}:${inventory.jms.port}:BootstrapBasicMessaging" />
+      remoteServerAddress="${inventory.jms.host}:${inventory.jms.port}:BootstrapBasicMessaging"/>
     <!-- end::propertiesWasJms[] -->
   </jmsQueueConnectionFactory>
   <!-- end::jmsQueueConnectionFactory[] -->
@@ -47,4 +47,5 @@
 
   <logging consoleLogLevel="INFO"/>
   <webApplication location="guide-jms-intro-system.war" contextRoot="/"/>
+
 </server>
