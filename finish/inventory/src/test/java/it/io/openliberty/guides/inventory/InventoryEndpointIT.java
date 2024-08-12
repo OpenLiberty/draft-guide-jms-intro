@@ -100,7 +100,7 @@ public class InventoryEndpointIT {
 
             assertFalse(hostnameExists, "A host was registered, but it was empty");
             assertFalse(recentLoadExists,
-                "A recent CPU load was registered, but it was empty");
+                "A recent system load was registered, but it was empty");
             if (!hostnameExists && !recentLoadExists) {
                 String host = systems.getJsonObject(n).get("hostname").toString();
                 hostname = host.substring(1, host.length() - 1);
@@ -133,7 +133,7 @@ public class InventoryEndpointIT {
 
         assertEquals(hostname, responseHostname,
             "Hostname should match the one from the TestNonEmpty");
-        assertFalse(recentLoadExists, "A recent CPU load should not be empty");
+        assertFalse(recentLoadExists, "A recent system load should not be empty");
 
         response.close();
     }
