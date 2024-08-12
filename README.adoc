@@ -114,18 +114,23 @@ mvn -pl system liberty:stop
 
 == Creating the consumer in the inventory microservice
 
+Navigate to the `start` directory to begin.
+
 ifdef::cloud-hosted[]
 ```bash
 cd /home/project/guide-jms-intro/start
 ```
 endif::[]
 
-Run the following goal to start Open Liberty in dev mode:
-//start dev mode
+When you run Open Liberty in https://openliberty.io/docs/latest/development-mode.html[dev mode^], dev mode listens for file changes and automatically recompiles and deploys your updates whenever you save a new change.
+
+Run the following goal to start the `inventory` service in dev mode:
+
 [role='command']
 ----
 mvn -pl inventory liberty:dev
 ----
+
 After you see the following message, your Liberty instance is ready in dev mode:
 
 [role="no_copy"]
@@ -133,6 +138,8 @@ After you see the following message, your Liberty instance is ready in dev mode:
 **************************************************************
 *    Liberty is running in dev mode.
 ----
+
+Dev mode holds your command-line session to listen for file changes. Open another command-line session to continue, or open the project in your editor.
 
 The `inventory` microservice records in its inventory the recent system load information that it received from potentially multiple instances of the `system` service.
 
@@ -168,15 +175,13 @@ Add the [hotspot=wasJmsEndpoint file=1]`wasJmsEndpoint` element to ensure that t
 
 == Creating the message producer in the system service 
 
-Navigate to the `start` directory to begin.
+Open another command-line session, navigate to the `start` directory, and run the following goal to start the `system` service in dev mode:
 
-When you run Open Liberty in https://openliberty.io/docs/latest/development-mode.html[dev mode^], dev mode listens for file changes and automatically recompiles and deploys your updates whenever you save a new change. Run the following goal to start Open Liberty in dev mode:
-
-//start dev mode
 [role='command']
 ----
 mvn -pl system liberty:dev
 ----
+
 After you see the following message, your Liberty instance is ready in dev mode:
 
 [role="no_copy"]
@@ -184,8 +189,6 @@ After you see the following message, your Liberty instance is ready in dev mode:
 **************************************************************
 *    Liberty is running in dev mode.
 ----
-
-Dev mode holds your command-line session to listen for file changes. Open another command-line session to continue, or open the project in your editor.
 
 The `system` microservice is the producer of the messages that are published to the Jakarta messaging system as a stream of events. Every 15 seconds, the `system` microservice publishes an event that contains its calculation of the recent system load (CPU usage) for the last minute.
 
