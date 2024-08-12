@@ -5,12 +5,12 @@
     <feature>jsonb-3.0</feature>
     <feature>mpHealth-4.0</feature>
     <feature>mpConfig-3.1</feature>
-    <!--tag::messaging3.1[]-->
+    <!--tag::messaging[]-->
     <feature>messaging-3.1</feature>
-    <!--end::messaging3.1[]-->
-    <!--tag::messagingClient-3.0[]-->
+    <!--end::messaging[]-->
+    <!--tag::messagingClient[]-->
     <feature>messagingClient-3.0</feature>
-    <!--end::messagingClient-3.0[]-->
+    <!--end::messagingClient[]-->
     <feature>enterpriseBeansLite-4.0</feature>
     <feature>mdb-4.0</feature>
   </featureManager>

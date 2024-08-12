@@ -6,9 +6,15 @@
     <feature>jsonb-3.0</feature>
     <feature>mpHealth-4.0</feature>
     <feature>mpConfig-3.1</feature>
+    <!--tag::messaging[]-->
     <feature>messaging-3.1</feature>
+    <!--end::messaging[]-->
+    <!--tag::messagingClient[]-->
     <feature>messagingClient-3.0</feature>
+    <!--end::messagingClient[]-->
+    <!--tag::messagingServer[]-->
     <feature>messagingServer-3.0</feature>
+    <!--end::messagingServer[]-->
     <feature>enterpriseBeansLite-4.0</feature>
     <feature>mdb-4.0</feature>
   </featureManager>

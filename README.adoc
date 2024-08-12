@@ -157,7 +157,9 @@ include::finish/inventory/src/main/java/io/openliberty/guides/inventory/Inventor
 ----
 The `inventory` microservice receives the messages from the `system` microservice. Implement the [hotspot=InventoryQueueListener file=0]`InventoryQueueListener` class with the `MessageListener` interface and annotate with [hotspot=messageDriven file=0]`@MessageDriven` for listening the `jms/InventoryQueue` queue. Override the [hotspot=onMessage file=0]`onMessage()` method that processes the incoming messages, updates the inventory by using the [hotspot=InventoryManager hotspot=InventoryManagerUpdate file=0]`InventoryManager` bean, and logs the action. Use the [hotspot=systemLoad file=0]`SystemLoad.fromJson()` method to convert the JSON message string to `SystemLoad` object.
 
-// replace the server.xml and explain the JMS configration
+
+Enable the `inventory` service with an embedded messaging server to listen the message queue.
+
 [role='code_command hotspot file=1', subs="quotes"]
 ----
 #Replace the inventory's `server.xml` configuration file.#
@@ -169,6 +171,8 @@ inventory/server.xml
 ----
 include::finish/inventory/src/main/liberty/config/server.xml[]
 ----
+
+The [hotspot=messaging file=1]`messaging` feature enables the configuration of resource adapters to access messaging systems by using the Jakarta Messaging API. The [hotspot=messagingClient file=1]`messagingClient` feature enables the application with access to the message queues that are hosted on Liberty through the Jakarta Messaging API.  The [hotspot=messagingServer file=1]`messagingServer` feature enables an embedded messaging server to listen the message queues.
 
 Add the [hotspot=wasJmsEndpoint file=1]`wasJmsEndpoint` element to ensure that the application server is properly configured to listen and manage incoming JMS connections from any hosts. Set up the [hotspot=messagingEngine file=1]`messagingEngine` configuration to ensure that the application server can manage incoming message queues more effectively, assigning a reliable and persistent destination for the `InventoryQueue`. Configure a [hotspot=jmsQueueConnectionFactory file=1]`jmsQueueConnectionFactory` element to use the [hotspot=connectionManager file=1]`InventoryCM` and set properties for the JMS implementation. Define a [hotspot=jmsQueue file=1]`jmsQueue` element for the inventory system and a [hotspot=jmsActivationSpec file=1]`jmsActivationSpec` element to configure properties including the destination queue reference, destination type, and maximum concurrency.
 
@@ -205,7 +209,9 @@ include::finish/system/src/main/java/io/openliberty/guides/system/SystemService.
 ----
 The `SystemService` class contains the [hotspot=sendSystemLoad file=0]`sendSystemLoad()` method that calculates the recent system load, creates a [hotspot=SystemLoad file=0]`SystemLoad` object, and publishes the object as a message by using the [hotspot=createProducer file=0]`send()` API to the [hotspot=jms/InventoryQueue file=0]`jms/InventoryQueue` queue running in the Jakarta messaging system. The [hotspot=schedule file=0]`@Schedule` annotation on the `sendSystemLoad()` method sets the frequency at which the system service publishes the calculation to the event stream, ensuring it runs every 15 seconds.
 
-// update server.xml
+
+Enable the `system` service to access the message queue.
+
 [role='code_command hotspot file=1', subs="quotes"]
 ----
 #Replace the system's `server.xml` configuration file.#
@@ -218,7 +224,7 @@ system/server.xml
 include::finish/system/src/main/liberty/config/server.xml[]
 ----
 
-The [hotspot=messaging3.1 file=1]`messaging-3.1` and [hotspot=messagingClient-3.0 file=1]`messagingClient-3.0` features enable the applications running on Liberty to provide Jakarta Messaging services. Add a [hotspot=connectionManager file=1]`connectionManager` element to handle connections for the messaging server running on the `inventory` service. Define the [hotspot=jmsQueueConnectionFactory file=1]`jmsQueueConnectionFactory` element to use the [hotspot=connectionManager file=1]`InventoryCM` and set up the required [hotspot=jms hotspot=propertiesWasJms file=1]`remoteServerAddress` properties. Use the [hotspot=jmsQueue file=1]`jmsQueue` element to define the inventory queue.
+The [hotspot=messaging file=1]`messaging` and [hotspot=messagingClient file=1]`messagingClient` features enable the application running on Liberty to provide Jakarta Messaging services. Add a [hotspot=connectionManager file=1]`connectionManager` element to handle connections for the messaging server running on the `inventory` service. Define the [hotspot=jmsQueueConnectionFactory file=1]`jmsQueueConnectionFactory` element to use the [hotspot=connectionManager file=1]`InventoryCM` and set up the required [hotspot=jms hotspot=propertiesWasJms file=1]`remoteServerAddress` properties. Use the [hotspot=jmsQueue file=1]`jmsQueue` element to define the inventory queue.
 
 If you want to learn more about configuration for the `jmsQueue` element and `jmsQueueConnectionFactory` element, see the https://openliberty.io/docs/latest/reference/config/jmsQueue.html[JMS Queue^] and https://openliberty.io/docs/latest/reference/config/jmsQueueConnectionFactory.html[JMS Queue Connection Factory^] documents respectively.
 
