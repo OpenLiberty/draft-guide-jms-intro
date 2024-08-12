@@ -408,7 +408,7 @@ system/pom.xml
 include::ibmmq/system/pom.xml[]
 ----
 
-Add the [hotspot=liberty file=2]`liberty.var.ibmmq-*` properties for the IBM MQ container. You can change to different values when you deploy the application on production environment without modifying the Liberty `server.xml` configuration file.
+Add the [hotspot=liberty file=2]`liberty.var.ibmmq-*` properties for the IBM MQ container as you did for the `inventory` service in above.
 
 
 [role='code_command hotspot file=3', subs="quotes"]
