@@ -43,7 +43,7 @@ image::architecture.png[Application architecture where system and inventory serv
 
 == Additional prerequisites
 
-If you’re focusing on sections other than the *Using IBM MQ* optional section, you can move forward without running Docker and skip this section.
+If you're focusing on sections other than the *Using IBM MQ* optional section, you can move forward without running Docker and skip this section.
 
 You need to install Docker if it is not already installed. For installation instructions, refer to the https://docs.docker.com/get-docker/[official Docker documentation^]. You will build and run the application in Docker containers.
 
@@ -111,59 +111,6 @@ mvn -pl inventory liberty:stop
 mvn -pl system liberty:stop
 ----
 
-== Creating the message producer in the system service 
-
-Navigate to the `start` directory to begin.
-
-When you run Open Liberty in https://openliberty.io/docs/latest/development-mode.html[dev mode^], dev mode listens for file changes and automatically recompiles and deploys your updates whenever you save a new change. Run the following goal to start Open Liberty in dev mode:
-
-//start dev mode
-[role='command']
-----
-mvn -pl system liberty:dev
-----
-After you see the following message, your Liberty instance is ready in dev mode:
-
-[role="no_copy"]
-----
-**************************************************************
-*    Liberty is running in dev mode.
-----
-
-Dev mode holds your command-line session to listen for file changes. Open another command-line session to continue, or open the project in your editor.
-
-The `system` microservice is the producer of the messages that are published to the Jakarta messaging system as a stream of events. Every 15 seconds, the `system` microservice publishes an event that contains its calculation of the recent system load (CPU usage) for the last minute.
-
-[role="code_command hotspot file=0", subs="quotes"]
-----
-#Create the `SystemService` class.#
-`system/src/main/java/io/openliberty/guides/system/SystemService.java`
-----
-
-SystemService.java
-[source, Java, linenums, role='code_column hide_tags=copyright']
-----
-include::finish/system/src/main/java/io/openliberty/guides/system/SystemService.java[]
-----
-The `SystemService` class contains the [hotspot=sendSystemLoad file=0]`sendSystemLoad()` method that calculates the recent system load, creates a [hotspot=SystemLoad file=0]`SystemLoad` object, and publishes the object as a message by using the [hotspot=createProducer file=0]`send()` API to the [hotspot=jms/InventoryQueue file=0]`jms/InventoryQueue` queue running in the Jakarta messaging system. The [hotspot=schedule file=0]`@Schedule` annotation on the `sendSystemLoad()` method sets the frequency at which the system service publishes the calculation to the event stream, ensuring it runs every 15 seconds.
-
-// update server.xml
-[role='code_command hotspot file=1', subs="quotes"]
-----
-#Replace the system's `server.xml` configuration file.#
-`system/src/main/liberty/config/server.xml`
-----
-
-system/server.xml
-[source, xml, linenums, role='code_column hide_tags=copyright']
-----
-include::finish/system/src/main/liberty/config/server.xml[]
-----
-
-The [hotspot=messaging3.1 file=1]`messaging-3.1` and [hotspot=messagingClient-3.0 file=1]`messagingClient-3.0` features enable the applications running on Liberty to provide Jakarta Messaging services. Add a [hotspot=connectionManager file=1]`connectionManager` element to handle connections for the messaging server running on the `inventory` service. Define the [hotspot=jmsQueueConnectionFactory file=1]`jmsQueueConnectionFactory` element to use the [hotspot=connectionManager file=1]`InventoryCM` and set up the required [hotspot=jms hotspot=propertiesWasJms file=1]`remoteServerAddress` properties. Use the [hotspot=jmsQueue file=1]`jmsQueue` element to define the inventory queue.
-
-If you want to learn more about configuration for the `jmsQueue` element and `jmsQueueConnectionFactory` element, see the https://openliberty.io/docs/latest/reference/config/jmsQueue.html[JMS Queue^] and https://openliberty.io/docs/latest/reference/config/jmsQueueConnectionFactory.html[JMS Queue Connection Factory^] documents respectively.
-
 
 == Creating the consumer in the inventory microservice
 
@@ -218,6 +165,68 @@ include::finish/inventory/src/main/liberty/config/server.xml[]
 
 Add the [hotspot=wasJmsEndpoint file=1]`wasJmsEndpoint` element to ensure that the application server is properly configured to listen and manage incoming JMS connections from any hosts. Set up the [hotspot=messagingEngine file=1]`messagingEngine` configuration to ensure that the application server can manage incoming message queues more effectively, assigning a reliable and persistent destination for the `InventoryQueue`. Configure a [hotspot=jmsQueueConnectionFactory file=1]`jmsQueueConnectionFactory` element to use the [hotspot=connectionManager file=1]`InventoryCM` and set properties for the JMS implementation. Define a [hotspot=jmsQueue file=1]`jmsQueue` element for the inventory system and a [hotspot=jmsActivationSpec file=1]`jmsActivationSpec` element to configure properties including the destination queue reference, destination type, and maximum concurrency.
 
+
+== Creating the message producer in the system service 
+
+Navigate to the `start` directory to begin.
+
+When you run Open Liberty in https://openliberty.io/docs/latest/development-mode.html[dev mode^], dev mode listens for file changes and automatically recompiles and deploys your updates whenever you save a new change. Run the following goal to start Open Liberty in dev mode:
+
+//start dev mode
+[role='command']
+----
+mvn -pl system liberty:dev
+----
+After you see the following message, your Liberty instance is ready in dev mode:
+
+[role="no_copy"]
+----
+**************************************************************
+*    Liberty is running in dev mode.
+----
+
+Dev mode holds your command-line session to listen for file changes. Open another command-line session to continue, or open the project in your editor.
+
+The `system` microservice is the producer of the messages that are published to the Jakarta messaging system as a stream of events. Every 15 seconds, the `system` microservice publishes an event that contains its calculation of the recent system load (CPU usage) for the last minute.
+
+[role="code_command hotspot file=0", subs="quotes"]
+----
+#Create the `SystemService` class.#
+`system/src/main/java/io/openliberty/guides/system/SystemService.java`
+----
+
+SystemService.java
+[source, Java, linenums, role='code_column hide_tags=copyright']
+----
+include::finish/system/src/main/java/io/openliberty/guides/system/SystemService.java[]
+----
+The `SystemService` class contains the [hotspot=sendSystemLoad file=0]`sendSystemLoad()` method that calculates the recent system load, creates a [hotspot=SystemLoad file=0]`SystemLoad` object, and publishes the object as a message by using the [hotspot=createProducer file=0]`send()` API to the [hotspot=jms/InventoryQueue file=0]`jms/InventoryQueue` queue running in the Jakarta messaging system. The [hotspot=schedule file=0]`@Schedule` annotation on the `sendSystemLoad()` method sets the frequency at which the system service publishes the calculation to the event stream, ensuring it runs every 15 seconds.
+
+// update server.xml
+[role='code_command hotspot file=1', subs="quotes"]
+----
+#Replace the system's `server.xml` configuration file.#
+`system/src/main/liberty/config/server.xml`
+----
+
+system/server.xml
+[source, xml, linenums, role='code_column hide_tags=copyright']
+----
+include::finish/system/src/main/liberty/config/server.xml[]
+----
+
+The [hotspot=messaging3.1 file=1]`messaging-3.1` and [hotspot=messagingClient-3.0 file=1]`messagingClient-3.0` features enable the applications running on Liberty to provide Jakarta Messaging services. Add a [hotspot=connectionManager file=1]`connectionManager` element to handle connections for the messaging server running on the `inventory` service. Define the [hotspot=jmsQueueConnectionFactory file=1]`jmsQueueConnectionFactory` element to use the [hotspot=connectionManager file=1]`InventoryCM` and set up the required [hotspot=jms hotspot=propertiesWasJms file=1]`remoteServerAddress` properties. Use the [hotspot=jmsQueue file=1]`jmsQueue` element to define the inventory queue.
+
+If you want to learn more about configuration for the `jmsQueue` element and `jmsQueueConnectionFactory` element, see the https://openliberty.io/docs/latest/reference/config/jmsQueue.html[JMS Queue^] and https://openliberty.io/docs/latest/reference/config/jmsQueueConnectionFactory.html[JMS Queue Connection Factory^] documents respectively.
+
+
+In your dev mode console for the `system` microservice, type `r` and press `enter/return` key to restart the Liberty instance. After you see the following message, your Liberty instance is ready in dev mode:
+
+[role="no_copy"]
+----
+**************************************************************
+*    Liberty is running in dev mode.
+----
 
 // =================================================================================================
 // Running the application
