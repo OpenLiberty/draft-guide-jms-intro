@@ -66,7 +66,7 @@ docker ps
 mvn -ntp -pl inventory liberty:start
 sleep 10
 mvn -ntp -pl system liberty:start
-sleep 10
+sleep 15
 
 mvn -ntp -Dhttp.keepAlive=false \
     -Dmaven.wagon.http.pool=false \

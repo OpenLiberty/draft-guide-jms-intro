@@ -22,12 +22,13 @@ import jakarta.jms.TextMessage;
 import java.util.logging.Logger;
 
 // tag::messageDriven[]
-@MessageDriven(mappedName="jms/InventoryQueue")
+@MessageDriven(mappedName = "jms/InventoryQueue")
 // end::messageDriven[]
 // tag::InventoryQueueListener[]
 public class InventoryQueueListener implements MessageListener {
 
-    private static Logger logger = Logger.getLogger(InventoryQueueListener.class.getName());
+    private static Logger logger =
+            Logger.getLogger(InventoryQueueListener.class.getName());
 
     // tag::InventoryManager[]
     @Inject
@@ -46,18 +47,19 @@ public class InventoryQueueListener implements MessageListener {
                 // end::systemLoad[]
 
                 String hostname = systemLoad.hostname;
-                Double loadAverage = systemLoad.loadAverage;
+                Double recentLoad = systemLoad.recentLoad;
                 // tag::InventoryManagerUpdate[]
                 if (manager.getSystem(hostname).isPresent()) {
-                    manager.updateCpuStatus(hostname, loadAverage);
-                    logger.info("Host " + hostname + " was updated: " + loadAverage);
+                    manager.updateCpuStatus(hostname, recentLoad);
+                    logger.info("Host " + hostname + " was updated: " + recentLoad);
                 } else {
-                    manager.addSystem(hostname, loadAverage);
-                    logger.info("Host " + hostname + " was added: " + loadAverage);
+                    manager.addSystem(hostname, recentLoad);
+                    logger.info("Host " + hostname + " was added: " + recentLoad);
                 }
                 // end::InventoryManagerUpdate[]
             } else {
-                logger.warning("Unsupported Message Type: " + message.getClass().getName());
+                logger.warning(
+                    "Unsupported Message Type: " + message.getClass().getName());
             }
         } catch (JMSException e) {
             e.printStackTrace();

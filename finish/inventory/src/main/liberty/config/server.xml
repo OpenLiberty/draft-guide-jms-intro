@@ -6,9 +6,15 @@
     <feature>jsonb-3.0</feature>
     <feature>mpHealth-4.0</feature>
     <feature>mpConfig-3.1</feature>
+    <!--tag::messaging[]-->
     <feature>messaging-3.1</feature>
+    <!--end::messaging[]-->
+    <!--tag::messagingClient[]-->
     <feature>messagingClient-3.0</feature>
+    <!--end::messagingClient[]-->
+    <!--tag::messagingServer[]-->
     <feature>messagingServer-3.0</feature>
+    <!--end::messagingServer[]-->
     <feature>enterpriseBeansLite-4.0</feature>
     <feature>mdb-4.0</feature>
   </featureManager>
@@ -16,7 +22,8 @@
   <variable name="http.port" defaultValue="9085"/>
   <variable name="https.port" defaultValue="9448"/>
 
-  <httpEndpoint host="*" httpPort="${http.port}" httpsPort="${https.port}" id="defaultHttpEndpoint"/>
+  <httpEndpoint id="defaultHttpEndpoint" host="*"
+                httpPort="${http.port}" httpsPort="${https.port}" />
 
   <!-- listen message from Inventory queue -->
   <!-- tag::wasJmsEndpoint[] -->
@@ -51,13 +58,13 @@
 
   <!-- tag::jmsActivationSpec[] -->
   <jmsActivationSpec id="guide-jms-intro-inventory/InventoryQueueListener">
-    <properties.wasJms
-            destinationRef="InventoryQueue"
-            destinationType="jakarta.jms.Queue"
-            maxConcurrency="200"/>
+    <properties.wasJms destinationRef="InventoryQueue"
+                       destinationType="jakarta.jms.Queue"
+                       maxConcurrency="200"/>
   </jmsActivationSpec>
   <!-- end::jmsActivationSpec[] -->
 
   <logging consoleLogLevel="INFO"/>
   <webApplication location="guide-jms-intro-inventory.war" contextRoot="/"/>
+
 </server>

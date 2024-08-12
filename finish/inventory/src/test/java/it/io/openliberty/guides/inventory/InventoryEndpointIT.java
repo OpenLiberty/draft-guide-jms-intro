@@ -91,17 +91,17 @@ public class InventoryEndpointIT {
         JsonArray systems = response.readEntity(JsonArray.class);
 
         boolean hostnameExists = false;
-        boolean loadAverageExists = false;
+        boolean recentLoadExists = false;
         for (int n = 0; n < systems.size(); n++) {
-            hostnameExists = systems.getJsonObject(n).get("hostname")
-                    .toString().isEmpty();
-            loadAverageExists = systems.getJsonObject(n).get("systemLoad")
-                    .toString().isEmpty();
+            hostnameExists = systems.getJsonObject(n)
+                                    .get("hostname").toString().isEmpty();
+            recentLoadExists = systems.getJsonObject(n)
+                                      .get("systemLoad").toString().isEmpty();
 
             assertFalse(hostnameExists, "A host was registered, but it was empty");
-            assertFalse(loadAverageExists,
-                    "A load average was registered, but it was empty");
-            if (!hostnameExists && !loadAverageExists) {
+            assertFalse(recentLoadExists,
+                "A recent CPU load was registered, but it was empty");
+            if (!hostnameExists && !recentLoadExists) {
                 String host = systems.getJsonObject(n).get("hostname").toString();
                 hostname = host.substring(1, host.length() - 1);
                 break;
@@ -123,17 +123,17 @@ public class InventoryEndpointIT {
         assertNotNull(hostname, "Hostname should be set by the first test. (2)");
 
         Response response =
-                this.getResponse(baseUrl + INVENTORY_SYSTEMS + "/" + hostname);
+            this.getResponse(baseUrl + INVENTORY_SYSTEMS + "/" + hostname);
         this.assertResponse(baseUrl, response);
 
         JsonObject system = response.readEntity(JsonObject.class);
 
         String responseHostname = system.getString("hostname");
-        Boolean loadAverageExists = system.get("systemLoad").toString().isEmpty();
+        Boolean recentLoadExists = system.get("systemLoad").toString().isEmpty();
 
         assertEquals(hostname, responseHostname,
-                "Hostname should match the one from the TestNonEmpty");
-        assertFalse(loadAverageExists, "A Load Average should not be empty");
+            "Hostname should match the one from the TestNonEmpty");
+        assertFalse(recentLoadExists, "A recent CPU load should not be empty");
 
         response.close();
     }
@@ -147,16 +147,16 @@ public class InventoryEndpointIT {
     // end::Order3[]
     // tag::testUnknownHost[]
     public void testUnknownHost() {
-        Response badResponse = client
-                .target(baseUrl + INVENTORY_SYSTEMS + "/" + "badhostname")
-                .request(MediaType.APPLICATION_JSON).get();
+        Response badResponse =
+            client.target(baseUrl + INVENTORY_SYSTEMS + "/" + "badhostname")
+                  .request(MediaType.APPLICATION_JSON).get();
 
         assertEquals(404, badResponse.getStatus(),
-                "BadResponse expected status: 404. Response code not as expected.");
+            "BadResponse expected status: 404. Response code not as expected.");
 
         String stringObj = badResponse.readEntity(String.class);
         assertTrue(stringObj.contains("hostname does not exist."),
-                "badhostname is not a valid host but it didn't raise an error");
+            "badhostname is not a valid host but it didn't raise an error");
 
         badResponse.close();
     }

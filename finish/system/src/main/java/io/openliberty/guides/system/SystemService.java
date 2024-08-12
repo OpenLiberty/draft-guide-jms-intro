@@ -12,7 +12,7 @@
 package io.openliberty.guides.system;
 
 import java.lang.management.ManagementFactory;
-import java.lang.management.OperatingSystemMXBean;
+import com.sun.management.OperatingSystemMXBean;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.logging.Logger;
@@ -31,11 +31,11 @@ import jakarta.inject.Inject;
 public class SystemService {
 
     private static final OperatingSystemMXBean OS_MEAN =
-            ManagementFactory.getOperatingSystemMXBean();
+            (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
     private static String hostname = null;
 
     private static Logger logger = Logger.getLogger(SystemService.class.getName());
-    
+
     @Inject
     @JMSConnectionFactory("InventoryQueueConnectionFactory")
     private JMSContext context;
@@ -62,13 +62,13 @@ public class SystemService {
     // tag::sendSystemLoad[]
     public void sendSystemLoad() {
         //tag::SystemLoad[]
-      SystemLoad systemLoad = new SystemLoad(getHostname(),
-              Double.valueOf(OS_MEAN.getSystemLoadAverage()));
+        SystemLoad systemLoad = new SystemLoad(getHostname(),
+                                    Double.valueOf(OS_MEAN.getCpuLoad()));
         //end::SystemLoad[]
-      //tag::createProducer[]
-      context.createProducer().send(queue, systemLoad.toString());
-      //end::createProducer[]
-      logger.info(systemLoad.toString());   
-     }
+        //tag::createProducer[]
+        context.createProducer().send(queue, systemLoad.toString());
+        //end::createProducer[]
+        logger.info(systemLoad.toString());
+    }
     // end::sendSystemLoad[]
 }
