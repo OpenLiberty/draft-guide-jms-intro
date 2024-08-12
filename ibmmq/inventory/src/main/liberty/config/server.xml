@@ -16,7 +16,8 @@
   <variable name="http.port" defaultValue="9085"/>
   <variable name="https.port" defaultValue="9448"/>
 
-  <httpEndpoint host="*" httpPort="${http.port}" httpsPort="${https.port}" id="defaultHttpEndpoint"/>
+  <httpEndpoint id="defaultHttpEndpoint" host="*"
+                httpPort="${http.port}" httpsPort="${https.port}"/>
 
   <!-- listen message from Inventory queue -->
   <!-- tag::wasJmsEndpoint[] -->
@@ -50,22 +51,23 @@
   <!-- tag::jmsActivationSpec[] -->
   <jmsActivationSpec id="guide-jms-intro-inventory/InventoryQueueListener">
     <properties.wmqjmsra
-          hostName="${ibmmq-hostname}"
-          port="${ibmmq-port}"
-          channel="${ibmmq-channel}"
-          queueManager="${ibmmq-queue-manager}"
-          userName="${ibmmq-username}"
-          password="${ibmmq-password}"
-          transportType="CLIENT"
-          destinationRef="InventoryQueue"
-          destinationType="jakarta.jms.Queue" />
+      hostName="${ibmmq-hostname}"
+      port="${ibmmq-port}"
+      channel="${ibmmq-channel}"
+      queueManager="${ibmmq-queue-manager}"
+      userName="${ibmmq-username}"
+      password="${ibmmq-password}"
+      transportType="CLIENT"
+      destinationRef="InventoryQueue"
+      destinationType="jakarta.jms.Queue"/>
   </jmsActivationSpec>
   <!-- end::jmsActivationSpec[] -->
   <!-- tag::resourceAdapter[] -->
   <resourceAdapter id="wmqjmsra"
-                   location="https://repo.maven.apache.org/maven2/com/ibm/mq/wmq.jakarta.jmsra/9.3.5.0/wmq.jakarta.jmsra-9.3.5.0.rar" />
+    location="https://repo.maven.apache.org/maven2/com/ibm/mq/wmq.jakarta.jmsra/9.3.5.0/wmq.jakarta.jmsra-9.3.5.0.rar"/>
   <!-- end::resourceAdapter[] -->
     
   <logging consoleLogLevel="INFO"/>
   <webApplication location="guide-jms-intro-inventory.war" contextRoot="/"/>
+
 </server>
