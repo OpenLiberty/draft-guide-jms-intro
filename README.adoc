@@ -392,7 +392,8 @@ inventory/server.xml
 include::ibmmq/inventory/src/main/liberty/config/server.xml[]
 ----
 
-Refine the [hotspot=jmsQueue file=1]`jmsQueue` and [hotspot=jmsActivationSpec file=1]`jmsActivationSpec` configurations with the variables for IBM MQ settings. Add [hotspot=resourceAdapter file=1]`resourceAdapter` element as you did for the `system` service in above.
+Refine the [hotspot=jmsQueue file=1]`jmsQueue` and [hotspot=jmsActivationSpec file=1]`jmsActivationSpec` configurations with the variables for IBM MQ settings. Add [hotspot=resourceAdapter file=1]`resourceAdapter` element to provide the RAR file that provides the IBM MQ classes for Java and JMS.
+
 
 
 [role='code_command hotspot file=2', subs="quotes"]
@@ -422,7 +423,7 @@ system/server.xml
 include::ibmmq/system/src/main/liberty/config/server.xml[]
 ----
 
-Replace the `properties.wasJms` configuration by the [hotspot=properties.wmqjmsra file=3]`properties.wmqjmsra` configuration. All property values are defined in the `pom.xml` file that you have replaced in the step. Also, modify `jmsQueue` property to set the [hotspot=baseQueueName file=3]`baseQueueName` value with the `${ibmmq-inventory-queue-name}` variable. Add [hotspot=resourceAdapter file=3]`resourceAdapter` element to provide the RAR file that provides the IBM MQ classes for Java and JMS.
+Replace the `properties.wasJms` configuration by the [hotspot=properties.wmqjmsra file=3]`properties.wmqjmsra` configuration. All property values are defined in the `pom.xml` file that you have replaced in the step. Also, modify `jmsQueue` property to set the [hotspot=baseQueueName file=3]`baseQueueName` value with the `${ibmmq-inventory-queue-name}` variable. Add [hotspot=resourceAdapter file=3]`resourceAdapter` element as you did for the `inventory` service in above.
 
 
 // start dev mode for the system and inventory services
