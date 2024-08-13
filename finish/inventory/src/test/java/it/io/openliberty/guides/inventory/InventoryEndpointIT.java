@@ -77,14 +77,10 @@ public class InventoryEndpointIT {
 
 
     // tag::tests[]
-    // tag::Test1[]
     @Test
-    // end::Test1[]
-    // tag::Order1[]
     @Order(1)
-    // end::Order1[]
-    // tag::testNonEmpty[]
-    public void testNonEmpty() {
+    // tag::testGetSystems[]
+    public void testGetSystems() {
         Response response = this.getResponse(baseUrl + INVENTORY_SYSTEMS);
         this.assertResponse(baseUrl, response);
 
@@ -110,16 +106,12 @@ public class InventoryEndpointIT {
         assertNotNull(hostname, "Hostname should be set by the first test. (1)");
         response.close();
     }
-    // end::testNonEmpty[]
+    // end::testGetSystems[]
 
-    // tag::testValue[]
-    // tag::Test2[]
+    // tag::testGetSystemsWithHost[]
     @Test
-    // end::Test2[]
-    // tag::Order2[]
     @Order(2)
-    // end::Order2[]
-    public void testValue() {
+    public void testGetSystemsWithHost() {
         assertNotNull(hostname, "Hostname should be set by the first test. (2)");
 
         Response response =
@@ -137,15 +129,11 @@ public class InventoryEndpointIT {
 
         response.close();
     }
-    // end::testValue[]
+    // end::testGetSystemsWithHost[]
 
-    // tag::Test3[]
-    @Test
-    // end::Test3[]
-    // tag::Order3[]
-    @Order(3)
-    // end::Order3[]
     // tag::testUnknownHost[]
+    @Test
+    @Order(3)
     public void testUnknownHost() {
         Response badResponse =
             client.target(baseUrl + INVENTORY_SYSTEMS + "/" + "badhostname")

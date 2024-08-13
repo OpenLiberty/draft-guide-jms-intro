@@ -273,9 +273,9 @@ include::finish/inventory/src/test/java/it/io/openliberty/guides/inventory/Inven
 
 See the following descriptions of the test cases:
 
-* [hotspot=testNonEmpty file=0]`testNonEmpty()` verifies that the hostname and the system load for each system in the inventory are not empty.
+* [hotspot=testGetSystems file=0]`testGetSystems()` verifies that the hostname and the system load for each system in the inventory are not empty.
 
-* [hotspot=testValue file=0]`testValue()` verifies that the hostname and system load returned by the `system` service match the ones stored in the `inventory` service and ensures they are not empty.
+* [hotspot=testGetSystemsWithHost file=0]`testGetSystemsWithHost()` verifies that the hostname and system load returned by the `system` service match the ones stored in the `inventory` service and ensures they are not empty.
 
 * [hotspot=testUnknownHost file=0]`testUnknownHost()` verifies that an unknown host or a host that does not expose their JVM system properties is correctly handled as an error.
 
