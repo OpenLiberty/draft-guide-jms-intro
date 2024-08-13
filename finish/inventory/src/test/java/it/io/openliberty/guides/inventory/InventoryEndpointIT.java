@@ -77,9 +77,9 @@ public class InventoryEndpointIT {
 
 
     // tag::tests[]
+    // tag::testGetSystems[]
     @Test
     @Order(1)
-    // tag::testGetSystems[]
     public void testGetSystems() {
         Response response = this.getResponse(baseUrl + INVENTORY_SYSTEMS);
         this.assertResponse(baseUrl, response);
