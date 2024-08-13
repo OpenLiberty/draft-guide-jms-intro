@@ -27,6 +27,7 @@ NOTE: This repository contains the guide documentation source. To view the guide
 Learn how to produce and consume messages in Java microservices by using Jakarta Messaging with Liberty Messaging Server, Liberty Messaging Server Client, and IBM MQ.
 
 == What you'll learn
+
 You will learn how to communicate Java services by using Jakarta Messaging with Liberty Messaging Server, Liberty Messaging Server Client, and IBM MQ. You will use a Jakarta Messaging system to handle the asynchronous messages that are sent and received between the microservices as streams of events.
 
 You'll also explore the configuration and use of Liberty Messaging Server, along with examples of message production and consumption with Liberty Messaging Server Client. Additionally, you will discover how to use IBM MQ for Jakarta Messaging.
@@ -86,7 +87,7 @@ The defaultServer server is ready to run a smarter planet.
 
 Visit the http://localhost:9085/health[^] URL to confirm that the `inventory` microservice is up and running.
 
-When both the liveness and readiness health checks are up, go to the http://localhost:9085/inventory/systems[^] URL to access the `inventory` microservice. You see the CPU systemLoad property for all the systems:
+When both the liveness and readiness health checks are up, go to the http://localhost:9085/inventory/systems[^] URL to access the `inventory` microservice. You see the `systemLoad` property for all the systems:
 
 [source, role='no_copy']
 ----
@@ -96,9 +97,9 @@ When both the liveness and readiness health checks are up, go to the http://loca
 }
 ----
 
-You can revisit the http://localhost:9085/inventory/systems[^] URL after a while, and you will notice the CPU `systemLoad` property for the systems changed.
+You can revisit the http://localhost:9085/inventory/systems[^] URL after a while, and you will notice the `systemLoad` property for the systems changed.
 
-You can also use `curl` command to retrieve the hostname and systemLoad information from the `inventory/systems` server endpoint in another command line session:
+You can also use `curl` command to retrieve the `hostname` and `systemLoad` information from the `inventory/systems` server endpoint in another command line session:
 ```
 curl http://localhost:9085/inventory/systems
 ```
@@ -196,7 +197,7 @@ After you see the following message, your Liberty instance is ready in dev mode:
 *    Liberty is running in dev mode.
 ----
 
-The `system` microservice is the producer of the messages that are published to the Jakarta messaging system as a stream of events. Every 15 seconds, the `system` microservice publishes an event that contains its calculation of the recent system load (CPU usage) for the last minute.
+The `system` microservice is the producer of the messages that are published to the Jakarta messaging system as a stream of events. Every 15 seconds, the `system` microservice publishes an event that contains its calculation of the recent CPU usage for the last minute.
 
 [role="code_command hotspot file=0", subs="quotes"]
 ----
@@ -247,7 +248,7 @@ You can find the `inventory` and `system` services at the following URLs:
 
 * http://localhost:9085/inventory/systems[http://localhost:9085/inventory/systems^]
 
-You can also use `curl` command to retrieve the hostname and systemLoad information from the `inventory/systems` server endpoint in another command line session:
+You can also use `curl` command to retrieve the `hostname` and `systemLoad` information from the `inventory/systems` server endpoint in another command line session:
 ```
 curl http://localhost:9085/inventory/systems
 ```
@@ -272,9 +273,9 @@ include::finish/inventory/src/test/java/it/io/openliberty/guides/inventory/Inven
 
 See the following descriptions of the test cases:
 
-* [hotspot=testNonEmpty file=0]`testNonEmpty()` verifies that the hostname and the CPU load for each system in the inventory are not empty.
+* [hotspot=testGetSystems file=0]`testGetSystems()` verifies that the hostname and the system load for each system in the inventory are not empty.
 
-* [hotspot=testValue file=0]`testValue()` verifies that the hostname and CPU load returned by the system service match the ones stored in the inventory service and ensures they are not empty.
+* [hotspot=testGetSystemsWithHost file=0]`testGetSystemsWithHost()` verifies that the hostname and system load returned by the `system` service match the ones stored in the `inventory` service and ensures they are not empty.
 
 * [hotspot=testUnknownHost file=0]`testUnknownHost()` verifies that an unknown host or a host that does not expose their JVM system properties is correctly handled as an error.
 
