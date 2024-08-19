@@ -12,20 +12,20 @@
 package io.openliberty.guides.system;
 
 import java.lang.management.ManagementFactory;
-import com.sun.management.OperatingSystemMXBean;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.logging.Logger;
-import jakarta.jms.JMSConnectionFactory;
-import jakarta.jms.JMSContext;
-import jakarta.jms.Queue;
+
+import com.sun.management.OperatingSystemMXBean;
+import io.openliberty.guides.models.SystemLoad;
 
 import jakarta.annotation.Resource;
 import jakarta.ejb.Schedule;
 import jakarta.ejb.Singleton;
-
-import io.openliberty.guides.models.SystemLoad;
 import jakarta.inject.Inject;
+import jakarta.jms.JMSConnectionFactory;
+import jakarta.jms.JMSContext;
+import jakarta.jms.Queue;
 
 @Singleton
 public class SystemService {
