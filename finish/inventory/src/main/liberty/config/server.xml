@@ -9,12 +9,12 @@
     <!--tag::messaging[]-->
     <feature>messaging-3.1</feature>
     <!--end::messaging[]-->
-    <!--tag::messagingClient[]-->
-    <feature>messagingClient-3.0</feature>
-    <!--end::messagingClient[]-->
     <!--tag::messagingServer[]-->
     <feature>messagingServer-3.0</feature>
     <!--end::messagingServer[]-->
+    <!--tag::messagingClient[]-->
+    <feature>messagingClient-3.0</feature>
+    <!--end::messagingClient[]-->
     <feature>enterpriseBeansLite-4.0</feature>
     <feature>mdb-4.0</feature>
   </featureManager>
@@ -25,7 +25,6 @@
   <httpEndpoint id="defaultHttpEndpoint" host="*"
                 httpPort="${http.port}" httpsPort="${https.port}" />
 
-  <!-- listen message from Inventory queue -->
   <!-- tag::wasJmsEndpoint[] -->
   <wasJmsEndpoint id="InboundJmsCommsEndpoint"
                   host="*"
@@ -43,12 +42,12 @@
   </messagingEngine>
   <!-- end::messagingEngine[] -->
 
-  <!-- tag::jmsQueueConnectionFactory[] -->
-  <jmsQueueConnectionFactory connectionManagerRef="InventoryCM"
-                             jndiName="InventoryQueueConnectionFactory">
+  <!-- tag::jmsConnectionFactory[] -->
+  <jmsConnectionFactory connectionManagerRef="InventoryCM"
+                        jndiName="InventoryConnectionFactory">
     <properties.wasJms/>
-  </jmsQueueConnectionFactory>
-  <!-- end::jmsQueueConnectionFactory[] -->
+  </jmsConnectionFactory>
+  <!-- end::jmsConnectionFactory[] -->
 
   <!-- tag::jmsQueue[] -->
   <jmsQueue id="InventoryQueue" jndiName="jms/InventoryQueue">
@@ -58,13 +57,12 @@
 
   <!-- tag::jmsActivationSpec[] -->
   <jmsActivationSpec id="guide-jms-intro-inventory/InventoryQueueListener">
-    <properties.wasJms destinationRef="InventoryQueue"
-                       destinationType="jakarta.jms.Queue"
-                       maxConcurrency="200"/>
+    <properties.wasJms maxConcurrency="200"/>
   </jmsActivationSpec>
   <!-- end::jmsActivationSpec[] -->
 
   <logging consoleLogLevel="INFO"/>
+
   <webApplication location="guide-jms-intro-inventory.war" contextRoot="/"/>
 
 </server>

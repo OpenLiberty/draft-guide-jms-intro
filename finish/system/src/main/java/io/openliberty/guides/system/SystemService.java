@@ -23,6 +23,7 @@ import jakarta.annotation.Resource;
 import jakarta.ejb.Schedule;
 import jakarta.ejb.Singleton;
 import jakarta.inject.Inject;
+import jakarta.jms.DeliveryMode;
 import jakarta.jms.JMSConnectionFactory;
 import jakarta.jms.JMSContext;
 import jakarta.jms.Queue;
@@ -37,7 +38,7 @@ public class SystemService {
     private static Logger logger = Logger.getLogger(SystemService.class.getName());
 
     @Inject
-    @JMSConnectionFactory("InventoryQueueConnectionFactory")
+    @JMSConnectionFactory("InventoryConnectionFactory")
     private JMSContext context;
 
     //tag::jms/InventoryQueue[]
@@ -66,7 +67,9 @@ public class SystemService {
                                     Double.valueOf(OS_MEAN.getCpuLoad()));
         //end::SystemLoad[]
         //tag::createProducer[]
-        context.createProducer().send(queue, systemLoad.toString());
+        context.createProducer()
+               .setDeliveryMode(DeliveryMode.NON_PERSISTENT)
+               .send(queue, systemLoad.toString());
         //end::createProducer[]
         logger.info(systemLoad.toString());
     }

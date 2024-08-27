@@ -21,14 +21,13 @@
   <httpEndpoint id="defaultHttpEndpoint" host="*"
                 httpPort="${http.port}" httpsPort="${https.port}" />
 
-  <!-- send message to Inventory queue -->
   <!-- tag::connectionManager[] -->
   <connectionManager id="InventoryCM" maxPoolSize="400" minPoolSize="1"/>
   <!-- end::connectionManager[] -->
-  <!-- tag::jmsQueueConnectionFactory[] -->
-  <jmsQueueConnectionFactory
+  <!-- tag::jmsConnectionFactory[] -->
+  <jmsConnectionFactory
     connectionManagerRef="InventoryCM"
-    jndiName="InventoryQueueConnectionFactory">
+    jndiName="InventoryConnectionFactory">
   <!-- tag::properties.wmqjmsra[] -->
     <properties.wmqjmsra
       hostName="${ibmmq-hostname}"
@@ -39,8 +38,8 @@
       password="${ibmmq-password}"
       transportType="CLIENT" />
   <!-- end::properties.wmqjmsra[] -->
-  </jmsQueueConnectionFactory>
-  <!-- end::jmsQueueConnectionFactory[] -->
+  </jmsConnectionFactory>
+  <!-- end::jmsConnectionFactory[] -->
   <!-- tag::jmsQueue[] -->
   <jmsQueue id="InventoryQueue" jndiName="jms/InventoryQueue">
     <!-- tag::baseQueueName[] -->
@@ -55,6 +54,7 @@
   <!-- end::resourceAdapter[] -->
 
   <logging consoleLogLevel="INFO"/>
+
   <webApplication location="guide-jms-intro-system.war" contextRoot="/"/>
 
 </server>

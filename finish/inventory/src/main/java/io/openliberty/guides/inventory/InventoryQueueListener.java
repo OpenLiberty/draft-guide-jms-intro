@@ -12,6 +12,7 @@
 package io.openliberty.guides.inventory;
 
 import io.openliberty.guides.models.SystemLoad;
+import jakarta.ejb.ActivationConfigProperty;
 import jakarta.ejb.MessageDriven;
 import jakarta.inject.Inject;
 import jakarta.jms.JMSException;
@@ -22,7 +23,12 @@ import jakarta.jms.TextMessage;
 import java.util.logging.Logger;
 
 // tag::messageDriven[]
-@MessageDriven(mappedName = "jms/InventoryQueue")
+@MessageDriven(activationConfig = {
+    @ActivationConfigProperty(
+        propertyName="destinationLookup", propertyValue="InventoryQueue"),
+    @ActivationConfigProperty(
+        propertyName="destinationType", propertyValue="jakarta.jms.Queue")
+})
 // end::messageDriven[]
 // tag::InventoryQueueListener[]
 public class InventoryQueueListener implements MessageListener {
