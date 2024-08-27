@@ -25,7 +25,7 @@ import java.util.logging.Logger;
 // tag::messageDriven[]
 @MessageDriven(activationConfig = {
     @ActivationConfigProperty(
-        propertyName="destinationLookup", propertyValue="InventoryQueue"),
+        propertyName="destinationLookup", propertyValue="jms/InventoryQueue"),
     @ActivationConfigProperty(
         propertyName="destinationType", propertyValue="jakarta.jms.Queue")
 })
