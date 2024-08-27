@@ -41,8 +41,7 @@
       queueManager="${ibmmq-queue-manager}"
       userName="${ibmmq-username}"
       password="${ibmmq-password}"
-      transportType="CLIENT"
-      destinationRef="InventoryQueue"/>
+      transportType="CLIENT"/>
   </jmsActivationSpec>
   <!-- end::jmsActivationSpec[] -->
 

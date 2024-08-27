@@ -362,7 +362,7 @@ icr.io/ibm-messaging/mq:latest
 
 [.tab_content.mac_section]
 --
-If you’re a Intel-based Mac user, start IBM MQ by running the following command on the command-line session:
+If you're an Intel-based Mac user, start IBM MQ by running the following command on the command-line session:
 
 
 [role='command']
@@ -385,7 +385,7 @@ docker run \
 icr.io/ibm-messaging/mq:latest
 ```
 
-If you’re a ARM-based Mac user, check out the https://community.ibm.com/community/user/integration/blogs/richard-coppen/2023/06/30/ibm-mq-9330-container-image-now-available-for-appl[How to build Mac IBM MQ container image^] blog in the IBM TechXchange Community website for building IBM MQ container image.
+If you're a ARM-based Mac user, check out the https://community.ibm.com/community/user/integration/blogs/richard-coppen/2023/06/30/ibm-mq-9330-container-image-now-available-for-appl[How to build Mac IBM MQ container image^] blog in the IBM TechXchange Community website for building IBM MQ container image.
 
 After building the container image, you can find the image version:
 [role='command']
@@ -516,6 +516,7 @@ Run the following commands to stop the running IBM MQ container and clean up the
 [role=command]
 ```
 docker stop QM1
+docker rm QM1
 docker volume remove qm1data
 ```
 

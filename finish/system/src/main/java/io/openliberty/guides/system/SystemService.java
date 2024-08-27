@@ -67,9 +67,7 @@ public class SystemService {
                                     Double.valueOf(OS_MEAN.getCpuLoad()));
         //end::SystemLoad[]
         //tag::createProducer[]
-        context.createProducer()
-               .setDeliveryMode(DeliveryMode.NON_PERSISTENT)
-               .send(queue, systemLoad.toString());
+        context.createProducer().send(queue, systemLoad.toString());
         //end::createProducer[]
         logger.info(systemLoad.toString());
     }
