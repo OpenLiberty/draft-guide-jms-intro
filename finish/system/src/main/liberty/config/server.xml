@@ -28,6 +28,7 @@
   <!-- tag::connectionManager[] -->
   <connectionManager id="InventoryCM" maxPoolSize="400" minPoolSize="1"/>
   <!-- end::connectionManager[] -->
+
   <!-- tag::jmsConnectionFactory[] -->
   <jmsConnectionFactory
     connectionManagerRef="InventoryCM"
@@ -38,6 +39,7 @@
     <!-- end::propertiesWasJms[] -->
   </jmsConnectionFactory>
   <!-- end::jmsConnectionFactory[] -->
+
   <!-- tag::jmsQueue[] -->
   <jmsQueue id="InventoryQueue" jndiName="jms/InventoryQueue">
     <properties.wasJms queueName="InventoryQueue"/>

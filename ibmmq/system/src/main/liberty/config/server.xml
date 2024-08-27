@@ -24,6 +24,7 @@
   <!-- tag::connectionManager[] -->
   <connectionManager id="InventoryCM" maxPoolSize="400" minPoolSize="1"/>
   <!-- end::connectionManager[] -->
+
   <!-- tag::jmsConnectionFactory[] -->
   <jmsConnectionFactory
     connectionManagerRef="InventoryCM"
@@ -40,13 +41,14 @@
   <!-- end::properties.wmqjmsra[] -->
   </jmsConnectionFactory>
   <!-- end::jmsConnectionFactory[] -->
+
   <!-- tag::jmsQueue[] -->
   <jmsQueue id="InventoryQueue" jndiName="jms/InventoryQueue">
     <!-- tag::baseQueueName[] -->
     <properties.wmqjmsra baseQueueName="${ibmmq-inventory-queue-name}"/>
     <!-- end::baseQueueName[] -->
   </jmsQueue>
-<!-- end::jmsQueue[] -->
+  <!-- end::jmsQueue[] -->
 
   <!-- tag::resourceAdapter[] -->
   <resourceAdapter id="wmqjmsra"
