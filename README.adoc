@@ -305,7 +305,7 @@ When you are done checking out the service, stop the Liberty instance by pressin
 
 == Using IBM MQ - Optional
 
-The application has been built and tested. In this section, you'll learn how to configure Liberty to use IBM MQ as the messaging server.
+The application has been built and tested. In this section, you'll learn how to configure Liberty to use https://github.com/ibm-messaging/mq-container[IBM MQ container^] as the messaging server.
 
 
 include::{common-includes}/os-tabs.adoc[]
