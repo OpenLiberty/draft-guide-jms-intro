@@ -385,7 +385,7 @@ docker run \
 icr.io/ibm-messaging/mq:latest
 ```
 
-If you're a ARM-based Mac user, check out the https://community.ibm.com/community/user/integration/blogs/richard-coppen/2023/06/30/ibm-mq-9330-container-image-now-available-for-appl[How to build Mac IBM MQ container image^] blog in the IBM TechXchange Community website for building IBM MQ container image.
+If you're an ARM-based Mac user, check out the https://community.ibm.com/community/user/integration/blogs/richard-coppen/2023/06/30/ibm-mq-9330-container-image-now-available-for-appl[How to build Mac IBM MQ container image^] blog in the IBM TechXchange Community website for building IBM MQ container image.
 
 After building the container image, you can find the image version:
 [role='command']
@@ -411,7 +411,7 @@ docker run \
 ```
 --
 
-If the `IBM MQ container` runs successfully, you can access https://localhost:9443/ibmmq/console[^].
+If the IBM MQ container runs successfully, you can access https://localhost:9443/ibmmq/console[^].
 
 
 [role='code_command hotspot file=0', subs="quotes"]
@@ -441,7 +441,7 @@ inventory/server.xml
 include::ibmmq/inventory/src/main/liberty/config/server.xml[]
 ----
 
-Refine the [hotspot=jmsQueue file=1]`jmsQueue` and [hotspot=jmsActivationSpec file=1]`jmsActivationSpec` configurations with the variables for IBM MQ settings. Add [hotspot=resourceAdapter file=1]`resourceAdapter` element to provide the RAR file that provides the IBM MQ classes for Java and JMS. Note that the `messagingEngine` and `jmsConnectionFactory` configurations are removed from the configuration because they are no longer being used.
+Refine the [hotspot=jmsQueue file=1]`jmsQueue` and [hotspot=jmsActivationSpec file=1]`jmsActivationSpec` configurations with the variables for IBM MQ settings. Add [hotspot=resourceAdapter file=1]`resourceAdapter` element to provide the RAR file that provides the IBM MQ classes for Java and JMS. Note that the `messagingEngine` and `jmsConnectionFactory` configurations are removed from the configuration because they are no longer being required.
 
 [role='code_command hotspot file=2', subs="quotes"]
 ----
