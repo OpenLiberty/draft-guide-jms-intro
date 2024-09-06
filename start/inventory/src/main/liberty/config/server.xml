@@ -16,9 +16,11 @@
   <variable name="http.port" defaultValue="9085"/>
   <variable name="https.port" defaultValue="9448"/>
 
-  <httpEndpoint host="*" httpPort="${http.port}" httpsPort="${https.port}" id="defaultHttpEndpoint"/>
+  <httpEndpoint id="defaultHttpEndpoint" host="*"
+                httpPort="${http.port}" httpsPort="${https.port}" />
 
   <logging consoleLogLevel="INFO"/>
+
   <webApplication location="guide-jms-intro-inventory.war" contextRoot="/"/>
 
 </server>

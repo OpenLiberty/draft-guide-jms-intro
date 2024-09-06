@@ -25,20 +25,21 @@
   <httpEndpoint id="defaultHttpEndpoint" host="*"
                 httpPort="${http.port}" httpsPort="${https.port}"/>
 
-  <!-- send message to Inventory queue -->
   <!-- tag::connectionManager[] -->
   <connectionManager id="InventoryCM" maxPoolSize="400" minPoolSize="1"/>
   <!-- end::connectionManager[] -->
-  <!-- tag::jmsQueueConnectionFactory[] -->
-  <jmsQueueConnectionFactory
+
+  <!-- tag::jmsConnectionFactory[] -->
+  <jmsConnectionFactory
     connectionManagerRef="InventoryCM"
-    jndiName="InventoryQueueConnectionFactory">
+    jndiName="InventoryConnectionFactory">
     <!-- tag::propertiesWasJms[] -->
     <properties.wasJms
       remoteServerAddress="${inventory.jms.host}:${inventory.jms.port}:BootstrapBasicMessaging"/>
     <!-- end::propertiesWasJms[] -->
-  </jmsQueueConnectionFactory>
-  <!-- end::jmsQueueConnectionFactory[] -->
+  </jmsConnectionFactory>
+  <!-- end::jmsConnectionFactory[] -->
+
   <!-- tag::jmsQueue[] -->
   <jmsQueue id="InventoryQueue" jndiName="jms/InventoryQueue">
     <properties.wasJms queueName="InventoryQueue"/>
@@ -46,6 +47,7 @@
   <!-- end::jmsQueue[] -->
 
   <logging consoleLogLevel="INFO"/>
+
   <webApplication location="guide-jms-intro-system.war" contextRoot="/"/>
 
 </server>
