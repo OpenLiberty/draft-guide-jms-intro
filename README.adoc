@@ -387,6 +387,14 @@ icr.io/ibm-messaging/mq:latest
 
 If you're an ARM-based Mac user, check out the https://community.ibm.com/community/user/integration/blogs/richard-coppen/2023/06/30/ibm-mq-9330-container-image-now-available-for-appl[How to build Mac IBM MQ container image^] blog in the IBM TechXchange Community website for building IBM MQ container image.
 
+Navigate to an empty directory for building the IBM MQ Docker container image and run the following commands:
+[role='command']
+```
+git clone https://github.com/ibm-messaging/mq-container.git -b 9.4.0.0-r3
+cd mq-container
+make build-devserver COMMAND=docker
+```
+
 After building the container image, you can find the image version:
 [role='command']
 ```
