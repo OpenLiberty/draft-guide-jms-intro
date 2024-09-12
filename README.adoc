@@ -38,13 +38,13 @@ In this guide, you will use Jakarta Messaging APIs to build the application and 
 
 Jakarta Messaging provides an easy way to asynchronously send, receive, and process messages that are received as continuous streams of events. By integrating Jakarta Messaging with Open Liberty, you can easily configure and manage message producers and consumers within your Java microservices. You simply use the Jakarta Messaging API to annotate methods in your application beans, and Open Liberty handles the communication infrastructure, ensuring messages are reliably exchanged. This integration allows your services to connect easily with external messaging systems, such as IBM MQ.
 
-The application in this guide consists of two microservices, `system` and `inventory`. Every 15 seconds, the `system` microservice computes and publishes an event that contains the recent CPU load usage. The `inventory` microservice subscribes to that information so that it can keep an updated list of all the systems and their current system loads. The current inventory of systems can be accessed via the `/systems` REST endpoint. You'll create the `system` and `inventory` microservices using Jakarta Messaging service.
+The application in this guide consists of two microservices, `system` and `inventory`. Every 15 seconds, the `system` microservice computes and publishes an event that contains the recent CPU load usage. The `inventory` microservice subscribes to that information so that it can keep an updated list of all the systems and their current system loads. The current inventory of systems is available from the `/systems` REST endpoint. You'll create the `system` and `inventory` microservices by using the Jakarta Messaging service.
 
 image::architecture.png[Application architecture where system and inventory services use the Jakarta Messaging to communicate.,align="center"]
 
 == Additional prerequisites
 
-If you're focusing on sections other than the *Using IBM MQ* optional section, you can move forward without running Docker and skip this section.
+If you're focusing on sections other than the optional *Using IBM MQ* section, you can move forward without running Docker and skip this section.
 
 You need to install Docker if it is not already installed. For installation instructions, refer to the https://docs.docker.com/get-docker/[official Docker documentation^]. You will build and run the application in Docker containers.
 
@@ -156,9 +156,9 @@ InventoryQueueListener.java
 ----
 include::finish/inventory/src/main/java/io/openliberty/guides/inventory/InventoryQueueListener.java[]
 ----
-The `inventory` microservice receives the messages from the `system` microservice. Implement the [hotspot=InventoryQueueListener file=0]`InventoryQueueListener` class with the `MessageListener` interface and annotate with [hotspot=messageDriven file=0]`@MessageDriven` for listening the `jms/InventoryQueue` queue. Override the [hotspot=onMessage file=0]`onMessage()` method that processes the incoming messages, updates the inventory by using the [hotspot=InventoryManager hotspot=InventoryManagerUpdate file=0]`InventoryManager` bean, and logs the action. Use the [hotspot=systemLoad file=0]`SystemLoad.fromJson()` method to convert the JSON message string to `SystemLoad` object.
+The `inventory` microservice receives the messages from the `system` microservice. Implement the [hotspot=InventoryQueueListener file=0]`InventoryQueueListener` class with the `MessageListener` interface and annotate with [hotspot=messageDriven file=0]`@MessageDriven` for monitoring the `jms/InventoryQueue` queue. Override the [hotspot=onMessage file=0]`onMessage()` method that processes the incoming messages, updates the inventory by using the [hotspot=InventoryManager hotspot=InventoryManagerUpdate file=0]`InventoryManager` bean, and logs the action. Use the [hotspot=systemLoad file=0]`SystemLoad.fromJson()` method to convert the JSON message string to the `SystemLoad` object.
 
-Enable the `inventory` service with an embedded messaging server to listen the message queue.
+Enable the `inventory` service with an embedded messaging server to monitor the message queue.
 
 [role='code_command hotspot file=1', subs="quotes"]
 ----
@@ -174,9 +174,9 @@ include::finish/inventory/src/main/liberty/config/server.xml[]
 
 The [hotspot=messagingServer file=1]`messagingServer` feature enables a Liberty runtime to host an embedded messaging server to manage messaging destinations. The [hotspot=messagingClient file=1]`messagingClient` feature enables applications to connect to a Liberty messaging server and access the messaging destinations hosted on that server through the Jakarta Messaging API that is enabled by the [hotspot=messaging file=1]`messaging` feature.
 
-Add the [hotspot=wasJmsEndpoint file=1]`wasJmsEndpoint` element to ensure that the Liberty runtime is properly configured to listen and manage incoming JMS connections from any hosts. Set up the [hotspot=messagingEngine file=1]`messagingEngine` configuration to ensure that the Liberty runtime can manage incoming message queues more effectively, assigning a reliable and persistent destination for the `InventoryQueue`. Configure a [hotspot=jmsConnectionFactory file=1]`jmsConnectionFactory` element to use the [hotspot=connectionManager file=1]`InventoryCM` and set properties for the JMS implementation. Define a [hotspot=jmsQueue file=1]`jmsQueue` element for the `inventory` Jakarta Messageing service and a [hotspot=jmsActivationSpec file=1]`jmsActivationSpec` element to configure properties including the destination queue reference and maximum concurrency.
+Add the [hotspot=wasJmsEndpoint file=1]`wasJmsEndpoint` element to configure the Liberty runtime to monitor and manage incoming JMS connections from any hosts. Set up the [hotspot=messagingEngine file=1]`messagingEngine` configuration to ensure that the Liberty runtime can manage incoming message queues more effectively, assigning a reliable and persistent destination for the `InventoryQueue`. Configure a [hotspot=jmsConnectionFactory file=1]`jmsConnectionFactory` element to use the [hotspot=connectionManager file=1]`InventoryCM` and set properties for the JMS implementation. Define a [hotspot=jmsQueue file=1]`jmsQueue` element for the `inventory` Jakarta Messaging service and a [hotspot=jmsActivationSpec file=1]`jmsActivationSpec` element to configure properties, including the destination queue reference and maximum concurrency.
 
-If you want to learn more about configuration for the `jmsQueue` element and `jmsConnectionFactory` element, see the https://openliberty.io/docs/latest/reference/config/jmsQueue.html[JMS Queue^] and https://openliberty.io/docs/latest/reference/config/jmsConnectionFactory.html[JMS Connection Factory^] documents respectively.
+To learn more about configuration for the `jmsQueue` element and `jmsConnectionFactory` element, see the https://openliberty.io/docs/latest/reference/config/jmsQueue.html[JMS Queue^] and https://openliberty.io/docs/latest/reference/config/jmsConnectionFactory.html[JMS Connection Factory^] documentation.
 
 
 == Creating the message producer in the system service 
@@ -196,7 +196,7 @@ After you see the following message, your Liberty instance is ready in dev mode:
 *    Liberty is running in dev mode.
 ----
 
-The `system` microservice is the producer of the messages that are published to the Jakarta messaging service as a stream of events. Every 15 seconds, the `system` microservice publishes an event that contains its calculation of the recent CPU usage for the last minute.
+The `system` microservice is the producer of the messages that are published to the Jakarta Messaging service as a stream of events. Every 15 seconds, the `system` microservice publishes an event that contains its calculation of the recent CPU usage for the last minute.
 
 [role="code_command hotspot file=0", subs="quotes"]
 ----
@@ -209,7 +209,7 @@ SystemService.java
 ----
 include::finish/system/src/main/java/io/openliberty/guides/system/SystemService.java[]
 ----
-The `SystemService` class contains the [hotspot=sendSystemLoad file=0]`sendSystemLoad()` method that calculates the recent system load, creates a [hotspot=SystemLoad file=0]`SystemLoad` object, and publishes the object as a message by using the [hotspot=createProducer file=0]`send()` API to the [hotspot=jms/InventoryQueue file=0]`jms/InventoryQueue` queue running in the Jakarta messaging service. The [hotspot=schedule file=0]`@Schedule` annotation on the `sendSystemLoad()` method sets the frequency at which the system service publishes the calculation to the event stream, ensuring it runs every 15 seconds.
+The `SystemService` class contains the [hotspot=sendSystemLoad file=0]`sendSystemLoad()` method that calculates the recent system load, creates a [hotspot=SystemLoad file=0]`SystemLoad` object, and publishes the object as a message to the [hotspot=jms/InventoryQueue file=0]`jms/InventoryQueue` queue running in the Jakarta Messaging service by using the [hotspot=createProducer file=0]`send()` API. The [hotspot=schedule file=0]`@Schedule` annotation on the `sendSystemLoad()` method sets the frequency at which the system service publishes the calculation to the event stream, ensuring it runs every 15 seconds.
 
 
 Enable the `system` service to access the message queue.
@@ -419,7 +419,7 @@ docker run \
 ```
 --
 
-If the IBM MQ container runs successfully, you can access https://localhost:9443/ibmmq/console[^].
+If the IBM MQ container runs successfully, you can access the https://localhost:9443/ibmmq/console[^] URL.
 
 
 [role='code_command hotspot file=0', subs="quotes"]
@@ -449,7 +449,7 @@ inventory/server.xml
 include::ibmmq/inventory/src/main/liberty/config/server.xml[]
 ----
 
-Refine the [hotspot=jmsQueue file=1]`jmsQueue` and [hotspot=jmsActivationSpec file=1]`jmsActivationSpec` configurations with the variables for IBM MQ settings. Add [hotspot=resourceAdapter file=1]`resourceAdapter` element to provide the RAR file that provides the IBM MQ classes for Java and JMS. Note that the `messagingEngine` and `jmsConnectionFactory` configurations are removed from the configuration because they are no longer being required.
+Refine the [hotspot=jmsQueue file=1]`jmsQueue` and [hotspot=jmsActivationSpec file=1]`jmsActivationSpec` configurations with the variables for IBM MQ settings. Add the [hotspot=resourceAdapter file=1]`resourceAdapter` element to define the RAR file that provides the IBM MQ classes for Java and JMS. Note that the `messagingEngine` and `jmsConnectionFactory` configurations are removed from the configuration because they are no longer being required.
 
 [role='code_command hotspot file=2', subs="quotes"]
 ----
@@ -463,7 +463,7 @@ system/pom.xml
 include::ibmmq/system/pom.xml[]
 ----
 
-Add the [hotspot=liberty file=2]`liberty.var.ibmmq-*` properties for the IBM MQ container as you did for the `inventory` service in above.
+Add the [hotspot=liberty file=2]`liberty.var.ibmmq-*` properties for the IBM MQ container as you did for the `inventory` service previously.
 
 
 [role='code_command hotspot file=3', subs="quotes"]
@@ -478,7 +478,7 @@ system/server.xml
 include::ibmmq/system/src/main/liberty/config/server.xml[]
 ----
 
-Replace the `properties.wasJms` configuration by the [hotspot=properties.wmqjmsra file=3]`properties.wmqjmsra` configuration. All property values are defined in the `pom.xml` file that you have replaced in the step. Also, modify `jmsQueue` property to set the [hotspot=baseQueueName file=3]`baseQueueName` value with the `${ibmmq-inventory-queue-name}` variable. Add [hotspot=resourceAdapter file=3]`resourceAdapter` element as you did for the `inventory` service in above.
+Replace the `properties.wasJms` configuration by the [hotspot=properties.wmqjmsra file=3]`properties.wmqjmsra` configuration. All property values are defined in the `pom.xml` file that you replaced. Also, modify the `jmsQueue` property to set the [hotspot=baseQueueName file=3]`baseQueueName` value with the `${ibmmq-inventory-queue-name}` variable. Add the [hotspot=resourceAdapter file=3]`resourceAdapter` element like you did for the `inventory` service.
 
 
 // start dev mode for the system and inventory services
@@ -502,7 +502,7 @@ The defaultServer server is ready to run a smarter planet.
 
 You can access the `inventory` service by the http://localhost:9085/inventory/systems URL.
 
-Go to the command shell running `inventory` dev mode and press `enter/return` to run the tests. If the tests pass, you'll see similar output to the following example:
+In the command shell where `inventory` dev mode is running, press `enter/return` to run the tests. If the tests pass, you'll see output that is similar to the following example:
 
 [source, role='no_copy']
 ----
@@ -517,7 +517,7 @@ Results :
 Tests run: 3, Failures: 0, Errors: 0, Skipped: 0
 ----
 
-After you are finished checking out the application, stop the Liberty instances by pressing `CTRL+C` in each command-line sessions where you ran `system` and `inventory` services.
+After you are finished checking out the application, stop the Liberty instances by pressing `CTRL+C` in the command-line sessions where you ran the `system` and `inventory` services.
 
 Run the following commands to stop the running IBM MQ container and clean up the `qm1data` volume:
 
