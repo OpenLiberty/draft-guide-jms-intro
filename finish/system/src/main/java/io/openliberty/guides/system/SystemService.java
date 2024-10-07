@@ -17,13 +17,12 @@ import java.net.UnknownHostException;
 import java.util.logging.Logger;
 
 import com.sun.management.OperatingSystemMXBean;
-import io.openliberty.guides.models.SystemLoad;
 
+import io.openliberty.guides.models.SystemLoad;
 import jakarta.annotation.Resource;
 import jakarta.ejb.Schedule;
 import jakarta.ejb.Singleton;
 import jakarta.inject.Inject;
-import jakarta.jms.DeliveryMode;
 import jakarta.jms.JMSConnectionFactory;
 import jakarta.jms.JMSContext;
 import jakarta.jms.Queue;

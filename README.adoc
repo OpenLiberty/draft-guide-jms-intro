@@ -82,9 +82,9 @@ When you see the following message, your Liberty instances are ready:
 The defaultServer server is ready to run a smarter planet.
 ----
 
-Visit the http://localhost:9085/health[^] URL to confirm that the `inventory` microservice is up and running.
+Visit the http://localhost:9081/health[^] URL to confirm that the `inventory` microservice is up and running.
 
-When both the liveness and readiness health checks are up, go to the http://localhost:9085/inventory/systems[^] URL to access the `inventory` microservice. You see the `systemLoad` property for all the systems:
+When both the liveness and readiness health checks are up, go to the http://localhost:9081/inventory/systems[^] URL to access the `inventory` microservice. You see the `systemLoad` property for all the systems:
 
 [source, role='no_copy']
 ----
@@ -94,11 +94,11 @@ When both the liveness and readiness health checks are up, go to the http://loca
 }
 ----
 
-You can revisit the http://localhost:9085/inventory/systems[^] URL after a while, and you will notice the `systemLoad` property for the systems changed.
+You can revisit the http://localhost:9081/inventory/systems[^] URL after a while, and you will notice the `systemLoad` property for the systems changed.
 
 You can also use `curl` command to retrieve the `hostname` and `systemLoad` information from the `inventory/systems` server endpoint in another command line session:
 ```
-curl http://localhost:9085/inventory/systems
+curl http://localhost:9081/inventory/systems
 ```
 
 After you are finished checking out the application, stop the Liberty instances by pressing `CTRL+C` in each command-line session where you ran Liberty. Alternatively, you can run the `liberty:stop` goal from the `finish` directory in another shell session:
@@ -242,11 +242,11 @@ include::{common-includes}/devmode-build.adoc[]
 
 You can find the `inventory` microservice at the following URLs:
 
-* http://localhost:9085/inventory/systems[http://localhost:9085/inventory/systems^]
+* http://localhost:9081/inventory/systems[http://localhost:9081/inventory/systems^]
 
 You can also use `curl` command to retrieve the `hostname` and `systemLoad` information from the `inventory/systems` server endpoint in another command line session:
 ```
-curl http://localhost:9085/inventory/systems
+curl http://localhost:9081/inventory/systems
 ```
 
 == Testing the inventory application
@@ -313,7 +313,7 @@ Start IBM MQ by running the following command on the command-line session:
 
 [role='command']
 ```
-docker pull icr.io/ibm-messaging/mq:latest
+docker pull icr.io/ibm-messaging/mq:9.4.0.0-r3
 
 docker volume create qm1data
 
@@ -328,7 +328,7 @@ docker run ^
 --rm ^
 --platform linux/amd64 ^
 --name QM1 ^
-icr.io/ibm-messaging/mq:latest
+icr.io/ibm-messaging/mq:9.4.0.0-r3
 ```
 --
 
@@ -338,7 +338,7 @@ Start IBM MQ by running the following command on the command-line session:
 
 [role='command']
 ```
-docker pull icr.io/ibm-messaging/mq:latest
+docker pull icr.io/ibm-messaging/mq:9.4.0.0-r3
 
 docker volume create qm1data
 
@@ -353,7 +353,7 @@ docker run \
 --rm \
 --platform linux/amd64 \
 --name QM1 \
-icr.io/ibm-messaging/mq:latest
+icr.io/ibm-messaging/mq:9.4.0.0-r3
 ```
 --
 
@@ -364,7 +364,7 @@ If you're an Intel-based Mac user, start IBM MQ by running the following command
 
 [role='command']
 ```
-docker pull icr.io/ibm-messaging/mq:latest
+docker pull icr.io/ibm-messaging/mq:9.4.0.0-r3
 
 docker volume create qm1data
 
@@ -379,7 +379,7 @@ docker run \
 --rm \
 --platform linux/amd64 \
 --name QM1 \
-icr.io/ibm-messaging/mq:latest
+icr.io/ibm-messaging/mq:9.4.0.0-r3
 ```
 
 If you're an ARM-based Mac user, check out the https://community.ibm.com/community/user/integration/blogs/richard-coppen/2023/06/30/ibm-mq-9330-container-image-now-available-for-appl[How to build Mac IBM MQ container image^] blog in the IBM TechXchange Community website for building IBM MQ container image.
@@ -497,7 +497,7 @@ When you see the following message, your Liberty instances are ready in dev mode
 The defaultServer server is ready to run a smarter planet.
 ----
 
-You can access the `inventory` microservice by the http://localhost:9085/inventory/systems URL.
+You can access the `inventory` microservice by the http://localhost:9081/inventory/systems URL.
 
 In the command shell where `inventory` dev mode is running, press `enter/return` to run the tests. If the tests pass, you'll see output that is similar to the following example:
 
