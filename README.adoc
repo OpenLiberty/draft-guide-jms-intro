@@ -33,7 +33,7 @@ In this guide, you will first use the embedded Liberty Messaging Server to manag
 
 You will learn how to write your Java application using the Jakarta Messaging API which provides a standard way to produce and consume messages in Java application, regardless of which messaging server your application will ultimately use.
 
-The application in this guide consists of two microservices, `system` and `inventory`. Every 15 seconds, the `system` microservice computes and publishes a message that contains system’s current CPU and memory load usage. The `inventory` microservice subscribes to that information at the `/systems` REST endpoint so that it can keep an updated list of all the systems and their current system loads.
+The application in this guide consists of two microservices, `system` and `inventory`. Every 15 seconds, the `system` microservice computes and publishes a message that contains the system’s current CPU and memory load usage. The `inventory` microservice subscribes to that information at the `/systems` REST endpoint so that it can keep an updated list of all the systems and their current system loads.
 
 You’ll create the `system` and `inventory` microservices using the Jakarta Messaging API to produce and consume the messages using the embedded Liberty Messaging Server.
 
