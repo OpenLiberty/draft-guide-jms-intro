@@ -247,7 +247,7 @@ You can find the `inventory` microservice at the following URLs:
 * http://localhost:9081/inventory/systems[http://localhost:9081/inventory/systems^]
 
 ifndef::cloud-hosted[]
-You can also use `curl` command to retrieve the `hostname` and `systemLoad` information from the `inventory/systems` REST endpoint in another command line session:
+You can also use `curl` command to retrieve the `hostname` and `systemLoad` information from the `/inventory/systems` REST endpoint in another command line session:
 ```
 curl http://localhost:9081/inventory/systems
 ```
