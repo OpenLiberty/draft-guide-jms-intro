@@ -29,7 +29,7 @@ Learn how to produce and consume messages to communicate between Java microservi
 
 You’ll learn how to communicate between Java web services when one service is producing a continuous stream of asynchronous messages or events to be consumed by other services, rather than just sending and receiving individual requests for data. You will also learn how to use a messaging server and client to manage the production and consumption of the messages by the services.
 
-In this guide, you will first use the embedded Liberty Messaging Server to manage messages, then you will optionally switch to using an external messaging server to manage the messages, in this case, https://www.ibm.com/products/mq[IBM MQ^]. You might use an external messaging server if the messaging mechanism is important to your application (e.g. during a bank transfer in a banking application). None of your messages are lost if there is a system overloading or outage.
+In this guide, you will first use the embedded Liberty Messaging Server to manage messages, then you will optionally switch to using an external messaging server to manage the messages, in this case, https://www.ibm.com/products/mq[IBM MQ^]. You might use an external messaging server if it is critical that none of the messages is lost if there is a system overload or outage; for example during a bank transfer in a banking application.
 
 You will learn how to write your Java application using the Jakarta Messaging API which provides a standard way to produce and consume messages in Java application, regardless of which messaging server your application will ultimately use.
 
