@@ -96,10 +96,12 @@ When both the liveness and readiness health checks are up, go to the http://loca
 
 You can revisit the http://localhost:9081/inventory/systems[^] URL after a while, and you will notice the `systemLoad` property for the systems changed.
 
-You can also use `curl` command to retrieve the `hostname` and `systemLoad` information from the `inventory/systems` server endpoint in another command line session:
+ifndef::cloud-hosted[]
+You can also use `curl` command to retrieve the `hostname` and `systemLoad` information from the `/inventory/systems` REST endpoint in another command line session:
 ```
 curl http://localhost:9081/inventory/systems
 ```
+endif::[]
 
 After you are finished checking out the application, stop the Liberty instances by pressing `CTRL+C` in each command-line session where you ran Liberty. Alternatively, you can run the `liberty:stop` goal from the `finish` directory in another shell session:
 // stopping dev mode
@@ -141,7 +143,6 @@ Dev mode holds your command-line session to listen for file changes. Open anothe
 
 The `inventory` microservice records in its inventory the recent system load information that it received from potentially multiple instances of the `system` microservice.
 
-// Create and explain InventoryQueueListener class
 [role="code_command hotspot file=0", subs="quotes"]
 ----
 #Create the `InventoryQueueListener` class.#
@@ -153,6 +154,7 @@ InventoryQueueListener.java
 ----
 include::finish/inventory/src/main/java/io/openliberty/guides/inventory/InventoryQueueListener.java[]
 ----
+
 The `inventory` microservice receives the messages from the `system` microservice. Implement the [hotspot=InventoryQueueListener file=0]`InventoryQueueListener` class with the `MessageListener` interface and annotate with [hotspot=messageDriven file=0]`@MessageDriven` to monitor the `jms/InventoryQueue` message queue. Implement the [hotspot=onMessage file=0]`onMessage()` method that processes the incoming messages, updates the inventory by using the [hotspot=InventoryManager hotspot=InventoryManagerUpdate file=0]`InventoryManager` bean, and logs the action. Use the [hotspot=systemLoad file=0]`SystemLoad.fromJson()` method to convert the JSON message string to the `SystemLoad` object.
 
 Next, configure the `inventory` microservice with an embedded messaging server and the https://openliberty.io/docs/latest/reference/feature/messagingClient-3.0.html[Messaging Server Client^] feature.
@@ -244,7 +246,7 @@ You can find the `inventory` microservice at the following URLs:
 
 * http://localhost:9081/inventory/systems[http://localhost:9081/inventory/systems^]
 
-You can also use `curl` command to retrieve the `hostname` and `systemLoad` information from the `inventory/systems` server endpoint in another command line session:
+You can also use `curl` command to retrieve the `hostname` and `systemLoad` information from the `inventory/systems` REST endpoint in another command line session:
 ```
 curl http://localhost:9081/inventory/systems
 ```
