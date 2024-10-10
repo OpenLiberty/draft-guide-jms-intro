@@ -39,7 +39,7 @@ You’ll create the `system` and `inventory` microservices using the Jakarta Mes
 
 image::architecture.png[Application architecture where system and inventory services use the Jakarta Messaging to communicate.,align="center"]
 
-You will then, optionally, reconfigure the application, without otherwise changing the Java code, to use an external IBM MQ messaging server instead.
+You will then, optionally, reconfigure the application, without changing the application's Java code, to use an external IBM MQ messaging server instead.
 
 == Additional prerequisites
 
