@@ -62,11 +62,21 @@ The `finish` directory in the root of this guide contains the finished applicati
 
 To try out the application, first go to the `finish` directory and run the following Maven goal to build and install the `models` module. The `models` module contains the `SystemLoad` data class for both the `system` and `inventory` microservices to use.
 
+ifndef::cloud-hosted[]
 [role='command']
 ----
 cd finish
 mvn -pl models clean install
 ----
+endif::[]
+
+ifdef::cloud-hosted[]
+```bash
+cd /home/project/guide-jms-intro/finish
+mvn -pl models clean install
+```
+endif::[]
+
 
 Start the `inventory` microservice by running the following command:
 
@@ -77,10 +87,19 @@ mvn -pl inventory liberty:run
 
 Next, open another command-line session, navigate to the `finish` directory, and start the `system` microservice by using the following command:
 
+ifndef::cloud-hosted[]
 [role='command']
 ----
 mvn -pl system liberty:run
 ----
+endif::[]
+
+ifdef::cloud-hosted[]
+```bash
+cd /home/project/guide-jms-intro/finish
+mvn -pl system liberty:run
+```
+endif::[]
 
 When you see the following message, your Liberty instances are ready:
 [role="no_copy"]
@@ -189,6 +208,12 @@ To learn more about configuration for the `jmsQueue` element and `jmsConnectionF
 == Creating the message producer in the system service 
 
 Open another command-line session, navigate to the `start` directory, and run the following goal to start the `system` microservice in dev mode:
+
+ifdef::cloud-hosted[]
+```bash
+cd /home/project/guide-jms-intro/start
+```
+endif::[]
 
 [role='command']
 ----
@@ -497,17 +522,35 @@ Replace the `properties.wasJms` configuration by the [hotspot=properties.wmqjmsr
 // start dev mode for the system and inventory services
 Start the `inventory` microservice by running the following command in dev mode:
 
+ifndef::cloud-hosted[]
 [role='command']
 ----
 mvn -pl inventory liberty:dev
 ----
+endif::[]
+
+ifdef::cloud-hosted[]
+```bash
+cd /home/project/guide-jms-intro/start
+mvn -pl inventory liberty:dev
+```
+endif::[]
 
 Next, open another command-line session, navigate to the `start` directory, and start the `system` microservice by using the following command:
 
+ifndef::cloud-hosted[]
 [role='command']
 ----
 mvn -pl system liberty:dev
 ----
+endif::[]
+
+ifdef::cloud-hosted[]
+```bash
+cd /home/project/guide-jms-intro/start
+mvn -pl system liberty:dev
+```
+endif::[]
 
 When you see the following message, your Liberty instances are ready in dev mode:
 
