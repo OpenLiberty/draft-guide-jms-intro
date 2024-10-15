@@ -13,8 +13,8 @@
     <feature>mdb-4.0</feature>
   </featureManager>
 
-  <variable name="http.port" defaultValue="9085"/>
-  <variable name="https.port" defaultValue="9448"/>
+  <variable name="http.port" defaultValue="9081"/>
+  <variable name="https.port" defaultValue="9444"/>
 
   <httpEndpoint id="defaultHttpEndpoint" host="*"
                 httpPort="${http.port}" httpsPort="${https.port}"/>
@@ -47,7 +47,7 @@
 
   <!-- tag::resourceAdapter[] -->
   <resourceAdapter id="wmqjmsra"
-    location="https://repo.maven.apache.org/maven2/com/ibm/mq/wmq.jakarta.jmsra/9.3.5.0/wmq.jakarta.jmsra-9.3.5.0.rar"/>
+    location="https://repo.maven.apache.org/maven2/com/ibm/mq/wmq.jakarta.jmsra/9.4.0.0/wmq.jakarta.jmsra-9.4.0.0.rar"/>
   <!-- end::resourceAdapter[] -->
     
   <logging consoleLogLevel="INFO"/>

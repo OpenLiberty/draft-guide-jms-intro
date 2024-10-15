@@ -42,7 +42,6 @@ public class InventoryQueueListener implements MessageListener {
     //end::InventoryManager[]
 
     // tag::onMessage[]
-    @Override
     public void onMessage(Message message) {
         try {
             if (message instanceof TextMessage) {
@@ -72,5 +71,6 @@ public class InventoryQueueListener implements MessageListener {
         }
     }
     // end::onMessage[]
+
 }
 // end::InventoryQueueListener[]

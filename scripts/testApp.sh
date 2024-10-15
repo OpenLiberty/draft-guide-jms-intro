@@ -45,7 +45,7 @@ mvn -ntp -Dhttp.keepAlive=false \
     -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 \
     -pl inventory -q package liberty:create liberty:install-feature liberty:deploy
 
-docker pull --platform linux/amd64 icr.io/ibm-messaging/mq:latest
+docker pull --platform linux/amd64 icr.io/ibm-messaging/mq:9.4.0.0-r3
 
 docker volume create qm1data
 
@@ -58,7 +58,7 @@ docker run \
 --env MQ_APP_PASSWORD=passw0rd --env MQ_ADMIN_PASSWORD=passw0rd \
 --rm \
 --name QM1 \
-icr.io/ibm-messaging/mq:latest
+icr.io/ibm-messaging/mq:9.4.0.0-r3
 
 sleep 10
 docker ps
