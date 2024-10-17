@@ -14,7 +14,7 @@ if [ "$JDK_LEVEL" == "11" ]; then
     exit 0
 fi
 
-sed -i "\#<artifactId>liberty-maven-plugin</artifactId>#a<configuration><install><runtimeUrl>https://public.dhe.ibm.com/ibmdl/export/pub/software/openliberty/runtime/nightly/$DATE/$DRIVER</runtimeUrl></install></configuration>" system/pom.xml inventory/pom.xml
-cat system/pom.xml inventory/pom.xml
+sed -i "\#<artifactId>liberty-maven-plugin</artifactId>#a<configuration><install><runtimeUrl>https://public.dhe.ibm.com/ibmdl/export/pub/software/openliberty/runtime/nightly/$DATE/$DRIVER</runtimeUrl></install></configuration>" system/pom.xml inventory/pom.xml ../ibmmq/system/pom.xml ../ibmmq/inventory/pom.xml
+cat system/pom.xml inventory/pom.xml ../ibmmq/system/pom.xml ../ibmmq/inventory/pom.xml
 
 ../scripts/testApp.sh
