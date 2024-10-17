@@ -8,7 +8,7 @@
 :projectid: jms-intro
 :page-layout: guide-multipane
 :page-duration: 30 minutes
-:page-releasedate: 2024-10-18
+:page-releasedate: 2024-10-17
 :page-description: Learn how to produce and consume messages to communicate between Java microservices in a standard way by using the Jakarta Messaging API with the embedded Liberty Messaging Server or an external messaging server, IBM MQ.
 :page-tags: ['jakarta-ee']
 :page-permalink: /guides/{projectid}
