@@ -10,3 +10,13 @@ updates:
   schedule:
     interval: monthly
   open-pull-requests-limit: 50
+- package-ecosystem: maven
+  directory: "/ibmmq/inventory"
+  schedule:
+    interval: monthly
+  open-pull-requests-limit: 50
+- package-ecosystem: maven
+  directory: "/ibmmq/system"
+  schedule:
+    interval: monthly
+  open-pull-requests-limit: 50
